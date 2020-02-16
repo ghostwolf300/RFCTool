@@ -1,0 +1,580 @@
+
+**** Error file opened at 20200205 154648 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 15:46:48,668<    RfcException raised by system [<unknown>]:
+	message: Parameter ABAP application server host ('jco.client.ashost') is missing
+	return code: RFC_INVALID_PARAMETER (19)
+	error group: 101
+	key: RFC_ERROR_PROGRAM
+	at com.sap.conn.rfc.api.RfcOptions.checkParameters(RfcOptions.java:326)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.initialize(MiddlewareJavaRfc.java:1261)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.connect(MiddlewareJavaRfc.java:1289)
+	at com.sap.conn.jco.rt.ClientConnection.connect(ClientConnection.java:730)
+	at com.sap.conn.jco.rt.PoolingFactory.init(PoolingFactory.java:112)
+	at com.sap.conn.jco.rt.ConnectionManager.createFactory(ConnectionManager.java:433)
+	at com.sap.conn.jco.rt.DefaultConnectionManager.createFactory(DefaultConnectionManager.java:46)
+	at com.sap.conn.jco.rt.ConnectionManager.getFactory(ConnectionManager.java:380)
+	at com.sap.conn.jco.rt.RfcDestination.initialize(RfcDestination.java:951)
+	at com.sap.conn.jco.rt.RfcDestination.getAttributes(RfcDestination.java:637)
+	at com.sap.conn.jco.rt.RfcDestination.getAttributes(RfcDestination.java:33)
+	at org.rfc.sap.SAPConnection.testConnection(SAPConnection.java:33)
+	at org.rfc.sap.RFCMain.ExecuteTest(RFCMain.java:19)
+	at org.rfc.sap.RFCMain.main(RFCMain.java:13)
+
+
+
+**** Error file opened at 20200205 160610 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 16:06:10,312<    RfcException raised by system [<unknown>]:
+	message: Parameter message server host ('jco.client.mshost') is missing
+	return code: RFC_INVALID_PARAMETER (19)
+	error group: 101
+	key: RFC_ERROR_PROGRAM
+	at com.sap.conn.rfc.api.RfcOptions.checkParameters(RfcOptions.java:335)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.initialize(MiddlewareJavaRfc.java:1261)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.connect(MiddlewareJavaRfc.java:1289)
+	at com.sap.conn.jco.rt.ClientConnection.connect(ClientConnection.java:730)
+	at com.sap.conn.jco.rt.PoolingFactory.init(PoolingFactory.java:112)
+	at com.sap.conn.jco.rt.ConnectionManager.createFactory(ConnectionManager.java:433)
+	at com.sap.conn.jco.rt.DefaultConnectionManager.createFactory(DefaultConnectionManager.java:46)
+	at com.sap.conn.jco.rt.ConnectionManager.getFactory(ConnectionManager.java:380)
+	at com.sap.conn.jco.rt.RfcDestination.initialize(RfcDestination.java:951)
+	at com.sap.conn.jco.rt.RfcDestination.getAttributes(RfcDestination.java:637)
+	at com.sap.conn.jco.rt.RfcDestination.getAttributes(RfcDestination.java:33)
+	at org.rfc.sap.SAPConnection.testConnection(SAPConnection.java:35)
+	at org.rfc.sap.RFCMain.ExecuteTest(RFCMain.java:19)
+	at org.rfc.sap.RFCMain.main(RFCMain.java:13)
+
+
+
+**** Error file opened at 20200205 160743 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 16:07:43,639<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host wsapvm117 failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=wsapvm117 MSSERV=tet R3NAME=TET GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       service 'tet' unknown
+TIME        Wed Feb 05 16:07:43 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -3
+MODULE      ninti.c
+LINE        933
+DETAIL      NiPGetServByName: 'tet' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 173932 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 17:39:32,213<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host wsapvm117 failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=wsapvm117 MSSERV=tet GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       service 'tet' unknown
+TIME        Wed Feb 05 17:39:32 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -3
+MODULE      ninti.c
+LINE        933
+DETAIL      NiPGetServByName: 'tet' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 174455 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 17:44:55,977<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host wsapvm117_TET_00 failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=wsapvm117_TET_00 MSSERV=tet GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       service 'tet' unknown
+TIME        Wed Feb 05 17:44:55 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -3
+MODULE      ninti.c
+LINE        933
+DETAIL      NiPGetServByName: 'tet' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 174539 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 17:45:39,024<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host wsapvm117_TET_00 failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=wsapvm117_TET_00 MSSERV=wsapvm117 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       service 'wsapvm117' unknown
+TIME        Wed Feb 05 17:45:39 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -3
+MODULE      ninti.c
+LINE        933
+DETAIL      NiPGetServByName: 'wsapvm117' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 174807 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 17:48:07,130<    RfcException raised by system [<unknown>]:
+	message: Either parameter ABAP system ID ('jco.client.r3name') or message server service ('jco.client.msserv') is missing
+	return code: RFC_INVALID_PARAMETER (19)
+	error group: 101
+	key: RFC_ERROR_PROGRAM
+	at com.sap.conn.rfc.api.RfcOptions.checkParameters(RfcOptions.java:343)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.initialize(MiddlewareJavaRfc.java:1261)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.connect(MiddlewareJavaRfc.java:1289)
+	at com.sap.conn.jco.rt.ClientConnection.connect(ClientConnection.java:730)
+	at com.sap.conn.jco.rt.PoolingFactory.init(PoolingFactory.java:112)
+	at com.sap.conn.jco.rt.ConnectionManager.createFactory(ConnectionManager.java:433)
+	at com.sap.conn.jco.rt.DefaultConnectionManager.createFactory(DefaultConnectionManager.java:46)
+	at com.sap.conn.jco.rt.ConnectionManager.getFactory(ConnectionManager.java:380)
+	at com.sap.conn.jco.rt.RfcDestination.initialize(RfcDestination.java:951)
+	at com.sap.conn.jco.rt.RfcDestination.getAttributes(RfcDestination.java:637)
+	at com.sap.conn.jco.rt.RfcDestination.getAttributes(RfcDestination.java:33)
+	at org.rfc.sap.SAPConnection.testConnection(SAPConnection.java:35)
+	at org.rfc.sap.RFCMain.ExecuteTest(RFCMain.java:19)
+	at org.rfc.sap.RFCMain.main(RFCMain.java:13)
+
+
+
+**** Error file opened at 20200205 175405 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 17:54:05,355<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host wsapvm117_TET_00 failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=wsapvm117_TET_00 MSSERV=3600 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       hostname 'wsapvm117_TET_00' unknown
+TIME        Wed Feb 05 17:54:05 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      ninti.c
+LINE        897
+DETAIL      NiPGetHostByName: 'wsapvm117_TET_00' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 175519 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 17:55:19,705<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host wsapvm117 failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=wsapvm117 MSSERV=3600 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       hostname 'wsapvm117' unknown
+TIME        Wed Feb 05 17:55:19 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      ninti.c
+LINE        897
+DETAIL      NiPGetHostByName: 'wsapvm117' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 192134 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:21:34,096<    RfcException raised by system [<unknown>]:
+	message: Connect to SAP gateway failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '10.6.0.131:3300' not reached
+TIME        Wed Feb 05 19:21:34 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 10.6.0.131:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     3
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 193107 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:31:07,840<    RfcException raised by system [<unknown>]:
+	message: Connect to SAP gateway failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '10.6.0.131:3300' not reached
+TIME        Wed Feb 05 19:31:07 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 10.6.0.131:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     3
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 193839 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:38:39,302<    RfcException raised by system [<unknown>]:
+	message: Connect to SAP gateway failed
+	Connection parameters: TYPE=B DESTINATION=TEPCLNT280 MSHOST=tep MSSERV=3601 GROUP=TEP PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '10.6.0.133:3300' not reached
+TIME        Wed Feb 05 19:38:39 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 10.6.0.133:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     3
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 194404 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:44:04,714<    RfcException raised by system [<unknown>]:
+	message: Connect to SAP gateway failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '10.6.0.131:3300' not reached
+TIME        Wed Feb 05 19:44:04 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 10.6.0.131:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     3
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 194421 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:44:21,784<    RfcException raised by system [<unknown>]:
+	message: Logon group "PUBLIC" not found by message server on host tet
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=PUBLIC PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       Group PUBLIC not found
+TIME        Wed Feb 05 19:44:21 2020
+RELEASE     721
+COMPONENT   LG
+VERSION     5
+RC          -6
+MODULE      lgxx.c
+LINE        5354
+DETAIL      LgIGroupRereadMs
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 194946 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:49:46,404<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host tet failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=sapmsTET:3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       service 'sapmsTET:3601' unknown
+TIME        Wed Feb 05 19:49:46 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -3
+MODULE      ninti.c
+LINE        933
+DETAIL      NiPGetServByName: 'sapmsTET:3601' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 195005 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:50:05,409<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host tet failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=sapmsTET GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       service 'sapmsTET' unknown
+TIME        Wed Feb 05 19:50:05 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -3
+MODULE      ninti.c
+LINE        933
+DETAIL      NiPGetServByName: 'sapmsTET' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 195128 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:51:28,927<    RfcException raised by system [<unknown>]:
+	message: Connect to SAP gateway failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '10.6.0.131:3300' not reached
+TIME        Wed Feb 05 19:51:28 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 10.6.0.131:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     3
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 195206 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:52:06,949<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host tet failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=tet:3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       service 'tet:3601' unknown
+TIME        Wed Feb 05 19:52:06 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -3
+MODULE      ninti.c
+LINE        933
+DETAIL      NiPGetServByName: 'tet:3601' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 195258 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:52:58,341<    RfcException raised by system [<unknown>]:
+	message: Either parameter ABAP system ID ('jco.client.r3name') or message server service ('jco.client.msserv') is missing
+	return code: RFC_INVALID_PARAMETER (19)
+	error group: 101
+	key: RFC_ERROR_PROGRAM
+	at com.sap.conn.rfc.api.RfcOptions.checkParameters(RfcOptions.java:343)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.initialize(MiddlewareJavaRfc.java:1261)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.connect(MiddlewareJavaRfc.java:1289)
+	at com.sap.conn.jco.rt.ClientConnection.connect(ClientConnection.java:730)
+	at com.sap.conn.jco.rt.PoolingFactory.init(PoolingFactory.java:112)
+	at com.sap.conn.jco.rt.ConnectionManager.createFactory(ConnectionManager.java:433)
+	at com.sap.conn.jco.rt.DefaultConnectionManager.createFactory(DefaultConnectionManager.java:46)
+	at com.sap.conn.jco.rt.ConnectionManager.getFactory(ConnectionManager.java:380)
+	at com.sap.conn.jco.rt.RfcDestination.initialize(RfcDestination.java:951)
+	at com.sap.conn.jco.rt.RfcDestination.getAttributes(RfcDestination.java:637)
+	at com.sap.conn.jco.rt.RfcDestination.getAttributes(RfcDestination.java:33)
+	at org.rfc.sap.SAPConnection.testConnection(SAPConnection.java:51)
+	at org.rfc.sap.RFCMain.ExecuteTest(RFCMain.java:19)
+	at org.rfc.sap.RFCMain.main(RFCMain.java:13)
+
+
+
+**** Error file opened at 20200205 195337 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 19:53:37,420<    RfcException raised by system [<unknown>]:
+	message: Connect to SAP gateway failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '10.6.0.131:3300' not reached
+TIME        Wed Feb 05 19:53:37 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 10.6.0.131:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     3
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200205 200743 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 05 20:07:43,811<    RfcException raised by system [<unknown>]:
+	message: Connect to SAP gateway failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       partner '10.6.0.131:3300' not reached
+TIME        Wed Feb 05 20:07:43 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -10
+MODULE      nixxi.cpp
+LINE        3289
+DETAIL      NiPConnect2: 10.6.0.131:3300
+SYSTEM CALL connect
+ERRNO       10060
+ERRNO TEXT  WSAETIMEDOUT: Connection timed out
+COUNTER     3
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200212 101346 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 12 10:13:46,064<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host tet failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       *** ERROR ***
+TIME        Wed Feb 12 10:13:46 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+DETAIL      NiErrSet
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200212 101917 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 12 10:19:17,807<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host tet failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=PUBLIC PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       *** ERROR ***
+TIME        Wed Feb 12 10:19:17 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+DETAIL      NiErrSet
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200212 102226 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 12 10:22:26,833<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host wsapvm117 failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=wsapvm117 MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       hostname 'wsapvm117' unknown
+TIME        Wed Feb 12 10:22:26 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      ninti.c
+LINE        897
+DETAIL      NiPGetHostByName: 'wsapvm117' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200212 104234 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 12 10:42:34,096<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host wsapvm117 failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=wsapvm117 MSSERV=3601 GROUP=TET PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       hostname 'wsapvm117' unknown
+TIME        Wed Feb 12 10:42:34 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      ninti.c
+LINE        897
+DETAIL      NiPGetHostByName: 'wsapvm117' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
