@@ -10,6 +10,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public abstract class ExcelDAO {
 	
+	protected File dbFile=null;
 	protected String dbPath=null;
 	protected Workbook workbook=null;
 	
@@ -19,19 +20,24 @@ public abstract class ExcelDAO {
 	
 	public ExcelDAO(String dbPath) {
 		super();
-		this.dbPath=dbPath;
+		dbFile=new File(dbPath);
+	}
+	
+	public ExcelDAO(File dbFile) {
+		super();
+		this.dbFile=dbFile;
 	}
 
 	public String getDbPath() {
-		return dbPath;
+		return dbFile.getAbsolutePath();
 	}
 
 	public void setDbPath(String dbPath) {
-		this.dbPath = dbPath;
+		dbFile=new File(dbPath);
 	}
 	
 	public void openConnection() throws IOException {
-		FileInputStream fis=new FileInputStream(new File(dbPath));
+		FileInputStream fis=new FileInputStream(dbFile);
 		workbook=new XSSFWorkbook(fis);
 	}
 	

@@ -46,7 +46,7 @@ public class RFCMain {
 		DAOFactory daoFactory=new ExcelDAOFactory(dbPath);
 		MaterialDAO<Material> daoMaterial=daoFactory.getMaterialDAO();
 		ReturnMessageDAO<ReturnMessage> daoReturnMessage=daoFactory.getReturnMessageDAO();
-		List<Material> materials=daoMaterial.getPlannedDeliveryTimeUpdateList();
+		List<Material> materials=daoMaterial.getPlantDataList();
 		/*
 		 * for(Material m : materials) { System.out.println(m.getMaterialId());
 		 * Set<String> plants=m.getPlantDataMap().keySet(); for(String plant : plants) {

@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface MaterialDAO<Material> {
 	
-	public List<Material> getPlannedDeliveryTimeUpdateList();
+	public List<Material> getPlantDataList();
 }

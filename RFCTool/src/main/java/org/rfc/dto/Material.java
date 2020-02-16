@@ -35,6 +35,15 @@ public class Material {
 		plantDataMap.put(plant, plantData);
 	}
 	
+	public int getPlantDataCount() {
+		if(plantDataMap==null) {
+			return 0;
+		}
+		else {
+			return plantDataMap.keySet().size();
+		}
+	}
+	
 	
 	
 }

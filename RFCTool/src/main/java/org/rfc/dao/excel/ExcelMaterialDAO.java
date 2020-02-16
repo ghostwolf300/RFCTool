@@ -1,5 +1,6 @@
 package org.rfc.dao.excel;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -21,7 +22,11 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		super(dbPath);
 	}
 	
-	public List<Material> getPlannedDeliveryTimeUpdateList() {
+	public ExcelMaterialDAO(File dbFile) {
+		super(dbFile);
+	}
+	
+	public List<Material> getPlantDataList() {
 		List<Material> materials=new ArrayList<Material>();
 		Material material=null;
 		PlantData plantData=null;
