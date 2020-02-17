@@ -73,7 +73,8 @@ public abstract class BAPIFunction {
 	protected List<ReturnMessage> createReturnMessages(JCoTable tRETURNMESSAGES,String material){
 		List<ReturnMessage> messages=new ArrayList<ReturnMessage>();
 		ReturnMessage message=null;
-		tRETURNMESSAGES.firstRow();
+		//is this needed?
+		//tRETURNMESSAGES.firstRow();
 		while(tRETURNMESSAGES.nextRow()) {
 			message=new ReturnMessage();
 			message.setMaterial(material);
@@ -92,8 +93,10 @@ public abstract class BAPIFunction {
 				else {
 					errorCount++;
 				}
-				messages.add(message);
+				//Only add selected messages...
+				//messages.add(message);
 			}
+			messages.add(message);
 		}
 		return messages;
 	}

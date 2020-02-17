@@ -80,4 +80,10 @@ public class AccessMaterialDAO extends AccessDAO implements MaterialDAO<Material
 		return pd;
 	}
 
+	@Override
+	public List<Material> getOpenToPlantList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

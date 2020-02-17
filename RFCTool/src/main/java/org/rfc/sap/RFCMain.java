@@ -1,5 +1,6 @@
 package org.rfc.sap;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -40,19 +41,25 @@ public class RFCMain {
 	
 	public void daoTest() {
 		long startTime=System.currentTimeMillis();
+		boolean testRun=false;
 		//String dbPath="C:/Users/ville.susi/Documents/Digital Development/BAPIDB.accdb";
-		String dbPath="C:/Users/ville.susi/Documents/Digital Development/missing - superrun.xlsx";
+		String dbPath="C:/Users/ville.susi/Documents/Digital Development/Test Data/Purch and MRP.xlsx";
 		//DAOFactory daoFactory=new AccessDAOFactory(dbPath);
-		DAOFactory daoFactory=new ExcelDAOFactory(dbPath);
+		DAOFactory daoFactory=new ExcelDAOFactory(new File(dbPath));
 		MaterialDAO<Material> daoMaterial=daoFactory.getMaterialDAO();
 		ReturnMessageDAO<ReturnMessage> daoReturnMessage=daoFactory.getReturnMessageDAO();
-		List<Material> materials=daoMaterial.getPlantDataList();
-		/*
-		 * for(Material m : materials) { System.out.println(m.getMaterialId());
-		 * Set<String> plants=m.getPlantDataMap().keySet(); for(String plant : plants) {
-		 * PlantData pd=m.getPlantDataMap().get(plant);
-		 * System.out.println(pd.getPlant()+"\t"+pd.getPlannedDeliveryTime()); } }
-		 */
+		//List<Material> materials=daoMaterial.getPlantDataList();
+		List<Material> materials=daoMaterial.getOpenToPlantList();
+		
+		for(Material m : materials) { 
+			System.out.println(m.getMaterialId());
+			Set<String> plants=m.getPlantDataMap().keySet(); 
+			for(String plant : plants) {
+				PlantData pd=m.getPlantDataMap().get(plant);
+				System.out.println(pd.getPlant()+"\t"+pd.getPlannedDeliveryTime()); 
+			} 
+		}
+		 
 		
 		List<List<Material>> runs=this.slice(materials, 10000);
 		System.out.println(runs.size());
@@ -60,7 +67,7 @@ public class RFCMain {
 		SapSystemFactory factory=new SapSystemFactory();
 		SapSystem sap=null;
 		try {
-			sap = factory.getSapSystem("TEPCLNT280");
+			sap = factory.getSapSystem("TETCLNT280");
 		} 
 		catch (JCoException e) {
 			// TODO Auto-generated catch block
@@ -75,7 +82,7 @@ public class RFCMain {
 		for(List<Material> run : runs) {
 			System.out.println("Run count: "+run.size());
 			func=new SaveMaterialReplica(run,sap.getDestination());
-			func.setTestRun(false);
+			func.setTestRun(testRun);
 			workers.add(func);
 			t=new Thread(func);
 			t.start();
@@ -118,9 +125,9 @@ public class RFCMain {
 		double hours=(runTime/1000)/3600;
 		System.out.println("Run time (ms): "+runTime+"\tRun time (h): "+hours);
 		
-		//for(ReturnMessage msg : SaveMaterialReplica.getReturnMessages()) {
-		//	System.out.println(msg.toString());
-		//}
+		for(ReturnMessage msg : SaveMaterialReplica.getReturnMessages()) {
+			System.out.println(msg.toString());
+		}
 		
 	}
 	

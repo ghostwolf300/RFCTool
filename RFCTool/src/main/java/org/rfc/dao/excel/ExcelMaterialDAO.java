@@ -72,7 +72,82 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		pd.setMaterialId(row.getCell(0).getStringCellValue());
 		pd.setPlant(row.getCell(1).getStringCellValue());
 		pd.setPlannedDeliveryTime((int) row.getCell(2).getNumericCellValue());
+		
 		return pd;
+	}
+	
+	private PlantData createOpenPlantData(Row row) {
+		PlantData pd=new PlantData();
+		pd.setMaterialId(row.getCell(0).getStringCellValue());
+		pd.setPlant(row.getCell(1).getStringCellValue());
+		pd.setLoadingGroup("Z700");
+		pd.setProfitCenter(row.getCell(2).getStringCellValue());
+		pd.setPurchasingGroup(row.getCell(3).getStringCellValue());
+		pd.setGrProcessingTime(0);
+		pd.setMrpType("PD");
+		pd.setReorderPoint(0);
+		pd.setMrpController(pd.getPurchasingGroup());
+		pd.setLotSizingProcedure("EX");
+		pd.setMinLotSize(0);
+		pd.setProcurementType("F");
+		pd.setSpecialProcurement("40");
+		pd.setIssueStorageLocation("0700");
+		pd.setStorageLocationForEP("0700");
+		pd.setPeriodIndicator("M");
+		pd.setAvailabilityCheck("ZT");
+		pd.setIndividualAndCollectiveReq("2");
+		pd.setPlannedDeliveryTime(2);
+		pd.setPriceControl("V");
+		pd.setMovingAveragePrice(row.getCell(4).getNumericCellValue());
+		pd.setStandardPrice(row.getCell(5).getNumericCellValue());
+		pd.setValuationClass("Z004");
+		pd.setPriceUnit(1);
+		pd.setCostWithQtyStructure(true);
+		pd.setMaterialRelatedOrigin(true);
+		pd.setStorageLocation("0700");
+		return pd;
+	}
+
+	@Override
+	public List<Material> getOpenToPlantList() {
+		List<Material> materials=new ArrayList<Material>();
+		Material material=null;
+		PlantData plantData=null;
+		String currentMaterialID=null;
+		String nextMaterialID=null;
+		try {
+			this.openConnection();
+			Sheet sheet=this.workbook.getSheetAt(0);
+			Iterator<Row> rowIter=sheet.iterator();
+			//skip header row
+			rowIter.next();
+			while(rowIter.hasNext()) {
+				Row row=rowIter.next();
+				nextMaterialID=row.getCell(0).getStringCellValue();
+				if(currentMaterialID==null || !currentMaterialID.equals(nextMaterialID)) {
+					material=new Material();
+					material.setMaterialId(nextMaterialID);
+					materials.add(material);
+					currentMaterialID=nextMaterialID;
+				}
+				plantData=createOpenPlantData(row);
+				material.addPlantData(plantData.getPlant(), plantData);
+			}
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				this.closeConnection();
+			} 
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return materials;
 	}
 
 }

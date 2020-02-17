@@ -36,13 +36,16 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	private JTable tblPlantData;
 	private JButton btnNext;
 	private DefaultController controller=null;
+	private File plantDataFile;
+	private ActionListener cardManager=null;
 
 	/**
 	 * Create the panel.
 	 */
-	public DataSelectionPanel(DefaultController controller) {
+	public DataSelectionPanel(DefaultController controller,ActionListener cardManager) {
 		this.controller=controller;
 		this.controller.addView(this);
+		this.cardManager=cardManager;
 		initialize();
 	}
 	private void initialize() {
@@ -97,22 +100,24 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 		}
 		return tblPlantData;
 	}
-	private JButton getBtnNext() {
+	public JButton getBtnNext() {
 		if (btnNext == null) {
 			btnNext = new JButton("Next");
+			btnNext.setEnabled(false);
+			btnNext.addActionListener(cardManager);
 		}
 		return btnNext;
 	}
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("action");
 		if(e.getSource().equals(this.getBtnChooseFile())) {
-			File file=chooseFile();
-			if(file!=null) {
-				fldFilePath.setText(file.getAbsolutePath());
+			plantDataFile=chooseFile();
+			if(plantDataFile!=null) {
+				fldFilePath.setText(plantDataFile.getAbsolutePath());
 			}
 		}
 		else if(e.getSource().equals(this.getBtnOpenFile())) {
-			
+			controller.loadPlantDataFile(plantDataFile);
 		}
 		
 	}
@@ -133,6 +138,7 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 		if(pce.getPropertyName().equals(MaterialDataModel.P_PLANT_DATA_LIST)) {
 			List<PlantData> pdList=(List<PlantData>) pce.getNewValue();
 			updatePlantDataList(pdList);
+			btnNext.setEnabled(true);
 		}
 		
 	}

@@ -44,11 +44,11 @@ public class ExcelDAOFactory implements DAOFactory {
 	}
 
 	public MaterialDAO<Material> getMaterialDAO() {
-		return new ExcelMaterialDAO(dbPath);
+		return new ExcelMaterialDAO(dbFile);
 	}
 
 	public ReturnMessageDAO<ReturnMessage> getReturnMessageDAO() {
-		return new ExcelReturnMessageDAO(dbPath);
+		return new ExcelReturnMessageDAO(dbFile);
 	}
 
 	

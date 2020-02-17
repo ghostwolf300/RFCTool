@@ -19,8 +19,8 @@ public class DefaultController extends AbstractController {
 		service.loadPlantDataFile(file);
 	}
 	
-	public void setRunSize(int runSize) {
-		
+	public void createWorkers(int maxMaterials) {
+		service.createWorkers(maxMaterials);
 	}
 	
 	

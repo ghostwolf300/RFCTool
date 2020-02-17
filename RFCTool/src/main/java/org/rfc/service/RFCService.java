@@ -34,4 +34,8 @@ public class RFCService {
 		List<Material> materials=materialDao.getPlantDataList();
 		materialDataModel.setMaterials(materials);
 	}
+	
+	public void createWorkers(int maxMaterials) {
+		
+	}
 }
