@@ -12,6 +12,7 @@ public class DefaultController extends AbstractController {
 		super();
 		service=new RFCService();
 		this.addModel(service.getMaterialDataModel());
+		this.addModel(service.getWorkerModel());
 		
 	}
 	
@@ -19,8 +20,16 @@ public class DefaultController extends AbstractController {
 		service.loadPlantDataFile(file);
 	}
 	
-	public void createWorkers(int maxMaterials) {
-		service.createWorkers(maxMaterials);
+	public void createWorkers(int maxMaterials,boolean testRun) {
+		service.createWorkers(maxMaterials,testRun);
+	}
+	
+	public void startAll() {
+		service.startAll();
+	}
+	
+	public void stopAll() {
+		service.stopAll();
 	}
 	
 	

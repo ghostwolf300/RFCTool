@@ -8,19 +8,22 @@ import java.util.Set;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.ReturnMessage;
+import org.rfc.dto.Worker;
 
 import com.sap.conn.jco.JCoContext;
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoTable;
 
-public class SaveMaterialReplica extends BAPIFunction implements Runnable {
+public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker {
+	
 	
 	public static final String FUNCTION="BAPI_MATERIAL_SAVEREPLICA";
+	private int id=-1;
 	private List<Material> materials=null;
-	private boolean testRun=true;
 	private static List<ReturnMessage> returnMessages=Collections.synchronizedList(new ArrayList<ReturnMessage>());
 	private boolean executing=false;
+	private Thread thread=null;
 	
 	public SaveMaterialReplica(JCoDestination destination) {
 		super(destination);
@@ -30,6 +33,22 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable {
 		super(destination);
 		this.materials=materials;
 		listSize=materials.size();
+	}
+	
+	public SaveMaterialReplica(int id,List<Material> materials,JCoDestination destination,boolean testRun) {
+		super(destination,testRun);
+		this.materials=materials;
+		listSize=materials.size();
+		this.id=id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+	
+	@Override
+	public int getId() {
+		return this.id;
 	}
 
 	public List<Material> getMaterials() {
@@ -41,14 +60,6 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable {
 		listSize=materials.size();
 	}
 
-	public boolean isTestRun() {
-		return testRun;
-	}
-
-	public void setTestRun(boolean testRun) {
-		this.testRun = testRun;
-	}
-
 	public boolean isExecuting() {
 		return executing;
 	}
@@ -56,9 +67,10 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable {
 	public void run() {
 		try {
 			executing=true;
+			statusCode=StatusCode.RUNNING;
 			initialize(FUNCTION);
-			//execute();
-			executeExpansion();
+			executePlannedDeliveryTimeUpdate();
+			//executePlantExpansion();
 		} 
 		catch (JCoException e) {
 			// TODO Auto-generated catch block
@@ -73,11 +85,12 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable {
 				e.printStackTrace();
 			}
 			executing=false;
+			this.statusCode=StatusCode.FINISHED;
 		}
 		
 	}
 	
-	private void execute() throws JCoException {
+	private void executePlannedDeliveryTimeUpdate() throws JCoException {
 		
 		JCoTable tHEADDATA=null;
 		JCoTable tPLANTDATA=null;
@@ -141,9 +154,11 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable {
 			
 		}
 		
+		
+		
 	}
 	
-	private void executeExpansion() throws JCoException {
+	private void executePlantExpansion() throws JCoException {
 		
 		JCoTable tHEADDATA=null;
 		JCoTable tPLANTDATA=null;
@@ -297,6 +312,57 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable {
 	
 	public static List<ReturnMessage> getReturnMessages(){ 
 		return returnMessages;
+	}
+
+	@Override
+	public String getFunctionName() {
+		return FUNCTION;
+	}
+
+	@Override
+	public int getWorkload() {
+		return this.materials.size();
+	}
+
+	@Override
+	public int getWarningCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public synchronized void startWorking() {
+		this.statusCode=StatusCode.RUNNING;
+		thread=new Thread(this);
+		thread.start();
+	}
+
+	@Override
+	public synchronized void pauseWorking() {
+		this.statusCode=StatusCode.PAUSED;
+		try {
+			thread.wait();
+		} 
+		catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	@Override
+	public synchronized void continueWorking() {
+		if(this.statusCode==StatusCode.PAUSED) {
+			thread.notify();
+		}
+		this.statusCode=StatusCode.RUNNING;
+	
+		
+	}
+
+	@Override
+	public synchronized void stopWorking() {
+		this.statusCode=StatusCode.STOPPED;
 	}
 	 
 

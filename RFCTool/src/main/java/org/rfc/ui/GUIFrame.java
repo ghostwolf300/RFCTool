@@ -19,13 +19,14 @@ public class GUIFrame extends JFrame implements ActionListener {
 	
 	public static final String SCREEN_LOAD_PLANT_DATA="screen_1";
 	public static final String SCREEN_RUN_SETTINGS="screen_2";
-	public static final String SCREEN_EXEC_MONITOR="screen_3";
+	public static final String SCREEN_RUN_MONITOR="screen_3";
 	
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private DataSelectionPanel dataSelectionPanel;
 	private DefaultController controller=null;
 	private RunSettingsPanel runSettingsPanel;
+	private RunMonitorPanel runMonitorPanel;
 
 	/**
 	 * Launch the application.
@@ -60,6 +61,7 @@ public class GUIFrame extends JFrame implements ActionListener {
 		contentPane.setLayout(new CardLayout(0, 0));
 		contentPane.add(getDataSelectionPanel(),SCREEN_LOAD_PLANT_DATA);
 		contentPane.add(getRunSettingsPanel(),SCREEN_RUN_SETTINGS);
+		contentPane.add(getRunPanel(), SCREEN_RUN_MONITOR);
 	}
 
 	private DataSelectionPanel getDataSelectionPanel() {
@@ -85,9 +87,16 @@ public class GUIFrame extends JFrame implements ActionListener {
 			CardLayout cards=(CardLayout) contentPane.getLayout();
 			cards.show(contentPane,SCREEN_LOAD_PLANT_DATA);
 		}
-		else if(e.getSource().equals(runSettingsPanel.getBtnStart())) {
-			
+		else if(e.getSource().equals(runSettingsPanel.getBtnNext())) {
+			CardLayout cards=(CardLayout) contentPane.getLayout();
+			cards.show(contentPane,SCREEN_RUN_MONITOR);
 		}
 		
+	}
+	private RunMonitorPanel getRunPanel() {
+		if (runMonitorPanel == null) {
+			runMonitorPanel = new RunMonitorPanel(this.controller, this);
+		}
+		return runMonitorPanel;
 	}
 }
