@@ -166,6 +166,11 @@ public abstract class BAPIFunction implements Runnable,Worker {
 		this.statusCode=StatusCode.STOPPED;
 	}
 	
+	public synchronized void changeStatus(StatusCode newStatusCode) {
+		this.statusCode=newStatusCode;
+		this.statusChanged();
+	}
+	
 	public void addWorkerListener(WorkerListener listener) {
 		listeners.add(listener);
 	}

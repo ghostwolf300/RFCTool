@@ -27,6 +27,7 @@ public interface Worker {
 	public void pauseWorking();
 	public void continueWorking();
 	public void stopWorking();
+	public void changeStatus(StatusCode newStatusCode);
 	public void addWorkerListener(WorkerListener listener);
 	
 	

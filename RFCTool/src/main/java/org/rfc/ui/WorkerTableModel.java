@@ -7,6 +7,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import org.rfc.dto.Worker;
+import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.WorkerListener;
 
 public class WorkerTableModel extends AbstractTableModel implements WorkerListener {
@@ -92,7 +93,13 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 		Worker worker=workers.get(row);
 		if(col==COL_CONTROL) {
 			System.out.println("trying to update...");
-			
+			StatusCode statusCode=(StatusCode) value;
+			if(statusCode==StatusCode.RUNNING && worker.getStatusCode()==StatusCode.CREATED) {
+				worker.startWorking();
+			}
+			else if(statusCode==StatusCode.PAUSED && worker.getStatusCode()==StatusCode.RUNNING) {
+				worker.pauseWorking();
+			}
 		}
 	}
 
