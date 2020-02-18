@@ -9,6 +9,7 @@ import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dto.Material;
 import org.rfc.dto.Worker;
+import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.SaveMaterialReplica;
 import org.rfc.model.MaterialDataModel;
 import org.rfc.model.WorkerModel;
@@ -22,6 +23,8 @@ public class RFCService {
 	private MaterialDataModel materialDataModel=null;
 	private MaterialDAO<Material> materialDao=null;
 	private WorkerModel workerModel=null;
+	
+	private StatusCode statusCode=null;
 	
 	public RFCService() {
 		super();
@@ -76,6 +79,7 @@ public class RFCService {
 		}
 		System.out.println("Workers: "+workers.size());
 		workerModel.setWorkers(workers);
+		statusCode=StatusCode.CREATED;
 	}
 	
 	private List<List<Material>> slice(List<Material> materials, int maxRows){
@@ -96,25 +100,35 @@ public class RFCService {
 		return slicedList;
 	}
 	
-	public void startAll() {
-		List<Worker> workers=workerModel.getWorkers();
-		for(Worker worker : workers) {
-			worker.startWorking();
-		}
+	public StatusCode getStatusCode() {
+		return statusCode;
 	}
 	
-	public void pauseAll() {
+	public void startOrPauseAll() {
 		List<Worker> workers=workerModel.getWorkers();
 		for(Worker worker : workers) {
-			worker.pauseWorking();
+			if(statusCode==StatusCode.CREATED) {
+				System.out.println("starting worker: "+worker.getId());
+				worker.startWorking();
+			}
+			else if(statusCode==StatusCode.RUNNING) {
+				System.out.println("pausing worker: "+worker.getId());
+				worker.pauseWorking();
+			}
+			else if(statusCode==StatusCode.PAUSED) {
+				System.out.println("continue working: "+worker.getId());
+				worker.continueWorking();
+			}
 		}
 	}
 	
 	public void stopAll() {
 		List<Worker> workers=workerModel.getWorkers();
 		for(Worker worker : workers) {
+			System.out.println("stop working: "+worker.getId());
 			worker.stopWorking();
 		}
+		statusCode=StatusCode.STOPPED;
 	}
 	
 }

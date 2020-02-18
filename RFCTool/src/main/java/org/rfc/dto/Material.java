@@ -1,12 +1,14 @@
 package org.rfc.dto;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Material {
 	
 	private String materialId=null;
 	private Map<String,PlantData> plantDataMap=null;
+	private List<ReturnMessage> messages=null;
 	
 	public Material() {
 		super();
@@ -42,6 +44,14 @@ public class Material {
 		else {
 			return plantDataMap.keySet().size();
 		}
+	}
+
+	public List<ReturnMessage> getMessages() {
+		return messages;
+	}
+
+	public void setMessages(List<ReturnMessage> messages) {
+		this.messages = messages;
 	}
 	
 	

@@ -9,11 +9,15 @@ import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import org.rfc.controller.DefaultController;
 import org.rfc.dto.Worker;
 import org.rfc.model.WorkerModel;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 public class RunMonitorPanel extends JPanel implements IView,ActionListener {
@@ -23,13 +27,15 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JScrollPane scrollPaneRuns;
-	private JTable tblRuns;
+	private JTable tblWorkers;
 	private JButton btnStartAll;
+	private JButton btnPauseAll;
 	private JButton btnStopAll;
 	private JScrollPane scrollPaneLog;
 	private JTable tblLog;
 	private DefaultController controller=null;
 	private ActionListener cardManager=null;
+	
 
 	/**
 	 * Create the panel.
@@ -44,6 +50,7 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 		setLayout(new MigLayout("", "[grow]", "[][grow][grow][]"));
 		add(getBtnStartAll(), "flowx,cell 0 0");
 		add(getScrollPaneRuns(), "cell 0 1,grow");
+		add(getBtnPauseAll(), "cell 0 0");
 		add(getBtnStopAll(), "cell 0 0");
 		add(getScrollPaneLog(), "cell 0 2,grow");
 	}
@@ -51,27 +58,41 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	private JScrollPane getScrollPaneRuns() {
 		if (scrollPaneRuns == null) {
 			scrollPaneRuns = new JScrollPane();
-			scrollPaneRuns.setViewportView(getTblRuns());
+			scrollPaneRuns.setViewportView(getTblWorkers());
 		}
 		return scrollPaneRuns;
 	}
-	private JTable getTblRuns() {
-		if (tblRuns == null) {
-			tblRuns = new JTable();
+	private JTable getTblWorkers() {
+		if (tblWorkers == null) {
+			tblWorkers = new WorkerTable();
 		}
-		return tblRuns;
+		return tblWorkers;
 	}
+	
 	private JButton getBtnStartAll() {
 		if (btnStartAll == null) {
-			btnStartAll = new JButton("Start all");
+			btnStartAll = new JButton();
+			btnStartAll.setIcon(new ImageIcon(this.getClass().getResource("/toolbarButtonGraphics/media/Play16.gif")));
 			btnStartAll.addActionListener(this);
+			btnStartAll.setEnabled(true);
 		}
 		return btnStartAll;
 	}
+	private JButton getBtnPauseAll() {
+		if (btnPauseAll == null) {
+			btnPauseAll = new JButton("");
+			btnPauseAll.setIcon(new ImageIcon(RunMonitorPanel.class.getResource("/toolbarButtonGraphics/media/Pause16.gif")));
+			btnPauseAll.addActionListener(this);
+			btnPauseAll.setEnabled(false);
+		}
+		return btnPauseAll;
+	}
 	private JButton getBtnStopAll() {
 		if (btnStopAll == null) {
-			btnStopAll = new JButton("Stop all");
+			btnStopAll = new JButton();
+			btnStopAll.setIcon(new ImageIcon(this.getClass().getResource("/toolbarButtonGraphics/media/Stop16.gif")));
 			btnStopAll.addActionListener(this);
+			btnStopAll.setEnabled(false);
 		}
 		return btnStopAll;
 	}
@@ -97,6 +118,8 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 			for(Worker w : workers) {
 				System.out.println("ID: "+w.getId()+"\tFUNCTION: "+w.getFunctionName()+"\tWORKLOAD: "+w.getWorkload()+"\tSTATUS: "+w.getStatusCode());
 			}
+			WorkerTableModel model=(WorkerTableModel)tblWorkers.getModel();
+			model.setWorkers(workers);
 		}
 		
 	}
@@ -104,12 +127,25 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(btnStartAll)) {
-			controller.startAll();
+			controller.startOrPauseAll();
+			btnStartAll.setEnabled(false);
+			btnPauseAll.setEnabled(true);
+			btnStopAll.setEnabled(true);
+		}
+		else if(e.getSource().equals(btnPauseAll)) {
+			controller.startOrPauseAll();
+			btnStartAll.setEnabled(true);
+			btnPauseAll.setEnabled(false);
+			btnStopAll.setEnabled(true);
 		}
 		else if(e.getSource().equals(btnStopAll)){
 			controller.stopAll();
+			btnStartAll.setEnabled(true);
+			btnPauseAll.setEnabled(false);
+			btnStopAll.setEnabled(false);
 		}
 		
 	}
+	
 	
 }

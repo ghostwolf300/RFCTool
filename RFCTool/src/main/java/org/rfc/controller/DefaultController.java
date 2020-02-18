@@ -24,8 +24,8 @@ public class DefaultController extends AbstractController {
 		service.createWorkers(maxMaterials,testRun);
 	}
 	
-	public void startAll() {
-		service.startAll();
+	public void startOrPauseAll() {
+		service.startOrPauseAll();
 	}
 	
 	public void stopAll() {

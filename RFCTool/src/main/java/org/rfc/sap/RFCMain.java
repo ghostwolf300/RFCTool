@@ -13,6 +13,7 @@ import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.ReturnMessage;
+import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.SaveMaterialReplica;
 
 import com.sap.conn.jco.JCoContext;
@@ -100,7 +101,7 @@ public class RFCMain {
 		while(finished==false){
 			finished=true;
 			for(SaveMaterialReplica w : workers) {
-				if(w.isExecuting()) {
+				if(w.getStatusCode()==StatusCode.RUNNING) {
 					System.out.println(w.getProgress());
 					finished=false;
 				}
@@ -117,7 +118,7 @@ public class RFCMain {
 		
 		System.out.println("End results");
 		for(SaveMaterialReplica w1 : workers) {
-			System.out.println(w1.getProgress()+"\texecuting: "+w1.isExecuting()+"\tsuccess: "+w1.getSuccessCount()+"\terror: "+w1.getErrorCount());
+			System.out.println(w1.getProgress()+"\tstatus: "+w1.getStatusCode()+"\tsuccess: "+w1.getSuccessCount()+"\terror: "+w1.getErrorCount());
 		}
 		
 		long endTime=System.currentTimeMillis();

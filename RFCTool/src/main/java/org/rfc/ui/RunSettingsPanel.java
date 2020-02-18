@@ -123,7 +123,7 @@ public class RunSettingsPanel extends JPanel implements IView,ActionListener {
 	}
 	private JTable getTblWorkers() {
 		if (tblWorkers == null) {
-			tblWorkers = new JTable();
+			tblWorkers = new WorkerTable();
 		}
 		return tblWorkers;
 	}
@@ -166,9 +166,8 @@ public class RunSettingsPanel extends JPanel implements IView,ActionListener {
 		}
 		else if(pce.getPropertyName().equals(WorkerModel.P_WORKERS)) {
 			List<Worker> workers=(List<Worker>) pce.getNewValue();
-			//for(Worker w : workers) {
-			//	System.out.println("ID: "+w.getId()+"\tFUNCTION: "+w.getFunctionName()+"\tWORKLOAD: "+w.getWorkload()+"\tSTATUS: "+w.getStatusCode());
-			//}
+			WorkerTableModel model=(WorkerTableModel)tblWorkers.getModel();
+			model.setWorkers(workers);
 		}
 		
 	}

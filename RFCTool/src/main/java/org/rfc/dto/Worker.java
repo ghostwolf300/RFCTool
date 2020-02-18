@@ -1,5 +1,7 @@
 package org.rfc.dto;
 
+import org.rfc.function.WorkerListener;
+
 public interface Worker {
 	
 	public static enum StatusCode{
@@ -25,6 +27,7 @@ public interface Worker {
 	public void pauseWorking();
 	public void continueWorking();
 	public void stopWorking();
+	public void addWorkerListener(WorkerListener listener);
 	
 	
 }

@@ -8,21 +8,19 @@ import java.util.Set;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.ReturnMessage;
-import org.rfc.dto.Worker;
 
 import com.sap.conn.jco.JCoContext;
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoTable;
 
-public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker {
+public class SaveMaterialReplica extends BAPIFunction {
 	
 	
 	public static final String FUNCTION="BAPI_MATERIAL_SAVEREPLICA";
 	private int id=-1;
 	private List<Material> materials=null;
 	private static List<ReturnMessage> returnMessages=Collections.synchronizedList(new ArrayList<ReturnMessage>());
-	private boolean executing=false;
 	private Thread thread=null;
 	
 	public SaveMaterialReplica(JCoDestination destination) {
@@ -32,13 +30,13 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 	public SaveMaterialReplica(List<Material> materials,JCoDestination destination) {
 		super(destination);
 		this.materials=materials;
-		listSize=materials.size();
+		this.workload=materials.size();
 	}
 	
 	public SaveMaterialReplica(int id,List<Material> materials,JCoDestination destination,boolean testRun) {
 		super(destination,testRun);
 		this.materials=materials;
-		listSize=materials.size();
+		this.workload=materials.size();
 		this.id=id;
 	}
 
@@ -57,18 +55,14 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 
 	public void setMaterials(List<Material> materials) {
 		this.materials = materials;
-		listSize=materials.size();
-	}
-
-	public boolean isExecuting() {
-		return executing;
+		this.workload=materials.size();
 	}
 
 	public void run() {
 		try {
-			executing=true;
 			statusCode=StatusCode.RUNNING;
 			initialize(FUNCTION);
+			System.out.println("ID: "+this.getId()+" executePlannedDeliveryTime");
 			executePlannedDeliveryTimeUpdate();
 			//executePlantExpansion();
 		} 
@@ -84,7 +78,7 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			executing=false;
+			System.out.println("ID: "+this.getId()+ " is finished.");
 			this.statusCode=StatusCode.FINISHED;
 		}
 		
@@ -140,6 +134,7 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 			function.execute(destination);
 			
 			functionMessages=this.createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
+			material.setMessages(functionMessages);
 			
 			synchronized(returnMessages) {
 				returnMessages.addAll(functionMessages);
@@ -151,10 +146,8 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 			tRETURNMESSAGES.clear();
 			
 			processedCount++;
-			
+			this.progressUpdated();
 		}
-		
-		
 		
 	}
 	
@@ -272,7 +265,6 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 				tVALUATIONDATA.setValue("ACCOUNT_VIEW", "X");
 				tVALUATIONDATA.setValue("COST_VIEW", "X");
 				
-				
 				tVALUATIONDATAX.appendRow();
 				tVALUATIONDATAX.setValue("FUNCTION", "INS");
 				tVALUATIONDATAX.setValue("MATERIAL", material.getMaterialId());
@@ -289,6 +281,7 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 			function.execute(destination);
 		
 			functionMessages=this.createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
+			material.setMessages(functionMessages);
 			
 			synchronized(returnMessages) {
 				returnMessages.addAll(functionMessages);
@@ -304,11 +297,10 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 			tRETURNMESSAGES.clear();
 			
 			processedCount++;
-			
+			this.progressUpdated();
 		}
 		
 	}
-	
 	
 	public static List<ReturnMessage> getReturnMessages(){ 
 		return returnMessages;
@@ -318,53 +310,6 @@ public class SaveMaterialReplica extends BAPIFunction implements Runnable,Worker
 	public String getFunctionName() {
 		return FUNCTION;
 	}
-
-	@Override
-	public int getWorkload() {
-		return this.materials.size();
-	}
-
-	@Override
-	public int getWarningCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public synchronized void startWorking() {
-		this.statusCode=StatusCode.RUNNING;
-		thread=new Thread(this);
-		thread.start();
-	}
-
-	@Override
-	public synchronized void pauseWorking() {
-		this.statusCode=StatusCode.PAUSED;
-		try {
-			thread.wait();
-		} 
-		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
-	@Override
-	public synchronized void continueWorking() {
-		if(this.statusCode==StatusCode.PAUSED) {
-			thread.notify();
-		}
-		this.statusCode=StatusCode.RUNNING;
-	
-		
-	}
-
-	@Override
-	public synchronized void stopWorking() {
-		this.statusCode=StatusCode.STOPPED;
-	}
-	 
 
 	
 }
