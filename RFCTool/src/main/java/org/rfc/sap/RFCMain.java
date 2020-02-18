@@ -82,7 +82,7 @@ public class RFCMain {
 		
 		for(List<Material> run : runs) {
 			System.out.println("Run count: "+run.size());
-			func=new SaveMaterialReplica(run,sap.getDestination());
+			func=new SaveMaterialReplica(-1,run,sap.getDestination());
 			func.setTestRun(testRun);
 			workers.add(func);
 			t=new Thread(func);
@@ -162,8 +162,8 @@ public class RFCMain {
 			e.printStackTrace();
 		}
 		
-		SaveMaterialReplica f1=new SaveMaterialReplica(createTestMaterials1(),sap.getDestination());
-		SaveMaterialReplica f2=new SaveMaterialReplica(createTestMaterials2(),sap.getDestination());
+		SaveMaterialReplica f1=new SaveMaterialReplica(1,createTestMaterials1(),sap.getDestination());
+		SaveMaterialReplica f2=new SaveMaterialReplica(2,createTestMaterials2(),sap.getDestination());
 		
 		f1.setTestRun(false);
 		f2.setTestRun(false);

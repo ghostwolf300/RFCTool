@@ -7,6 +7,7 @@ import java.util.List;
 import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.Worker;
 
+import com.sap.conn.jco.JCoContext;
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
@@ -16,6 +17,7 @@ import com.sap.conn.jco.JCoTable;
 
 public abstract class BAPIFunction implements Runnable,Worker {
 	
+	protected int id=-1;
 	protected JCoDestination destination=null;
 	protected JCoFunctionTemplate template=null;
 	protected JCoFunction function=null;
@@ -27,21 +29,67 @@ public abstract class BAPIFunction implements Runnable,Worker {
 	protected int successCount=0;
 	protected int warningCount=0;
 	protected int errorCount=0;
+	protected long startTimeMs=0;
+	protected long endTimeMs=0;
+	protected long runTimeMs=0;
+	protected List<ReturnMessage> allMessages=null;
+	protected List<ReturnMessage> newMessages=null;
 	
 	private List<WorkerListener> listeners=Collections.synchronizedList(new ArrayList<WorkerListener>());
 	private Thread thread=null;
 	
-	public BAPIFunction(JCoDestination destination) {
+	public BAPIFunction(int id,JCoDestination destination) {
+		this.id=id;
 		this.destination=destination;
-		this.statusCode=StatusCode.CREATED;
+		allMessages=new ArrayList<ReturnMessage>();
+		statusCode=StatusCode.CREATED;
 	}
 	
-	public BAPIFunction(JCoDestination destination,boolean testRun) {
+	public BAPIFunction(int id,JCoDestination destination,boolean testRun) {
+		this.id=id;
 		this.destination=destination;
 		this.testRun=testRun;
-		this.statusCode=StatusCode.CREATED;
+		allMessages=new ArrayList<ReturnMessage>();
+		statusCode=StatusCode.CREATED;
+	}
+	
+	public int getId() {
+		return id;
 	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	protected abstract void doWork() throws JCoException;
+	
+	public void run() {
+		startTimeMs=System.currentTimeMillis();
+		statusCode=StatusCode.RUNNING;
+		this.statusChanged();
+		try {
+			doWork();
+		}
+		catch(JCoException e) {
+			e.printStackTrace();
+			//statusCode=StatusCode.STOPPED;
+		}
+		finally {
+			try {
+				JCoContext.end(destination);
+			} 
+			catch (JCoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			statusCode=StatusCode.FINISHED;
+			endTimeMs=System.currentTimeMillis();
+			runTimeMs=endTimeMs-startTimeMs;
+			this.statusChanged();
+			this.progressUpdated();
+		}
+	}
+	
 	public JCoDestination getDestination() {
 		return destination;
 	}
@@ -90,6 +138,18 @@ public abstract class BAPIFunction implements Runnable,Worker {
 	public void setStatusCode(StatusCode statusCode) {
 		this.statusCode = statusCode;
 	}
+	
+	public long getRunTimeMs() {
+		return runTimeMs;
+	}
+
+	public List<ReturnMessage> getNewMessages() {
+		return newMessages;
+	}
+
+	public List<ReturnMessage> getAllMessages() {
+		return allMessages;
+	}
 
 	protected void initialize(String functionName) throws JCoException {
 		repository=destination.getRepository();
@@ -105,6 +165,7 @@ public abstract class BAPIFunction implements Runnable,Worker {
 		//tRETURNMESSAGES.firstRow();
 		while(tRETURNMESSAGES.nextRow()) {
 			message=new ReturnMessage();
+			message.setWorkerId(this.getId());
 			message.setMaterial(material);
 			message.setNumber((String)tRETURNMESSAGES.getValue("NUMBER"));
 			message.setType((String)tRETURNMESSAGES.getValue("TYPE"));
@@ -126,44 +187,51 @@ public abstract class BAPIFunction implements Runnable,Worker {
 			}
 			messages.add(message);
 		}
+		allMessages.addAll(messages);
+		newMessages=messages;
 		return messages;
 	}
 	
 	@Override
 	public synchronized void startWorking() {
-		this.statusCode=StatusCode.RUNNING;
-		thread=new Thread(this);
-		thread.start();
-		this.statusChanged();
+		if(this.statusCode!=StatusCode.RUNNING) {
+			this.statusCode=StatusCode.RUNNING;
+			thread=new Thread(this);
+			thread.start();
+			this.statusChanged();
+		}
 	}
 
 	@Override
 	public synchronized void pauseWorking() {
-		this.statusCode=StatusCode.PAUSED;
-		this.statusChanged();
-		try {
-			thread.wait();
-		} 
-		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(this.statusCode==StatusCode.RUNNING) {
+			this.statusCode=StatusCode.PAUSED;
+			this.statusChanged();
+			try {
+				thread.wait();
+			} 
+			catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		
 	}
 
 	@Override
 	public synchronized void continueWorking() {
 		if(this.statusCode==StatusCode.PAUSED) {
 			thread.notify();
+			this.statusCode=StatusCode.RUNNING;
+			this.statusChanged();
 		}
-		this.statusCode=StatusCode.RUNNING;
-		this.statusChanged();
-		
 	}
 
 	@Override
 	public synchronized void stopWorking() {
-		this.statusCode=StatusCode.STOPPED;
+		if(this.statusCode!=StatusCode.STOPPED) {
+			this.statusCode=StatusCode.STOPPED;
+			this.statusChanged();
+		}
 	}
 	
 	public synchronized void changeStatus(StatusCode newStatusCode) {
@@ -176,6 +244,10 @@ public abstract class BAPIFunction implements Runnable,Worker {
 	}
 	
 	protected void statusChanged() {
+		if(statusCode==StatusCode.FINISHED || statusCode==StatusCode.STOPPED) {
+			endTimeMs=System.currentTimeMillis();
+			runTimeMs=endTimeMs-startTimeMs;
+		}
 		synchronized(listeners) {
 			for(WorkerListener listener : listeners) {
 				listener.statusChanged(this);
@@ -184,6 +256,7 @@ public abstract class BAPIFunction implements Runnable,Worker {
 	}
 	
 	protected void progressUpdated() {
+		runTimeMs=System.currentTimeMillis()-startTimeMs;
 		synchronized(listeners) {
 			for(WorkerListener listener : listeners) {
 				listener.progressUpdated(this);

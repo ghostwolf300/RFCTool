@@ -83,7 +83,7 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 			btnPauseAll = new JButton("");
 			btnPauseAll.setIcon(new ImageIcon(RunMonitorPanel.class.getResource("/toolbarButtonGraphics/media/Pause16.gif")));
 			btnPauseAll.addActionListener(this);
-			btnPauseAll.setEnabled(false);
+			btnPauseAll.setEnabled(true);
 		}
 		return btnPauseAll;
 	}
@@ -92,7 +92,7 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 			btnStopAll = new JButton();
 			btnStopAll.setIcon(new ImageIcon(this.getClass().getResource("/toolbarButtonGraphics/media/Stop16.gif")));
 			btnStopAll.addActionListener(this);
-			btnStopAll.setEnabled(false);
+			btnStopAll.setEnabled(true);
 		}
 		return btnStopAll;
 	}
@@ -105,7 +105,7 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	}
 	private JTable getTblLog() {
 		if (tblLog == null) {
-			tblLog = new JTable();
+			tblLog = new LogTable();
 		}
 		return tblLog;
 	}
@@ -121,6 +121,11 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 			WorkerTableModel model=(WorkerTableModel)tblWorkers.getModel();
 			model.setWorkers(workers);
 		}
+		else if(pce.getPropertyName().equals(WorkerModel.P_WORKER_PROGRESS)) {
+			System.out.println("Log table panel");
+			Worker worker=(Worker) pce.getNewValue();
+			((LogTableModel)tblLog.getModel()).addMessages(worker.getNewMessages());
+		}
 		
 	}
 
@@ -128,21 +133,12 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(btnStartAll)) {
 			controller.startOrPauseAll();
-			btnStartAll.setEnabled(false);
-			btnPauseAll.setEnabled(true);
-			btnStopAll.setEnabled(true);
 		}
 		else if(e.getSource().equals(btnPauseAll)) {
 			controller.startOrPauseAll();
-			btnStartAll.setEnabled(true);
-			btnPauseAll.setEnabled(false);
-			btnStopAll.setEnabled(true);
 		}
 		else if(e.getSource().equals(btnStopAll)){
 			controller.stopAll();
-			btnStartAll.setEnabled(true);
-			btnPauseAll.setEnabled(false);
-			btnStopAll.setEnabled(false);
 		}
 		
 	}

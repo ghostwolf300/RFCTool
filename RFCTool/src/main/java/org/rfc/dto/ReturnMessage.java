@@ -1,18 +1,28 @@
 package org.rfc.dto;
 
 public class ReturnMessage {
-	String material=null;
-	String number=null;
-	String type;
-	String message;
-	String row;
-	String messageVariable1=null;
-	String messageVariable2=null;
-	String messageVariable3=null;
-	String messageVariable4=null;
+	
+	private int workerId=-1;
+	private String material=null;
+	private String number=null;
+	private String type;
+	private String message;
+	private String row;
+	private String messageVariable1=null;
+	private String messageVariable2=null;
+	private String messageVariable3=null;
+	private String messageVariable4=null;
 	
 	public ReturnMessage() {
 		super();
+	}
+
+	public int getWorkerId() {
+		return workerId;
+	}
+
+	public void setWorkerId(int workerId) {
+		this.workerId = workerId;
 	}
 
 	public String getMaterial() {

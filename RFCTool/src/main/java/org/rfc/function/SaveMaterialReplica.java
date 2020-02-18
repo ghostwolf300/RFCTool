@@ -18,26 +18,23 @@ public class SaveMaterialReplica extends BAPIFunction {
 	
 	
 	public static final String FUNCTION="BAPI_MATERIAL_SAVEREPLICA";
-	private int id=-1;
 	private List<Material> materials=null;
 	private static List<ReturnMessage> returnMessages=Collections.synchronizedList(new ArrayList<ReturnMessage>());
-	private Thread thread=null;
 	
-	public SaveMaterialReplica(JCoDestination destination) {
-		super(destination);
+	public SaveMaterialReplica(int id,JCoDestination destination) {
+		super(id,destination);
 	}
 	
-	public SaveMaterialReplica(List<Material> materials,JCoDestination destination) {
-		super(destination);
+	public SaveMaterialReplica(int id,List<Material> materials,JCoDestination destination) {
+		super(id,destination);
 		this.materials=materials;
 		this.workload=materials.size();
 	}
 	
 	public SaveMaterialReplica(int id,List<Material> materials,JCoDestination destination,boolean testRun) {
-		super(destination,testRun);
+		super(id,destination,testRun);
 		this.materials=materials;
 		this.workload=materials.size();
-		this.id=id;
 	}
 
 	public void setId(int id) {
@@ -57,31 +54,12 @@ public class SaveMaterialReplica extends BAPIFunction {
 		this.materials = materials;
 		this.workload=materials.size();
 	}
-
-	public void run() {
-		try {
-			statusCode=StatusCode.RUNNING;
-			initialize(FUNCTION);
-			System.out.println("ID: "+this.getId()+" executePlannedDeliveryTime");
-			executePlannedDeliveryTimeUpdate();
-			//executePlantExpansion();
-		} 
-		catch (JCoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				JCoContext.end(destination);
-			} 
-			catch (JCoException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			System.out.println("ID: "+this.getId()+ " is finished.");
-			this.statusCode=StatusCode.FINISHED;
-		}
-		
+	
+	protected void doWork() throws JCoException {
+		statusCode=StatusCode.RUNNING;
+		initialize(FUNCTION);
+		System.out.println("ID: "+this.getId()+" executePlannedDeliveryTime");
+		executePlannedDeliveryTimeUpdate();
 	}
 	
 	private void executePlannedDeliveryTimeUpdate() throws JCoException {

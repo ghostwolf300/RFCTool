@@ -578,3 +578,29 @@ COUNTER     1
 	error group: 102
 	key: RFC_ERROR_COMMUNICATION
 
+
+**** Error file opened at 20200218 230511 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error: [4]  >Tue Feb 18 23:05:11,774<    RfcException raised by system [TET|wsapvm117|00]:
+	message: connection closed without message (CM_NO_DATA_RECEIVED)
+	return code: RFC_CLOSED (6)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Info:   >Tue Feb 18 23:05:20,976<    [JCoAPI] JCoClient.execute(BAPI_MATERIAL_SAVEREPLICA) threw an exception: java.lang.ArrayIndexOutOfBoundsException: No such row 0; possible: [0--1]
+	at com.sap.conn.jco.rt.TableParameter.setBytes(TableParameter.java:135)
+	at com.sap.conn.rfc.engine.TableDeltaLogEntry.playback(TableDeltaLogEntry.java:62)
+	at com.sap.conn.rfc.engine.RfcGet.ab_rfcget(RfcGet.java:286)
+	at com.sap.conn.rfc.engine.RfcRcv.ab_rfcreceive(RfcRcv.java:35)
+	at com.sap.conn.rfc.engine.RfcIoOpenCntl.RfcReceive(RfcIoOpenCntl.java:1972)
+	at com.sap.conn.jco.rt.MiddlewareJavaRfc$JavaRfcClient.execute(MiddlewareJavaRfc.java:1917)
+	at com.sap.conn.jco.rt.ClientConnection.execute(ClientConnection.java:1172)
+	at com.sap.conn.jco.rt.ClientConnection.execute(ClientConnection.java:1006)
+	at com.sap.conn.jco.rt.RfcDestination.execute(RfcDestination.java:1542)
+	at com.sap.conn.jco.rt.RfcDestination.execute(RfcDestination.java:1511)
+	at com.sap.conn.jco.rt.AbapFunction.execute(AbapFunction.java:329)
+	at org.rfc.function.SaveMaterialReplica.executePlannedDeliveryTimeUpdate(SaveMaterialReplica.java:112)
+	at org.rfc.function.SaveMaterialReplica.doWork(SaveMaterialReplica.java:62)
+	at org.rfc.function.BAPIFunction.run(BAPIFunction.java:71)
+	at java.lang.Thread.run(Thread.java:748)
+
+

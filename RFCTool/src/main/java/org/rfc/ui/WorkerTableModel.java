@@ -1,7 +1,5 @@
 package org.rfc.ui;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
@@ -23,12 +21,13 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 	public static final int COL_WORKLOAD=3;
 	public static final int COL_PROCESSED=4;
 	public static final int COL_PROGRESS=5;
-	public static final int COL_SUCCESS=6;
-	public static final int COL_WARNING=7;
-	public static final int COL_ERROR=8;
-	public static final int COL_STATUS=9;
-	public static final int COL_LOG=10;
-	public static final int COL_CONTROL=11;
+	public static final int COL_RUN_TIME=6;
+	public static final int COL_SUCCESS=7;
+	public static final int COL_WARNING=8;
+	public static final int COL_ERROR=9;
+	public static final int COL_STATUS=10;
+	public static final int COL_LOG=11;
+	public static final int COL_CONTROL=12;
 	
 	private List<Worker> workers=null;
 	
@@ -38,7 +37,7 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 	
 	@Override
 	public int getColumnCount() {
-		return 12;
+		return 13;
 	}
 
 	@Override
@@ -71,6 +70,8 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 					return worker.getProcessedCount();
 				case COL_PROGRESS :
 					return (int)(100*worker.getProgress());
+				case COL_RUN_TIME :
+					return (int)(worker.getRunTimeMs()/1000);
 				case COL_SUCCESS :
 					return worker.getSuccessCount();
 				case COL_WARNING :

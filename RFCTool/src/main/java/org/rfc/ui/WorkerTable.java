@@ -12,7 +12,7 @@ public class WorkerTable extends JTable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final String HEADERS[]= {"Id","Function","Testrun","Workload","Processed","Progress","Success","Warning","Error","Status","Log","Control"};
+	public static final String HEADERS[]= {"Id","Function","Testrun","Workload","Processed","Progress","Run Time","Success","Warning","Error","Status","Log","Control"};
 
 	public WorkerTable() {
 		super(new WorkerTableModel());
@@ -33,7 +33,7 @@ public class WorkerTable extends JTable {
 			else if(i==5) {
 				col.setCellRenderer(new ProgressCellRenderer());
 			}
-			else if(i==11) {
+			else if(i==12) {
 				col.setCellRenderer(new ControlCellRenderer());
 				col.setCellEditor(new ControlCellEditor());
 			}

@@ -1,5 +1,7 @@
 package org.rfc.dto;
 
+import java.util.List;
+
 import org.rfc.function.WorkerListener;
 
 public interface Worker {
@@ -23,12 +25,15 @@ public interface Worker {
 	public int getSuccessCount();
 	public int getWarningCount();
 	public int getErrorCount();
+	public long getRunTimeMs();
 	public void startWorking();
 	public void pauseWorking();
 	public void continueWorking();
 	public void stopWorking();
 	public void changeStatus(StatusCode newStatusCode);
 	public void addWorkerListener(WorkerListener listener);
+	public List<ReturnMessage> getNewMessages();
+	public List<ReturnMessage> getAllMessages();
 	
 	
 }
