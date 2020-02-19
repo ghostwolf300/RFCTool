@@ -73,7 +73,7 @@ public class AccessMaterialDAO extends AccessDAO implements MaterialDAO<Material
 		PlantData pd=null;
 		while(rs.next()) {
 			pd=new PlantData();
-			pd.setMaterialId(rs.getString("MATERIAL"));
+			//pd.setMaterialId(rs.getString("MATERIAL"));
 			pd.setPlant(rs.getString("PLANT"));
 			pd.setPlannedDeliveryTime(rs.getInt("PLAN_DEL_TIME"));
 		}
@@ -81,7 +81,7 @@ public class AccessMaterialDAO extends AccessDAO implements MaterialDAO<Material
 	}
 
 	@Override
-	public List<Material> getOpenToPlantList() {
+	public List<Material> getAddPlantDataList() {
 		// TODO Auto-generated method stub
 		return null;
 	}

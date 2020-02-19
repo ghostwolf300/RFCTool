@@ -87,7 +87,6 @@ public class LogTableModel extends AbstractTableModel {
 		if(messages==null) {
 			messages=new ArrayList<ReturnMessage>();
 		}
-		System.out.println("adding messages..."+newMessages.size());
 		int firstRow=(messages.size()==0 ? 0 : messages.size()-1);
 		messages.addAll(newMessages);
 		this.fireTableRowsInserted(firstRow, (newMessages.size()==0 ? 0 : newMessages.size()-1));

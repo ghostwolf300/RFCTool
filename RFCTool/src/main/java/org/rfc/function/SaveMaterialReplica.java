@@ -2,7 +2,9 @@ package org.rfc.function;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.rfc.dto.Material;
@@ -12,13 +14,28 @@ import org.rfc.dto.ReturnMessage;
 import com.sap.conn.jco.JCoContext;
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
+import com.sap.conn.jco.JCoFunction;
+import com.sap.conn.jco.JCoFunctionTemplate;
+import com.sap.conn.jco.JCoStructure;
 import com.sap.conn.jco.JCoTable;
 
-public class SaveMaterialReplica extends BAPIFunction {
+public abstract class SaveMaterialReplica extends RunnableFunction {
 	
 	
 	public static final String FUNCTION="BAPI_MATERIAL_SAVEREPLICA";
-	private List<Material> materials=null;
+	
+	protected List<Material> materials=null;
+	protected JCoFunction funcGetPlantData=null;
+	
+	protected JCoTable tHEADDATA=null;
+	protected JCoTable tPLANTDATA=null;
+	protected JCoTable tPLANTDATAX=null;
+	protected JCoTable tSTORAGELOCATIONDATA=null;
+	protected JCoTable tSTORAGELOCATIONDATAX=null;
+	protected JCoTable tVALUATIONDATA=null;
+	protected JCoTable tVALUATIONDATAX=null;
+	protected JCoTable tRETURNMESSAGES=null;
+
 	private static List<ReturnMessage> returnMessages=Collections.synchronizedList(new ArrayList<ReturnMessage>());
 	
 	public SaveMaterialReplica(int id,JCoDestination destination) {
@@ -36,14 +53,88 @@ public class SaveMaterialReplica extends BAPIFunction {
 		this.materials=materials;
 		this.workload=materials.size();
 	}
-
-	public void setId(int id) {
-		this.id = id;
+	
+	private void initialize() {
+		
+		function.getImportParameterList().setValue("NOAPPLLOG", "X");
+		function.getImportParameterList().setValue("NOCHANGEDOC", "X");
+		function.getImportParameterList().setValue("TESTRUN", (testRun==true ? "X" : " "));
+		function.getImportParameterList().setValue("INPFLDCHECK", " ");
+		
+		tHEADDATA=function.getTableParameterList().getTable("HEADDATA");
+		tPLANTDATA=function.getTableParameterList().getTable("PLANTDATA");
+		tPLANTDATAX=function.getTableParameterList().getTable("PLANTDATAX");
+		tSTORAGELOCATIONDATA=function.getTableParameterList().getTable("STORAGELOCATIONDATA");
+		tSTORAGELOCATIONDATAX=function.getTableParameterList().getTable("STORAGELOCATIONDATAX");
+		tVALUATIONDATA=function.getTableParameterList().getTable("VALUATIONDATA");
+		tVALUATIONDATAX=function.getTableParameterList().getTable("VALUATIONDATAX");
+		tRETURNMESSAGES=function.getTableParameterList().getTable("RETURNMESSAGES");
+		
+		try {
+			JCoFunctionTemplate template=repository.getFunctionTemplate("BAPI_MATERIAL_GET_ALL");
+			funcGetPlantData=template.getFunction();
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
-	@Override
-	public int getId() {
-		return this.id;
+	protected void execute(Material material) throws JCoException {
+		JCoContext.begin(destination);
+		function.execute(destination);
+		List<ReturnMessage> functionMessages=createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
+		if(functionMessages!=null) {
+			material.setMessages(functionMessages);
+			synchronized(returnMessages) {
+				returnMessages.addAll(functionMessages);
+			}
+		}
+	}
+	
+	protected Map<String,JCoStructure> getPlantDataTables(String material,String plant) throws JCoException{
+		Map<String,JCoStructure> exports=new HashMap<String,JCoStructure>();
+		funcGetPlantData.getImportParameterList().setValue("MATERIAL", material);
+		funcGetPlantData.getImportParameterList().setValue("COMP_CODE", "07");
+		funcGetPlantData.getImportParameterList().setValue("VAL_AREA", plant);
+		funcGetPlantData.getImportParameterList().setValue("PLANT", plant);
+		
+		funcGetPlantData.execute(destination);
+		
+		exports.put("VALUATIONDATA",funcGetPlantData.getExportParameterList().getStructure("VALUATIONDATA"));
+		
+		return exports;
+	}
+	
+	private List<ReturnMessage> createReturnMessages(JCoTable tRETURNMESSAGES,String material){
+		List<ReturnMessage> messages=new ArrayList<ReturnMessage>();
+		ReturnMessage message=null;
+		while(tRETURNMESSAGES.nextRow()) {
+			message=new ReturnMessage();
+			message.setWorkerId(this.getId());
+			message.setMaterial(material);
+			message.setNumber((String)tRETURNMESSAGES.getValue("NUMBER"));
+			message.setType((String)tRETURNMESSAGES.getValue("TYPE"));
+			message.setMessage((String) tRETURNMESSAGES.getValue("MESSAGE"));
+			message.setRow(String.valueOf(tRETURNMESSAGES.getValue("ROW")));
+			message.setMessageVariable1((String) tRETURNMESSAGES.getValue("MESSAGE_V1"));
+			message.setMessageVariable2((String) tRETURNMESSAGES.getValue("MESSAGE_V2"));
+			message.setMessageVariable3((String) tRETURNMESSAGES.getValue("MESSAGE_V3"));
+			message.setMessageVariable4((String) tRETURNMESSAGES.getValue("MESSAGE_V4"));
+			if(message.getNumber().equals("103") || message.getNumber().equals("801") || message.getNumber().equals("048") || message.getNumber().equals("810") || message.getType().equals("E")) {
+				if(message.getType().equals("S")) {
+					successCount++;
+				}
+				else {
+					errorCount++;
+				}
+			}
+			messages.add(message);
+		}
+		allMessages.addAll(messages);
+		newMessages=messages;
+		return messages;
 	}
 
 	public List<Material> getMaterials() {
@@ -56,228 +147,8 @@ public class SaveMaterialReplica extends BAPIFunction {
 	}
 	
 	protected void doWork() throws JCoException {
-		statusCode=StatusCode.RUNNING;
-		initialize(FUNCTION);
-		System.out.println("ID: "+this.getId()+" executePlannedDeliveryTime");
-		executePlannedDeliveryTimeUpdate();
-	}
-	
-	private void executePlannedDeliveryTimeUpdate() throws JCoException {
-		
-		JCoTable tHEADDATA=null;
-		JCoTable tPLANTDATA=null;
-		JCoTable tPLANTDATAX=null;
-		JCoTable tRETURNMESSAGES=null;
-		List<ReturnMessage> functionMessages=null;
-		
-		function.getImportParameterList().setValue("NOAPPLLOG", "X");
-		function.getImportParameterList().setValue("NOCHANGEDOC", "X");
-		if(testRun) {
-			function.getImportParameterList().setValue("TESTRUN", "X");
-		}
-		else {
-			function.getImportParameterList().setValue("TESTRUN", " ");
-		}
-		function.getImportParameterList().setValue("INPFLDCHECK", " ");
-		
-		tHEADDATA=function.getTableParameterList().getTable("HEADDATA");
-		tPLANTDATA=function.getTableParameterList().getTable("PLANTDATA");
-		tPLANTDATAX=function.getTableParameterList().getTable("PLANTDATAX");
-		tRETURNMESSAGES=function.getTableParameterList().getTable("RETURNMESSAGES");
-		
-		for(Material material : materials) {
-			
-			tHEADDATA.appendRow();
-			tHEADDATA.setValue("FUNCTION","UPD");
-			tHEADDATA.setValue("MATERIAL",material.getMaterialId());
-			
-			Set<String> plants=material.getPlantDataMap().keySet();
-			
-			for(String plant : plants) {
-				PlantData plantData=material.getPlantDataMap().get(plant);
-				tPLANTDATA.appendRow();
-				tPLANTDATA.setValue("FUNCTION", "UPD");
-				tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
-				tPLANTDATA.setValue("PLANT", plantData.getPlant());
-				tPLANTDATA.setValue("PLND_DELRY", plantData.getPlannedDeliveryTime());
-
-				tPLANTDATAX.appendRow();
-				tPLANTDATAX.setValue("FUNCTION", "UPD");
-				tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
-				tPLANTDATAX.setValue("PLANT", plantData.getPlant());
-				tPLANTDATAX.setValue("PLND_DELRY", "X");
-			}
-			
-			JCoContext.begin(destination);
-			function.execute(destination);
-			
-			functionMessages=this.createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
-			material.setMessages(functionMessages);
-			
-			synchronized(returnMessages) {
-				returnMessages.addAll(functionMessages);
-			}
-			
-			tHEADDATA.clear();
-			tPLANTDATA.clear();
-			tPLANTDATAX.clear();
-			tRETURNMESSAGES.clear();
-			
-			processedCount++;
-			this.progressUpdated();
-		}
-		
-	}
-	
-	private void executePlantExpansion() throws JCoException {
-		
-		JCoTable tHEADDATA=null;
-		JCoTable tPLANTDATA=null;
-		JCoTable tPLANTDATAX=null;
-		JCoTable tSTORAGELOCATIONDATA=null;
-		JCoTable tSTORAGELOCATIONDATAX=null;
-		JCoTable tVALUATIONDATA=null;
-		JCoTable tVALUATIONDATAX=null;
-		JCoTable tRETURNMESSAGES=null;
-		List<ReturnMessage> functionMessages=null;
-		
-		function.getImportParameterList().setValue("NOAPPLLOG", "X");
-		function.getImportParameterList().setValue("NOCHANGEDOC", "X");
-		if(testRun) {
-			function.getImportParameterList().setValue("TESTRUN", "X");
-		}
-		else {
-			function.getImportParameterList().setValue("TESTRUN", " ");
-		}
-		function.getImportParameterList().setValue("INPFLDCHECK", " ");
-		
-		tHEADDATA=function.getTableParameterList().getTable("HEADDATA");
-		tPLANTDATA=function.getTableParameterList().getTable("PLANTDATA");
-		tPLANTDATAX=function.getTableParameterList().getTable("PLANTDATAX");
-		tSTORAGELOCATIONDATA=function.getTableParameterList().getTable("STORAGELOCATIONDATA");
-		tSTORAGELOCATIONDATAX=function.getTableParameterList().getTable("STORAGELOCATIONDATAX");
-		tVALUATIONDATA=function.getTableParameterList().getTable("VALUATIONDATA");
-		tVALUATIONDATAX=function.getTableParameterList().getTable("VALUATIONDATAX");
-		tRETURNMESSAGES=function.getTableParameterList().getTable("RETURNMESSAGES");
-		
-		for(Material material : materials) {
-			
-			tHEADDATA.appendRow();
-			tHEADDATA.setValue("FUNCTION","INS");
-			tHEADDATA.setValue("MATERIAL",material.getMaterialId());
-			
-			Set<String> plants=material.getPlantDataMap().keySet();
-			
-			for(String plant : plants) {
-				PlantData plantData=material.getPlantDataMap().get(plant);
-				tPLANTDATA.appendRow();
-				tPLANTDATA.setValue("FUNCTION", "INS");
-				tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
-				tPLANTDATA.setValue("PLANT", plantData.getPlant());
-				tPLANTDATA.setValue("PROFIT_CTR", plantData.getProfitCenter());
-				tPLANTDATA.setValue("LOADINGGRP", plantData.getLoadingGroup());
-				tPLANTDATA.setValue("PUR_GROUP", plantData.getPurchasingGroup());
-				tPLANTDATA.setValue("GR_PR_TIME",plantData.getGrProcessingTime());
-				tPLANTDATA.setValue("MRP_TYPE",plantData.getMrpType());
-				tPLANTDATA.setValue("REORDER_PT",plantData.getReorderPoint());
-				tPLANTDATA.setValue("MRP_CTRLER", plantData.getMrpController());
-				tPLANTDATA.setValue("LOTSIZEKEY",plantData.getLotSizingProcedure());
-				tPLANTDATA.setValue("MINLOTSIZE", plantData.getMinLotSize());
-				tPLANTDATA.setValue("PROC_TYPE", plantData.getProcurementType());
-				tPLANTDATA.setValue("SPPROCTYPE", plantData.getSpecialProcurement());
-				tPLANTDATA.setValue("ISS_ST_LOC", plantData.getIssueStorageLocation());
-				tPLANTDATA.setValue("SLOC_EXPRC", plantData.getStorageLocationForEP());
-				tPLANTDATA.setValue("PLND_DELRY", plantData.getPlannedDeliveryTime());
-				tPLANTDATA.setValue("PERIOD_IND", plantData.getPeriodIndicator());
-				tPLANTDATA.setValue("AVAILCHECK", plantData.getAvailabilityCheck());
-				tPLANTDATA.setValue("DEP_REQ_ID", plantData.getIndividualAndCollectiveReq());
-				tPLANTDATA.setValue("SALES_VIEW", "X");
-				tPLANTDATA.setValue("PURCH_VIEW","X");
-				tPLANTDATA.setValue("MRP_VIEW", "X");
-				tPLANTDATA.setValue("ACCOUNT_VIEW","X");
-				tPLANTDATA.setValue("COST_VIEW","X");
-
-				tPLANTDATAX.appendRow();
-				tPLANTDATAX.setValue("FUNCTION", "INS");
-				tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
-				tPLANTDATAX.setValue("PLANT", plantData.getPlant());
-				tPLANTDATAX.setValue("PROFIT_CTR", "X");
-				tPLANTDATAX.setValue("LOADINGGRP", "X");
-				tPLANTDATAX.setValue("PUR_GROUP", "X");
-				tPLANTDATAX.setValue("GR_PR_TIME","X");
-				tPLANTDATAX.setValue("MRP_TYPE","X");
-				tPLANTDATAX.setValue("REORDER_PT","X");
-				tPLANTDATAX.setValue("MRP_CTRLER", "X");
-				tPLANTDATAX.setValue("LOTSIZEKEY","X");
-				tPLANTDATAX.setValue("MINLOTSIZE", "X");
-				tPLANTDATAX.setValue("PROC_TYPE", "X");
-				tPLANTDATAX.setValue("SPPROCTYPE", "X");
-				tPLANTDATAX.setValue("ISS_ST_LOC", "X");
-				tPLANTDATAX.setValue("SLOC_EXPRC", "X");
-				tPLANTDATAX.setValue("PLND_DELRY", "X");
-				tPLANTDATAX.setValue("PERIOD_IND", "X");
-				tPLANTDATAX.setValue("AVAILCHECK", "X");
-				tPLANTDATAX.setValue("DEP_REQ_ID", "X");
-				
-				tSTORAGELOCATIONDATA.appendRow();
-				tSTORAGELOCATIONDATA.setValue("FUNCTION","INS");
-				tSTORAGELOCATIONDATA.setValue("MATERIAL", material.getMaterialId());
-				tSTORAGELOCATIONDATA.setValue("PLANT",plantData.getPlant());
-				tSTORAGELOCATIONDATA.setValue("STGE_LOC", plantData.getStorageLocation());
-				
-				tSTORAGELOCATIONDATAX.appendRow();
-				tSTORAGELOCATIONDATAX.setValue("FUNCTION","INS");
-				tSTORAGELOCATIONDATAX.setValue("MATERIAL", material.getMaterialId());
-				tSTORAGELOCATIONDATAX.setValue("PLANT",plantData.getPlant());
-				tSTORAGELOCATIONDATAX.setValue("STGE_LOC", plantData.getStorageLocation());
-				
-				tVALUATIONDATA.appendRow();
-				tVALUATIONDATA.setValue("FUNCTION", "INS");
-				tVALUATIONDATA.setValue("MATERIAL", material.getMaterialId());
-				tVALUATIONDATA.setValue("VAL_AREA", plantData.getPlant());
-				tVALUATIONDATA.setValue("PRICE_CTRL", plantData.getPriceControl());
-				tVALUATIONDATA.setValue("VAL_CLASS", plantData.getValuationClass());
-				tVALUATIONDATA.setValue("PRICE_UNIT", plantData.getPriceUnit());
-				tVALUATIONDATA.setValue("QTY_STRUCT", (plantData.isCostWithQtyStructure() ? "X" : " "));
-				tVALUATIONDATA.setValue("ORIG_MAT", (plantData.isMaterialRelatedOrigin() ? "X" : " "));
-				tVALUATIONDATA.setValue("ACCOUNT_VIEW", "X");
-				tVALUATIONDATA.setValue("COST_VIEW", "X");
-				
-				tVALUATIONDATAX.appendRow();
-				tVALUATIONDATAX.setValue("FUNCTION", "INS");
-				tVALUATIONDATAX.setValue("MATERIAL", material.getMaterialId());
-				tVALUATIONDATAX.setValue("VAL_AREA", plantData.getPlant());
-				tVALUATIONDATAX.setValue("PRICE_CTRL", "X");
-				tVALUATIONDATAX.setValue("VAL_CLASS", "X");
-				tVALUATIONDATAX.setValue("PRICE_UNIT","X");
-				tVALUATIONDATAX.setValue("QTY_STRUCT", "X");
-				tVALUATIONDATAX.setValue("ORIG_MAT", "X");
-				
-			}
-			
-			JCoContext.begin(destination);
-			function.execute(destination);
-		
-			functionMessages=this.createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
-			material.setMessages(functionMessages);
-			
-			synchronized(returnMessages) {
-				returnMessages.addAll(functionMessages);
-			}
-			
-			tHEADDATA.clear();
-			tPLANTDATA.clear();
-			tPLANTDATAX.clear();
-			tSTORAGELOCATIONDATA.clear();
-			tSTORAGELOCATIONDATAX.clear();
-			tVALUATIONDATA.clear();
-			tVALUATIONDATAX.clear();
-			tRETURNMESSAGES.clear();
-			
-			processedCount++;
-			this.progressUpdated();
-		}
-		
+		super.initialize(FUNCTION);
+		this.initialize();
 	}
 	
 	public static List<ReturnMessage> getReturnMessages(){ 
@@ -288,6 +159,25 @@ public class SaveMaterialReplica extends BAPIFunction {
 	public String getFunctionName() {
 		return FUNCTION;
 	}
-
 	
+	protected void setFieldValue(String sapField,Object value) {
+		JCoTable tables[]=getTables(sapField);
+		tables[0].setValue(getFunctionField(sapField), value);
+		tables[1].setValue(getFunctionField(sapField), "X");
+	}
+	
+	private JCoTable[] getTables(String sapField) {
+		JCoTable[] tables=new JCoTable[2];
+		JCoTable table=tPLANTDATA;
+		JCoTable tablex=tPLANTDATAX;
+		tables[0]=table;
+		tables[1]=tablex;
+		return tables;
+	}
+	
+	private String getFunctionField(String sapField) {
+		return "MRP_TYPE";
+	}
+	
+
 }

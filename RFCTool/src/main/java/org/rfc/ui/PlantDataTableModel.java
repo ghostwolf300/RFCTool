@@ -14,13 +14,18 @@ public class PlantDataTableModel extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final int COL_MATERIAL=0;
-	public static final int COL_PLANT=1;
-	public static final int COL_PLAN_DEL_TIME=2;
+	public static final int COL_TYPE=1;
+	public static final int COL_PLANT=2;
+	public static final int COL_PURCH_GROUP=3;
+	public static final int COL_PRICE_CTRL=4;
+	public static final int COL_MOV_AVG_PRICE=5;
+	public static final int COL_STD_PRICE=6;
+	public static final int COL_PLAN_DEL_TIME=7;
 	
 	private List<PlantData> plantDataList=null;
 	
 	public int getColumnCount() {
-		return 3;
+		return 8;
 	}
 
 	public int getRowCount() {
@@ -45,9 +50,19 @@ public class PlantDataTableModel extends AbstractTableModel {
 			PlantData plantData=plantDataList.get(rowIndex);
 			switch(columnIndex) {
 				case COL_MATERIAL :  
-					return plantData.getMaterialId();
+					return plantData.getMaterial().getMaterialId();
+				case COL_TYPE :
+					return plantData.getMaterial().getType();
 				case COL_PLANT:
 					return plantData.getPlant();
+				case COL_PURCH_GROUP :
+					return plantData.getPurchasingGroup();
+				case COL_PRICE_CTRL :
+					return plantData.getPriceControl();
+				case COL_MOV_AVG_PRICE :
+					return plantData.getMovingAveragePrice();
+				case COL_STD_PRICE :
+					return plantData.getStandardPrice();
 				case COL_PLAN_DEL_TIME:
 					return plantData.getPlannedDeliveryTime();
 				default :

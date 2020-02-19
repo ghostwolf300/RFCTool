@@ -27,13 +27,16 @@ public class WorkerTable extends JTable {
 		for(int i=0;i<HEADERS.length;i++) {
 			col=columns.getColumn(i);
 			col.setHeaderValue(HEADERS[i]);
-			if(i==2) {
+			if(i==WorkerTableModel.COL_TESTRUN) {
 				col.setCellRenderer(this.getDefaultRenderer(Boolean.class));
 			}
-			else if(i==5) {
+			else if(i==WorkerTableModel.COL_PROGRESS) {
 				col.setCellRenderer(new ProgressCellRenderer());
 			}
-			else if(i==12) {
+			else if(i==WorkerTableModel.COL_STATUS) {
+				col.setCellRenderer(new StatusCellRenderer());
+			}
+			else if(i==WorkerTableModel.COL_CONTROL) {
 				col.setCellRenderer(new ControlCellRenderer());
 				col.setCellEditor(new ControlCellEditor());
 			}

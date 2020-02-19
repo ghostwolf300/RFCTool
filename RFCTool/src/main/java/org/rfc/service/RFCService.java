@@ -10,7 +10,8 @@ import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dto.Material;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
-import org.rfc.function.SaveMaterialReplica;
+import org.rfc.function.AddPlantData;
+import org.rfc.function.UpdatePlannedDeliveryTime;
 import org.rfc.model.MaterialDataModel;
 import org.rfc.model.WorkerModel;
 import org.rfc.sap.SapSystem;
@@ -52,7 +53,8 @@ public class RFCService {
 	public void loadPlantDataFile(File file) {
 		DAOFactory factory=new ExcelDAOFactory(file);
 		materialDao=factory.getMaterialDAO();
-		List<Material> materials=materialDao.getPlantDataList();
+		//List<Material> materials=materialDao.getPlantDataList();
+		List<Material> materials=materialDao.getAddPlantDataList();
 		materialDataModel.setMaterials(materials);
 	}
 	
@@ -73,7 +75,8 @@ public class RFCService {
 		
 		int counter=1;
 		for(List<Material> workerList : workerLists) {
-			Worker worker=new SaveMaterialReplica(counter,workerList,sap.getDestination(),testRun);
+			//Worker worker=new UpdatePlannedDeliveryTime(counter,workerList,sap.getDestination(),testRun);
+			Worker worker=new AddPlantData(counter,workerList,sap.getDestination(),testRun);
 			workers.add(worker);
 			counter++;
 		}

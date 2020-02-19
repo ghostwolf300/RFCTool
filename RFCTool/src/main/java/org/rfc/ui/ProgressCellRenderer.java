@@ -6,26 +6,26 @@ import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
-public class ProgressCellRenderer extends JProgressBar implements TableCellRenderer {
+public class ProgressCellRenderer implements TableCellRenderer {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+		
+	private JProgressBar bar=null;
 	
 	public ProgressCellRenderer() {
-		super(0,100);
-		this.setValue(0);
-		this.setStringPainted(true);
+		bar=new JProgressBar(0,100);
+		bar.setValue(0);
+		bar.setStringPainted(true);
 	}
 	
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row,
 			int col) {
-		
-		int progress=(int) value;
-		this.setValue(progress);
-		return this;
+		int progress=(int)(value);
+		bar.setValue(progress);
+		return bar;
 	}
 
 }

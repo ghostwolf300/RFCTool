@@ -14,7 +14,7 @@ import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.Worker.StatusCode;
-import org.rfc.function.SaveMaterialReplica;
+import org.rfc.function.UpdatePlannedDeliveryTime;
 
 import com.sap.conn.jco.JCoContext;
 import com.sap.conn.jco.JCoDestination;
@@ -50,7 +50,7 @@ public class RFCMain {
 		MaterialDAO<Material> daoMaterial=daoFactory.getMaterialDAO();
 		ReturnMessageDAO<ReturnMessage> daoReturnMessage=daoFactory.getReturnMessageDAO();
 		//List<Material> materials=daoMaterial.getPlantDataList();
-		List<Material> materials=daoMaterial.getOpenToPlantList();
+		List<Material> materials=daoMaterial.getAddPlantDataList();
 		
 		for(Material m : materials) { 
 			System.out.println(m.getMaterialId());
@@ -75,14 +75,14 @@ public class RFCMain {
 			e.printStackTrace();
 		}
 		
-		List<SaveMaterialReplica> workers=new ArrayList<SaveMaterialReplica>();
+		List<UpdatePlannedDeliveryTime> workers=new ArrayList<UpdatePlannedDeliveryTime>();
 		List<Thread> threads=new ArrayList<Thread>();
-		SaveMaterialReplica func=null;
+		UpdatePlannedDeliveryTime func=null;
 		Thread t=null;
 		
 		for(List<Material> run : runs) {
 			System.out.println("Run count: "+run.size());
-			func=new SaveMaterialReplica(-1,run,sap.getDestination());
+			func=new UpdatePlannedDeliveryTime(-1,run,sap.getDestination());
 			func.setTestRun(testRun);
 			workers.add(func);
 			t=new Thread(func);
@@ -100,7 +100,7 @@ public class RFCMain {
 		boolean finished=false;
 		while(finished==false){
 			finished=true;
-			for(SaveMaterialReplica w : workers) {
+			for(UpdatePlannedDeliveryTime w : workers) {
 				if(w.getStatusCode()==StatusCode.RUNNING) {
 					System.out.println(w.getProgress());
 					finished=false;
@@ -117,7 +117,7 @@ public class RFCMain {
 		}
 		
 		System.out.println("End results");
-		for(SaveMaterialReplica w1 : workers) {
+		for(UpdatePlannedDeliveryTime w1 : workers) {
 			System.out.println(w1.getProgress()+"\tstatus: "+w1.getStatusCode()+"\tsuccess: "+w1.getSuccessCount()+"\terror: "+w1.getErrorCount());
 		}
 		
@@ -126,7 +126,7 @@ public class RFCMain {
 		double hours=(runTime/1000)/3600;
 		System.out.println("Run time (ms): "+runTime+"\tRun time (h): "+hours);
 		
-		for(ReturnMessage msg : SaveMaterialReplica.getReturnMessages()) {
+		for(ReturnMessage msg : UpdatePlannedDeliveryTime.getReturnMessages()) {
 			System.out.println(msg.toString());
 		}
 		
@@ -162,8 +162,8 @@ public class RFCMain {
 			e.printStackTrace();
 		}
 		
-		SaveMaterialReplica f1=new SaveMaterialReplica(1,createTestMaterials1(),sap.getDestination());
-		SaveMaterialReplica f2=new SaveMaterialReplica(2,createTestMaterials2(),sap.getDestination());
+		UpdatePlannedDeliveryTime f1=null;//new UpdatePlannedDeliveryTime(1,createTestMaterials1(),sap.getDestination());
+		UpdatePlannedDeliveryTime f2=null;//new UpdatePlannedDeliveryTime(2,createTestMaterials2(),sap.getDestination());
 		
 		f1.setTestRun(false);
 		f2.setTestRun(false);
@@ -189,169 +189,12 @@ public class RFCMain {
 		System.out.println("F1: "+f1.getProgress());
 		System.out.println("F2: "+f2.getProgress());
 		
-		for(ReturnMessage msg : SaveMaterialReplica.getReturnMessages()) {
+		for(ReturnMessage msg : UpdatePlannedDeliveryTime.getReturnMessages()) {
 			System.out.println(msg);
 		}
 		
 		
 	}
-	
-	private List<Material> createTestMaterials1(){
-		List<Material> materials=new ArrayList<Material>();
-		
-		Material material=null;
-		PlantData pd=null;
-		
-		material=new Material();
-		material.setMaterialId("LIN1154322835");
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0702");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0703");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0704");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		materials.add(material);
-		
-		material=new Material();
-		material.setMaterialId("LIN1834461200");
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0702");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0703");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0704");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		materials.add(material);
-		
-		material=new Material();
-		material.setMaterialId("LIN0009839731");
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0702");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0703");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0704");
-		pd.setPlannedDeliveryTime(2);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		materials.add(material);
-		
-		return materials;
-	}
-	
-	private List<Material> createTestMaterials2(){
-		List<Material> materials=new ArrayList<Material>();
-		
-		Material material=null;
-		PlantData pd=null;
-		
-		material=new Material();
-		material.setMaterialId("JDWBLV10029");
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0702");
-		pd.setPlannedDeliveryTime(3);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0703");
-		pd.setPlannedDeliveryTime(4);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0704");
-		pd.setPlannedDeliveryTime(5);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		materials.add(material);
-		
-		material=new Material();
-		material.setMaterialId("JDWBM24282");
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0702");
-		pd.setPlannedDeliveryTime(3);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0703");
-		pd.setPlannedDeliveryTime(4);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0704");
-		pd.setPlannedDeliveryTime(5);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		materials.add(material);
-		
-		material=new Material();
-		material.setMaterialId("JDWAL206482");
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0702");
-		pd.setPlannedDeliveryTime(3);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0703");
-		pd.setPlannedDeliveryTime(4);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		pd=new PlantData();
-		pd.setMaterialId(material.getMaterialId());
-		pd.setPlant("0704");
-		pd.setPlannedDeliveryTime(5);
-		material.addPlantData(pd.getPlant(), pd);
-		
-		materials.add(material);
-		
-		return materials;
-	}
-	
 	
 	public void ExecuteTest() {
 		

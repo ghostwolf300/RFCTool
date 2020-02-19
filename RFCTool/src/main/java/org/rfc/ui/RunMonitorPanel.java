@@ -115,16 +115,14 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	public void modelPropertyChange(PropertyChangeEvent pce) {
 		if(pce.getPropertyName().equals(WorkerModel.P_WORKERS)) {
 			List<Worker> workers=(List<Worker>) pce.getNewValue();
-			for(Worker w : workers) {
-				System.out.println("ID: "+w.getId()+"\tFUNCTION: "+w.getFunctionName()+"\tWORKLOAD: "+w.getWorkload()+"\tSTATUS: "+w.getStatusCode());
-			}
 			WorkerTableModel model=(WorkerTableModel)tblWorkers.getModel();
 			model.setWorkers(workers);
 		}
 		else if(pce.getPropertyName().equals(WorkerModel.P_WORKER_PROGRESS)) {
-			System.out.println("Log table panel");
 			Worker worker=(Worker) pce.getNewValue();
-			((LogTableModel)tblLog.getModel()).addMessages(worker.getNewMessages());
+			if(worker.getNewMessages()!=null) {
+				((LogTableModel)tblLog.getModel()).addMessages(worker.getNewMessages());
+			}
 		}
 		
 	}

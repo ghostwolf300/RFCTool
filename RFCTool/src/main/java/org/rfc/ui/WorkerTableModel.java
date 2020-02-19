@@ -119,16 +119,29 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 
 	@Override
 	public void statusChanged(Worker worker) {
-		System.out.println("ID: "+worker.getId()+" statusChanged");
-		this.fireTableDataChanged();
+		int row=getTableRow(worker);
+		this.fireTableRowsUpdated(row, row);
+		//this.fireTableDataChanged();
 		
 	}
 
 
 	@Override
 	public void progressUpdated(Worker worker) {
-		System.out.println("ID: "+worker.getId()+" progressUpdated");
-		this.fireTableDataChanged();	
+		int row=getTableRow(worker);
+		this.fireTableRowsUpdated(row, row);
+		//this.fireTableDataChanged();	
+	}
+	
+	private int getTableRow(Worker worker) {
+		int row=0;
+		for(Worker w : workers) {
+			if(w.equals(worker)) {
+				break;
+			}
+			row++;
+		}
+		return row;
 	}
 	
 	

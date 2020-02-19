@@ -15,7 +15,7 @@ import com.sap.conn.jco.JCoFunctionTemplate;
 import com.sap.conn.jco.JCoRepository;
 import com.sap.conn.jco.JCoTable;
 
-public abstract class BAPIFunction implements Runnable,Worker {
+public abstract class RunnableFunction implements Runnable,Worker {
 	
 	protected int id=-1;
 	protected JCoDestination destination=null;
@@ -38,19 +38,25 @@ public abstract class BAPIFunction implements Runnable,Worker {
 	private List<WorkerListener> listeners=Collections.synchronizedList(new ArrayList<WorkerListener>());
 	private Thread thread=null;
 	
-	public BAPIFunction(int id,JCoDestination destination) {
+	public RunnableFunction(int id,JCoDestination destination) {
 		this.id=id;
 		this.destination=destination;
 		allMessages=new ArrayList<ReturnMessage>();
 		statusCode=StatusCode.CREATED;
 	}
 	
-	public BAPIFunction(int id,JCoDestination destination,boolean testRun) {
+	public RunnableFunction(int id,JCoDestination destination,boolean testRun) {
 		this.id=id;
 		this.destination=destination;
 		this.testRun=testRun;
 		allMessages=new ArrayList<ReturnMessage>();
 		statusCode=StatusCode.CREATED;
+	}
+	
+	protected void initialize(String functionName) throws JCoException {
+		repository=destination.getRepository();
+		template=repository.getFunctionTemplate(functionName);
+		function=template.getFunction();
 	}
 	
 	public int getId() {
@@ -119,7 +125,7 @@ public abstract class BAPIFunction implements Runnable,Worker {
 	}
 	
 	public double getProgress() {
-		double percentage=processedCount/workload;
+		double percentage=((double)processedCount)/((double)workload);
 		return percentage;
 	}
 
@@ -149,47 +155,6 @@ public abstract class BAPIFunction implements Runnable,Worker {
 
 	public List<ReturnMessage> getAllMessages() {
 		return allMessages;
-	}
-
-	protected void initialize(String functionName) throws JCoException {
-		repository=destination.getRepository();
-		template=repository.getFunctionTemplate(functionName);
-		function=template.getFunction();
-		//returnMessages=new ArrayList<ReturnMessage>();
-	}
-	
-	protected List<ReturnMessage> createReturnMessages(JCoTable tRETURNMESSAGES,String material){
-		List<ReturnMessage> messages=new ArrayList<ReturnMessage>();
-		ReturnMessage message=null;
-		//is this needed?
-		//tRETURNMESSAGES.firstRow();
-		while(tRETURNMESSAGES.nextRow()) {
-			message=new ReturnMessage();
-			message.setWorkerId(this.getId());
-			message.setMaterial(material);
-			message.setNumber((String)tRETURNMESSAGES.getValue("NUMBER"));
-			message.setType((String)tRETURNMESSAGES.getValue("TYPE"));
-			message.setMessage((String) tRETURNMESSAGES.getValue("MESSAGE"));
-			message.setRow(String.valueOf(tRETURNMESSAGES.getValue("ROW")));
-			message.setMessageVariable1((String) tRETURNMESSAGES.getValue("MESSAGE_V1"));
-			message.setMessageVariable2((String) tRETURNMESSAGES.getValue("MESSAGE_V2"));
-			message.setMessageVariable3((String) tRETURNMESSAGES.getValue("MESSAGE_V3"));
-			message.setMessageVariable4((String) tRETURNMESSAGES.getValue("MESSAGE_V4"));
-			if(message.getNumber().equals("103") || message.getNumber().equals("801") || message.getNumber().equals("048") || message.getNumber().equals("810") || message.getType().equals("E")) {
-				if(message.getType().equals("S")) {
-					successCount++;
-				}
-				else {
-					errorCount++;
-				}
-				//Only add selected messages...
-				//messages.add(message);
-			}
-			messages.add(message);
-		}
-		allMessages.addAll(messages);
-		newMessages=messages;
-		return messages;
 	}
 	
 	@Override

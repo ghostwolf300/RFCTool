@@ -23,6 +23,7 @@ public class ControlCellEditor extends AbstractCellEditor implements TableCellEd
 			new ImageIcon(RunMonitorPanel.class.getResource("/toolbarButtonGraphics/media/Play16.gif")),
 			new ImageIcon(RunMonitorPanel.class.getResource("/toolbarButtonGraphics/media/Pause16.gif"))
 	};
+	
 	private StatusCode statusCode=null;
 	
 	public ControlCellEditor() {
@@ -61,7 +62,6 @@ public class ControlCellEditor extends AbstractCellEditor implements TableCellEd
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
 		if(statusCode==StatusCode.CREATED) {
 			statusCode=StatusCode.RUNNING;
 		}

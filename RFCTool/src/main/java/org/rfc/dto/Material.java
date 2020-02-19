@@ -7,6 +7,11 @@ import java.util.Map;
 public class Material {
 	
 	private String materialId=null;
+	private String type=null;
+	private String industrySector=null;
+	private String baseUom=null;
+	private String group=null;
+	private Map<String,String> descriptionMap=null;
 	private Map<String,PlantData> plantDataMap=null;
 	private List<ReturnMessage> messages=null;
 	
@@ -20,6 +25,46 @@ public class Material {
 
 	public void setMaterialId(String materialId) {
 		this.materialId = materialId;
+	}
+
+	public String getIndustrySector() {
+		return industrySector;
+	}
+
+	public void setIndustrySector(String industrySector) {
+		this.industrySector = industrySector;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getBaseUom() {
+		return baseUom;
+	}
+
+	public void setBaseUom(String baseUom) {
+		this.baseUom = baseUom;
+	}
+
+	public String getGroup() {
+		return group;
+	}
+
+	public void setGroup(String group) {
+		this.group = group;
+	}
+
+	public Map<String, String> getDescriptionMap() {
+		return descriptionMap;
+	}
+
+	public void setDescriptionMap(Map<String, String> descriptionMap) {
+		this.descriptionMap = descriptionMap;
 	}
 
 	public Map<String, PlantData> getPlantDataMap() {

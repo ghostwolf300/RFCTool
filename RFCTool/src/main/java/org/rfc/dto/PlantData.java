@@ -2,7 +2,7 @@ package org.rfc.dto;
 
 public class PlantData {
 	
-	private String materialId=null;
+	private Material material=null;
 	private String plant=null;
 	//General Plant
 	private String profitCenter=null;
@@ -29,6 +29,7 @@ public class PlantData {
 	private double movingAveragePrice=0.01;
 	private double standardPrice=0.01;
 	private int priceUnit=1;
+	private boolean doNotCost=false;
 	private boolean costWithQtyStructure=false;
 	private boolean materialRelatedOrigin=false;
 	//Storage Location
@@ -38,12 +39,12 @@ public class PlantData {
 		super();
 	}
 
-	public String getMaterialId() {
-		return materialId;
+	public Material getMaterial() {
+		return material;
 	}
 
-	public void setMaterialId(String materialId) {
-		this.materialId = materialId;
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
 
 	public String getPlant() {
@@ -228,6 +229,14 @@ public class PlantData {
 
 	public void setPriceUnit(int priceUnit) {
 		this.priceUnit = priceUnit;
+	}
+
+	public boolean isDoNotCost() {
+		return doNotCost;
+	}
+
+	public void setDoNotCost(boolean doNotCost) {
+		this.doNotCost = doNotCost;
 	}
 
 	public boolean isCostWithQtyStructure() {
