@@ -26,7 +26,7 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		super(dbFile);
 	}
 	
-	public List<Material> getPlantDataList() {
+	public List<Material> getChangePlantDataList() {
 		List<Material> materials=new ArrayList<Material>();
 		Material material=null;
 		PlantData plantData=null;
@@ -47,7 +47,7 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 					materials.add(material);
 					currentMaterialID=nextMaterialID;
 				}
-				plantData=createPlantData(row,material);
+				plantData=createPlantDataShort(row,material);
 				material.addPlantData(plantData.getPlant(), plantData);
 			}
 		} 
@@ -67,7 +67,7 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		return materials;
 	}
 	
-	private PlantData createPlantData(Row row,Material material) {
+	private PlantData createPlantDataShort(Row row,Material material) {
 		PlantData pd=new PlantData();
 		pd.setMaterial(material);
 		pd.setPlant(row.getCell(1).getStringCellValue());
@@ -76,16 +76,15 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		return pd;
 	}
 	
-	private PlantData createOpenPlantData(Row row,Material material) {
+	private PlantData createPlantDataLong(Row row,Material material) {
 		PlantData pd=new PlantData();
 		pd.setMaterial(material);
-		pd.setPlant(row.getCell(2).getStringCellValue());
+		pd.setPlant(row.getCell(1).getStringCellValue());
+		pd.setProfitCenter(row.getCell(2).getStringCellValue());
 		pd.setLoadingGroup("Z700");
-		pd.setPurchasingGroup(row.getCell(3).getStringCellValue());
 		pd.setGrProcessingTime(0);
 		pd.setMrpType("PD");
 		pd.setReorderPoint(0);
-		pd.setMrpController(pd.getPurchasingGroup());
 		pd.setLotSizingProcedure("EX");
 		pd.setMinLotSize(0);
 		pd.setProcurementType("F");
@@ -96,12 +95,7 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		pd.setAvailabilityCheck("ZT");
 		pd.setIndividualAndCollectiveReq("2");
 		pd.setPlannedDeliveryTime(2);
-		pd.setPriceControl(row.getCell(4).getStringCellValue());
-		pd.setMovingAveragePrice(row.getCell(5).getNumericCellValue());
-		pd.setStandardPrice(row.getCell(6).getNumericCellValue());
-		pd.setValuationClass("Z004");
 		pd.setPriceUnit(1);
-		pd.setDoNotCost((pd.getMaterial().getType().equals("ZT07") ? true : false));
 		pd.setCostWithQtyStructure(true);
 		pd.setMaterialRelatedOrigin(true);
 		pd.setStorageLocation("0700");
@@ -127,12 +121,10 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 				if(currentMaterialID==null || !currentMaterialID.equals(nextMaterialID)) {
 					material=new Material();
 					material.setMaterialId(nextMaterialID);
-					material.setType(row.getCell(1).getStringCellValue());
-					material.setIndustrySector("M");
 					materials.add(material);
 					currentMaterialID=nextMaterialID;
 				}
-				plantData=createOpenPlantData(row,material);
+				plantData=createPlantDataLong(row,material);
 				material.addPlantData(plantData.getPlant(), plantData);
 			}
 		} 

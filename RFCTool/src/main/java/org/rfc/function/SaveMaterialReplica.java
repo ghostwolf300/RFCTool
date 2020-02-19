@@ -81,9 +81,15 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		
 	}
 	
-	protected void execute(Material material) throws JCoException {
+	protected void execute(Material material)  {
 		JCoContext.begin(destination);
-		function.execute(destination);
+		try {
+			function.execute(destination);
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List<ReturnMessage> functionMessages=createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
 		if(functionMessages!=null) {
 			material.setMessages(functionMessages);
@@ -93,7 +99,7 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		}
 	}
 	
-	protected Map<String,JCoStructure> getPlantDataTables(String material,String plant) throws JCoException{
+	protected Map<String,JCoStructure> getMaterialPlantData(String material,String plant) throws JCoException{
 		Map<String,JCoStructure> exports=new HashMap<String,JCoStructure>();
 		funcGetPlantData.getImportParameterList().setValue("MATERIAL", material);
 		funcGetPlantData.getImportParameterList().setValue("COMP_CODE", "07");
@@ -102,6 +108,8 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		
 		funcGetPlantData.execute(destination);
 		
+		exports.put("CLIENTDATA", funcGetPlantData.getExportParameterList().getStructure("CLIENTDATA"));
+		exports.put("PLANTDATA", funcGetPlantData.getExportParameterList().getStructure("PLANTDATA"));
 		exports.put("VALUATIONDATA",funcGetPlantData.getExportParameterList().getStructure("VALUATIONDATA"));
 		
 		return exports;
@@ -110,7 +118,8 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 	private List<ReturnMessage> createReturnMessages(JCoTable tRETURNMESSAGES,String material){
 		List<ReturnMessage> messages=new ArrayList<ReturnMessage>();
 		ReturnMessage message=null;
-		while(tRETURNMESSAGES.nextRow()) {
+		
+		do {
 			message=new ReturnMessage();
 			message.setWorkerId(this.getId());
 			message.setMaterial(material);
@@ -126,12 +135,17 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 				if(message.getType().equals("S")) {
 					successCount++;
 				}
-				else {
+				else if(message.getType().equals("W")) {
+					warningCount++;
+				}
+				else if(message.getType().equals("E")){
 					errorCount++;
 				}
 			}
 			messages.add(message);
 		}
+		while(tRETURNMESSAGES.nextRow());
+
 		allMessages.addAll(messages);
 		newMessages=messages;
 		return messages;
@@ -146,8 +160,14 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		this.workload=materials.size();
 	}
 	
-	protected void doWork() throws JCoException {
-		super.initialize(FUNCTION);
+	protected void doWork() {
+		try {
+			super.initialize(FUNCTION);
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.initialize();
 	}
 	

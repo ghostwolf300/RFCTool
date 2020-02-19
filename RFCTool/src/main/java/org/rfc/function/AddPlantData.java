@@ -2,6 +2,7 @@ package org.rfc.function;
 
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
@@ -25,24 +26,28 @@ public class AddPlantData extends SaveMaterialReplica {
 		super(id,materials,destination,testRun);
 	}
 	
-	protected void doWork() throws JCoException {
-		super.doWork();
-		executePlantExpansion();
+	protected void doWork() {
+		try {
+			super.doWork();
+			executeAddPlantData();
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
-	private void executePlantExpansion() throws JCoException {
-		
-		JCoStructure sREF_VALUATIONDATA=null;
+	private void executeAddPlantData() throws JCoException {
 		
 		for(Material material : materials) {
 			
-			sREF_VALUATIONDATA=this.getPlantDataTables(material.getMaterialId(), "0700").get("VALUATIONDATA");
+			Map<String,JCoStructure> structureMap=this.getMaterialPlantData(material.getMaterialId(), "0700");
+			copyPlantData(structureMap,material);
 			
 			tHEADDATA.appendRow();
 			tHEADDATA.setValue("FUNCTION","INS");
 			tHEADDATA.setValue("MATERIAL",material.getMaterialId());
-			//tHEADDATA.setValue("MATL_TYPE", material.getType());
-			//tHEADDATA.setValue("IND_SECTOR", material.getIndustrySector());
 			
 			Set<String> plants=material.getPlantDataMap().keySet();
 			
@@ -52,6 +57,7 @@ public class AddPlantData extends SaveMaterialReplica {
 				tPLANTDATA.setValue("FUNCTION", "INS");
 				tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
 				tPLANTDATA.setValue("PLANT", plantData.getPlant());
+				tPLANTDATA.setValue("PROFIT_CTR",plantData.getProfitCenter());
 				tPLANTDATA.setValue("PUR_GROUP", plantData.getPurchasingGroup());
 				tPLANTDATA.setValue("GR_PR_TIME",plantData.getGrProcessingTime());
 				tPLANTDATA.setValue("MRP_TYPE",plantData.getMrpType());
@@ -78,6 +84,7 @@ public class AddPlantData extends SaveMaterialReplica {
 				tPLANTDATAX.setValue("FUNCTION", "INS");
 				tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
 				tPLANTDATAX.setValue("PLANT", plantData.getPlant());
+				tPLANTDATAX.setValue("PROFIT_CTR","X");
 				tPLANTDATAX.setValue("PUR_GROUP", "X");
 				tPLANTDATAX.setValue("GR_PR_TIME","X");
 				tPLANTDATAX.setValue("MRP_TYPE","X");
@@ -108,16 +115,12 @@ public class AddPlantData extends SaveMaterialReplica {
 				tSTORAGELOCATIONDATAX.setValue("MATERIAL", material.getMaterialId());
 				tSTORAGELOCATIONDATAX.setValue("PLANT",plantData.getPlant());
 				tSTORAGELOCATIONDATAX.setValue("STGE_LOC", plantData.getStorageLocation());
-				
+			
 				tVALUATIONDATA.appendRow();
-				
-				for(int fldIndex=0;fldIndex<sREF_VALUATIONDATA.getFieldCount();fldIndex++) {
-					System.out.println(sREF_VALUATIONDATA.getValue(fldIndex));
-				}
-				
 				tVALUATIONDATA.setValue("FUNCTION", "INS");
 				tVALUATIONDATA.setValue("MATERIAL", material.getMaterialId());
 				tVALUATIONDATA.setValue("VAL_AREA", plantData.getPlant());
+				//tVALUATIONDATA.setValue("VAL_TYPE", " ");
 				tVALUATIONDATA.setValue("PRICE_CTRL", plantData.getPriceControl());
 				tVALUATIONDATA.setValue("VAL_CLASS", plantData.getValuationClass());
 				tVALUATIONDATA.setValue("MOVING_PR", plantData.getMovingAveragePrice());
@@ -132,6 +135,7 @@ public class AddPlantData extends SaveMaterialReplica {
 				tVALUATIONDATAX.setValue("FUNCTION", "INS");
 				tVALUATIONDATAX.setValue("MATERIAL", material.getMaterialId());
 				tVALUATIONDATAX.setValue("VAL_AREA", plantData.getPlant());
+				//tVALUATIONDATAX.setValue("VAL_TYPE", " ");
 				tVALUATIONDATAX.setValue("PRICE_CTRL", "X");
 				tVALUATIONDATAX.setValue("VAL_CLASS", "X");
 				tVALUATIONDATAX.setValue("MOVING_PR","X");
@@ -142,7 +146,7 @@ public class AddPlantData extends SaveMaterialReplica {
 				
 			}
 			
-			super.execute(material);
+			execute(material);
 			
 			tHEADDATA.clear();
 			tPLANTDATA.clear();
@@ -154,7 +158,35 @@ public class AddPlantData extends SaveMaterialReplica {
 			tRETURNMESSAGES.clear();
 			
 			processedCount++;
-			super.progressUpdated();
+			progressUpdated();
+		}
+		
+	}
+	
+	private void copyPlantData(Map<String,JCoStructure> structureMap,Material material) {
+		JCoStructure sCLIENTDATA=structureMap.get("CLIENTDATA");
+		JCoStructure sPLANTDATA=structureMap.get("PLANTDATA");
+		JCoStructure sVALUATIONDATA=structureMap.get("VALUATIONDATA");
+		
+		material.setIndustrySector(sCLIENTDATA.getString("IND_SECTOR"));
+		material.setType(sCLIENTDATA.getString("MATL_TYPE"));
+		material.setGroup(sCLIENTDATA.getString("MATL_GROUP"));
+		material.setBaseUom(sCLIENTDATA.getString("BASE_UOM"));
+		
+		
+		Set<String> plants=material.getPlantDataMap().keySet();
+		for(String plant : plants) {
+			PlantData pd=material.getPlantDataMap().get(plant);
+			pd.setPurchasingGroup(sPLANTDATA.getString("PUR_GROUP"));
+			pd.setMrpController(sPLANTDATA.getString("MRP_CTRLER"));
+			
+			pd.setValuationClass(sVALUATIONDATA.getString("VAL_CLASS"));
+			pd.setPriceControl(sVALUATIONDATA.getString("PRICE_CTRL"));
+			pd.setMovingAveragePrice(sVALUATIONDATA.getDouble("MOVING_PR"));
+			pd.setStandardPrice(sVALUATIONDATA.getDouble("STD_PRICE"));
+			
+			pd.setDoNotCost((pd.getMaterial().getType().equals("ZT07") ? true : false));
+			
 		}
 		
 	}

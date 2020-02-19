@@ -13,8 +13,10 @@ import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.ReturnMessage;
+import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
-import org.rfc.function.UpdatePlannedDeliveryTime;
+import org.rfc.function.AddPlantData;
+import org.rfc.function.ChangePlantData;
 
 import com.sap.conn.jco.JCoContext;
 import com.sap.conn.jco.JCoDestination;
@@ -42,9 +44,9 @@ public class RFCMain {
 	
 	public void daoTest() {
 		long startTime=System.currentTimeMillis();
-		boolean testRun=false;
+		boolean testRun=true;
 		//String dbPath="C:/Users/ville.susi/Documents/Digital Development/BAPIDB.accdb";
-		String dbPath="C:/Users/ville.susi/Documents/Digital Development/Test Data/Purch and MRP.xlsx";
+		String dbPath="C:/Users/ville.susi/Documents/Digital Development/Test Data/AddPlantData.xlsx";
 		//DAOFactory daoFactory=new AccessDAOFactory(dbPath);
 		DAOFactory daoFactory=new ExcelDAOFactory(new File(dbPath));
 		MaterialDAO<Material> daoMaterial=daoFactory.getMaterialDAO();
@@ -75,14 +77,14 @@ public class RFCMain {
 			e.printStackTrace();
 		}
 		
-		List<UpdatePlannedDeliveryTime> workers=new ArrayList<UpdatePlannedDeliveryTime>();
+		List<Worker> workers=new ArrayList<Worker>();
 		List<Thread> threads=new ArrayList<Thread>();
-		UpdatePlannedDeliveryTime func=null;
+		AddPlantData func=null;
 		Thread t=null;
 		
 		for(List<Material> run : runs) {
 			System.out.println("Run count: "+run.size());
-			func=new UpdatePlannedDeliveryTime(-1,run,sap.getDestination());
+			func=new AddPlantData(-1,run,sap.getDestination());
 			func.setTestRun(testRun);
 			workers.add(func);
 			t=new Thread(func);
@@ -100,7 +102,7 @@ public class RFCMain {
 		boolean finished=false;
 		while(finished==false){
 			finished=true;
-			for(UpdatePlannedDeliveryTime w : workers) {
+			for(Worker w : workers) {
 				if(w.getStatusCode()==StatusCode.RUNNING) {
 					System.out.println(w.getProgress());
 					finished=false;
@@ -117,7 +119,7 @@ public class RFCMain {
 		}
 		
 		System.out.println("End results");
-		for(UpdatePlannedDeliveryTime w1 : workers) {
+		for(Worker w1 : workers) {
 			System.out.println(w1.getProgress()+"\tstatus: "+w1.getStatusCode()+"\tsuccess: "+w1.getSuccessCount()+"\terror: "+w1.getErrorCount());
 		}
 		
@@ -126,7 +128,7 @@ public class RFCMain {
 		double hours=(runTime/1000)/3600;
 		System.out.println("Run time (ms): "+runTime+"\tRun time (h): "+hours);
 		
-		for(ReturnMessage msg : UpdatePlannedDeliveryTime.getReturnMessages()) {
+		for(ReturnMessage msg : AddPlantData.getReturnMessages()) {
 			System.out.println(msg.toString());
 		}
 		
@@ -162,8 +164,8 @@ public class RFCMain {
 			e.printStackTrace();
 		}
 		
-		UpdatePlannedDeliveryTime f1=null;//new UpdatePlannedDeliveryTime(1,createTestMaterials1(),sap.getDestination());
-		UpdatePlannedDeliveryTime f2=null;//new UpdatePlannedDeliveryTime(2,createTestMaterials2(),sap.getDestination());
+		ChangePlantData f1=null;//new ChangePlantData(1,createTestMaterials1(),sap.getDestination());
+		ChangePlantData f2=null;//new ChangePlantData(2,createTestMaterials2(),sap.getDestination());
 		
 		f1.setTestRun(false);
 		f2.setTestRun(false);
@@ -189,7 +191,7 @@ public class RFCMain {
 		System.out.println("F1: "+f1.getProgress());
 		System.out.println("F2: "+f2.getProgress());
 		
-		for(ReturnMessage msg : UpdatePlannedDeliveryTime.getReturnMessages()) {
+		for(ReturnMessage msg : ChangePlantData.getReturnMessages()) {
 			System.out.println(msg);
 		}
 		

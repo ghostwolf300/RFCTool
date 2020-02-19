@@ -9,23 +9,29 @@ import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
 
 
-public class UpdatePlannedDeliveryTime extends SaveMaterialReplica {
+public class ChangePlantData extends SaveMaterialReplica {
 	
-	public UpdatePlannedDeliveryTime(int id,JCoDestination destination) {
+	public ChangePlantData(int id,JCoDestination destination) {
 		super(id,destination);
 	}
 	
-	public UpdatePlannedDeliveryTime(int id,List<Material> materials,JCoDestination destination) {
+	public ChangePlantData(int id,List<Material> materials,JCoDestination destination) {
 		super(id,materials,destination);
 	}
 	
-	public UpdatePlannedDeliveryTime(int id,List<Material> materials,JCoDestination destination,boolean testRun) {
+	public ChangePlantData(int id,List<Material> materials,JCoDestination destination,boolean testRun) {
 		super(id,materials,destination,testRun);
 	}
 	
-	protected void doWork() throws JCoException {
+	protected void doWork() {
 		super.doWork();
-		executePlannedDeliveryTimeUpdate();
+		try {
+			executePlannedDeliveryTimeUpdate();
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void executePlannedDeliveryTimeUpdate() throws JCoException {
@@ -53,7 +59,7 @@ public class UpdatePlannedDeliveryTime extends SaveMaterialReplica {
 				tPLANTDATAX.setValue("PLND_DELRY", "X");
 			}
 			
-			super.execute(material);
+			execute(material);
 			
 			tHEADDATA.clear();
 			tPLANTDATA.clear();

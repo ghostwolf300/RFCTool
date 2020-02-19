@@ -20,7 +20,7 @@ public class AccessMaterialDAO extends AccessDAO implements MaterialDAO<Material
 		super(dbPath);
 	}
 	
-	public List<Material> getPlantDataList() {
+	public List<Material> getChangePlantDataList() {
 		List<Material> materials=null;
 		String sql="SELECT MATERIAL,PLANT,PLAN_DEL_TIME FROM tbl_material_plantdata";
 		Statement stmnt=null;

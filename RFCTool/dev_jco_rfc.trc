@@ -604,3 +604,25 @@ Info:   >Tue Feb 18 23:05:20,976<    [JCoAPI] JCoClient.execute(BAPI_MATERIAL_SA
 	at java.lang.Thread.run(Thread.java:748)
 
 
+
+**** Error file opened at 20200219 215256 Eastern European Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Wed Feb 19 21:52:56,349<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host tet failed
+	Connection parameters: TYPE=B DESTINATION=TETCLNT280 MSHOST=tet MSSERV=3601 GROUP=TET SAPROUTER=/H/tet PCS=1
+
+ERROR       hostname 'tet' unknown
+TIME        Wed Feb 19 21:52:56 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      ninti.c
+LINE        897
+DETAIL      NiPGetHostByName: 'tet' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+

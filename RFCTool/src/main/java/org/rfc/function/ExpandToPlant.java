@@ -28,9 +28,15 @@ public class ExpandToPlant extends SaveMaterialReplica {
 		super(id,materials,destination,testRun);
 	}
 	
-	protected void doWork() throws JCoException {
+	protected void doWork() {
 		super.doWork();
-		executePlantExpansion();
+		try {
+			executePlantExpansion();
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	private void executePlantExpansion() throws JCoException {

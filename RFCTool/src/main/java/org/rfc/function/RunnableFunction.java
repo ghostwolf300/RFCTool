@@ -92,7 +92,7 @@ public abstract class RunnableFunction implements Runnable,Worker {
 			endTimeMs=System.currentTimeMillis();
 			runTimeMs=endTimeMs-startTimeMs;
 			this.statusChanged();
-			this.progressUpdated();
+			//this.progressUpdated();
 		}
 	}
 	
