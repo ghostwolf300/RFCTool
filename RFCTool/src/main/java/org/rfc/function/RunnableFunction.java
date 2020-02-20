@@ -3,6 +3,7 @@ package org.rfc.function;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.Worker;
@@ -19,11 +20,12 @@ public abstract class RunnableFunction implements Runnable,Worker {
 	
 	protected int id=-1;
 	protected JCoDestination destination=null;
-	protected JCoFunctionTemplate template=null;
-	protected JCoFunction function=null;
-	protected JCoRepository repository=null;
+	//protected JCoFunctionTemplate template=null;
+	//protected JCoFunction function=null;
+	protected Map<String,JCoFunction> functionMap=null;
+	//protected JCoRepository repository=null;
 	protected boolean testRun=true;
-	protected StatusCode statusCode=null;
+	protected StatusCode status=null;
 	protected int workload=0;
 	protected int processedCount=0;
 	protected int successCount=0;
@@ -37,12 +39,13 @@ public abstract class RunnableFunction implements Runnable,Worker {
 	
 	private List<WorkerListener> listeners=Collections.synchronizedList(new ArrayList<WorkerListener>());
 	private Thread thread=null;
+	private static int threadCount=0;
 	
 	public RunnableFunction(int id,JCoDestination destination) {
 		this.id=id;
 		this.destination=destination;
 		allMessages=new ArrayList<ReturnMessage>();
-		statusCode=StatusCode.CREATED;
+		status=StatusCode.CREATED;
 	}
 	
 	public RunnableFunction(int id,JCoDestination destination,boolean testRun) {
@@ -50,13 +53,26 @@ public abstract class RunnableFunction implements Runnable,Worker {
 		this.destination=destination;
 		this.testRun=testRun;
 		allMessages=new ArrayList<ReturnMessage>();
-		statusCode=StatusCode.CREATED;
+		status=StatusCode.CREATED;
 	}
 	
-	protected void initialize(String functionName) throws JCoException {
-		repository=destination.getRepository();
-		template=repository.getFunctionTemplate(functionName);
-		function=template.getFunction();
+	protected void initialize(String[] functionNames) {
+		JCoFunctionTemplate template=null;
+		JCoFunction function=null;
+		JCoRepository repo=null;
+		try {
+			repo=destination.getRepository();
+			for(String functionName : functionNames) {
+				template=repo.getFunctionTemplate(functionName);
+				function=template.getFunction();
+				functionMap.put(functionName, function);
+			}
+		} 
+		catch (JCoException e) {
+			status=StatusCode.ERROR;
+			statusChanged();
+			e.printStackTrace();
+		}
 	}
 	
 	public int getId() {
@@ -65,35 +81,6 @@ public abstract class RunnableFunction implements Runnable,Worker {
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	protected abstract void doWork() throws JCoException;
-	
-	public void run() {
-		startTimeMs=System.currentTimeMillis();
-		statusCode=StatusCode.RUNNING;
-		this.statusChanged();
-		try {
-			doWork();
-		}
-		catch(JCoException e) {
-			e.printStackTrace();
-			//statusCode=StatusCode.STOPPED;
-		}
-		finally {
-			try {
-				JCoContext.end(destination);
-			} 
-			catch (JCoException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			statusCode=StatusCode.FINISHED;
-			endTimeMs=System.currentTimeMillis();
-			runTimeMs=endTimeMs-startTimeMs;
-			this.statusChanged();
-			//this.progressUpdated();
-		}
 	}
 	
 	public JCoDestination getDestination() {
@@ -137,12 +124,12 @@ public abstract class RunnableFunction implements Runnable,Worker {
 		this.testRun = testRun;
 	}
 
-	public StatusCode getStatusCode() {
-		return statusCode;
+	public StatusCode getStatus() {
+		return status;
 	}
 
-	public void setStatusCode(StatusCode statusCode) {
-		this.statusCode = statusCode;
+	public void setStatus(StatusCode statusCode) {
+		this.status = statusCode;
 	}
 	
 	public long getRunTimeMs() {
@@ -157,51 +144,86 @@ public abstract class RunnableFunction implements Runnable,Worker {
 		return allMessages;
 	}
 	
+	public static int getThreadCount() {
+		return threadCount;
+	}
+	
+	protected abstract void doWork() throws JCoException;
+	
+	public void run() {
+		startTimeMs=System.currentTimeMillis();
+		status=StatusCode.RUNNING;
+		this.statusChanged();
+		try {
+			doWork();
+		}
+		catch(JCoException e) {
+			e.printStackTrace();
+			status=StatusCode.ERROR;
+		}
+		finally {
+			try {
+				JCoContext.end(destination);
+			} 
+			catch (JCoException e) {
+				e.printStackTrace();
+			}
+			
+			endTimeMs=System.currentTimeMillis();
+			runTimeMs=endTimeMs-startTimeMs;
+			
+			status=StatusCode.FINISHED;
+			this.statusChanged();
+		}
+	}
+	
+	protected void pauseThread() {
+		try {
+			thread.wait();
+		} 
+		catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public synchronized void startWorking() {
-		if(this.statusCode!=StatusCode.RUNNING) {
-			this.statusCode=StatusCode.RUNNING;
+		if(status!=StatusCode.RUNNING) {
+			status=StatusCode.RUNNING;
 			thread=new Thread(this);
 			thread.start();
-			this.statusChanged();
+			statusChanged();
 		}
 	}
 
 	@Override
 	public synchronized void pauseWorking() {
-		if(this.statusCode==StatusCode.RUNNING) {
-			this.statusCode=StatusCode.PAUSED;
-			this.statusChanged();
-			try {
-				thread.wait();
-			} 
-			catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		if(status==StatusCode.RUNNING) {
+			status=StatusCode.PAUSED;
 		}
 	}
 
 	@Override
 	public synchronized void continueWorking() {
-		if(this.statusCode==StatusCode.PAUSED) {
+		if(thread.getState()==Thread.State.WAITING && status==StatusCode.PAUSED) {
 			thread.notify();
-			this.statusCode=StatusCode.RUNNING;
-			this.statusChanged();
+			status=StatusCode.RUNNING;
+			statusChanged();
 		}
 	}
 
 	@Override
 	public synchronized void stopWorking() {
-		if(this.statusCode!=StatusCode.STOPPED) {
-			this.statusCode=StatusCode.STOPPED;
-			this.statusChanged();
+		if(status!=StatusCode.STOPPED) {
+			status=StatusCode.STOPPED;
+			statusChanged();
 		}
 	}
 	
 	public synchronized void changeStatus(StatusCode newStatusCode) {
-		this.statusCode=newStatusCode;
-		this.statusChanged();
+		status=newStatusCode;
+		statusChanged();
 	}
 	
 	public void addWorkerListener(WorkerListener listener) {
@@ -209,7 +231,7 @@ public abstract class RunnableFunction implements Runnable,Worker {
 	}
 	
 	protected void statusChanged() {
-		if(statusCode==StatusCode.FINISHED || statusCode==StatusCode.STOPPED) {
+		if(status==StatusCode.FINISHED || status==StatusCode.STOPPED) {
 			endTimeMs=System.currentTimeMillis();
 			runTimeMs=endTimeMs-startTimeMs;
 		}

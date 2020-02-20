@@ -14,6 +14,8 @@ import com.sap.conn.jco.JCoTable;
 
 public class AddPlantData extends SaveMaterialReplica {
 	
+	public static final String FUNCTION_NAME="AddPlantData";
+	
 	public AddPlantData(int id,JCoDestination destination) {
 		super(id,destination);
 	}
@@ -26,27 +28,138 @@ public class AddPlantData extends SaveMaterialReplica {
 		super(id,materials,destination,testRun);
 	}
 	
-	protected void doWork() {
-		try {
-			super.doWork();
-			executeAddPlantData();
-		} 
-		catch (JCoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//	protected void doWork() throws JCoException {
+//		super.doWork();
+//		executeAddPlantData();	
+//	}
+	
+	protected void executeFunction(Material material) throws JCoException {
+		Map<String,JCoStructure> structureMap=super.getMaterialPlantData(material.getMaterialId(), "0700");
+		copyPlantData(structureMap,material);
+		
+		tHEADDATA.appendRow();
+		tHEADDATA.setValue("F_MATERIAL_SAVE","INS");
+		tHEADDATA.setValue("MATERIAL",material.getMaterialId());
+		
+		Set<String> plants=material.getPlantDataMap().keySet();
+		
+		for(String plant : plants) {
+			PlantData plantData=material.getPlantDataMap().get(plant);
+			tPLANTDATA.appendRow();
+			tPLANTDATA.setValue("F_MATERIAL_SAVE", "INS");
+			tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
+			tPLANTDATA.setValue("PLANT", plantData.getPlant());
+			tPLANTDATA.setValue("PROFIT_CTR",plantData.getProfitCenter());
+			tPLANTDATA.setValue("PUR_GROUP", plantData.getPurchasingGroup());
+			tPLANTDATA.setValue("GR_PR_TIME",plantData.getGrProcessingTime());
+			tPLANTDATA.setValue("MRP_TYPE",plantData.getMrpType());
+			tPLANTDATA.setValue("REORDER_PT",plantData.getReorderPoint());
+			tPLANTDATA.setValue("MRP_CTRLER", plantData.getMrpController());
+			tPLANTDATA.setValue("LOTSIZEKEY",plantData.getLotSizingProcedure());
+			tPLANTDATA.setValue("MINLOTSIZE", plantData.getMinLotSize());
+			tPLANTDATA.setValue("PROC_TYPE", plantData.getProcurementType());
+			tPLANTDATA.setValue("SPPROCTYPE", plantData.getSpecialProcurement());
+			tPLANTDATA.setValue("ISS_ST_LOC", plantData.getIssueStorageLocation());
+			tPLANTDATA.setValue("SLOC_EXPRC", plantData.getStorageLocationForEP());
+			tPLANTDATA.setValue("PLND_DELRY", plantData.getPlannedDeliveryTime());
+			tPLANTDATA.setValue("PERIOD_IND", plantData.getPeriodIndicator());
+			tPLANTDATA.setValue("AVAILCHECK", plantData.getAvailabilityCheck());
+			tPLANTDATA.setValue("DEP_REQ_ID", plantData.getIndividualAndCollectiveReq());
+			tPLANTDATA.setValue("NO_COSTING", (plantData.isDoNotCost() ? "X" : " "));
+			tPLANTDATA.setValue("SALES_VIEW", "X");
+			tPLANTDATA.setValue("PURCH_VIEW","X");
+			tPLANTDATA.setValue("MRP_VIEW", "X");
+			tPLANTDATA.setValue("ACCOUNT_VIEW","X");
+			tPLANTDATA.setValue("COST_VIEW","X");
+
+			tPLANTDATAX.appendRow();
+			tPLANTDATAX.setValue("F_MATERIAL_SAVE", "INS");
+			tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
+			tPLANTDATAX.setValue("PLANT", plantData.getPlant());
+			tPLANTDATAX.setValue("PROFIT_CTR","X");
+			tPLANTDATAX.setValue("PUR_GROUP", "X");
+			tPLANTDATAX.setValue("GR_PR_TIME","X");
+			tPLANTDATAX.setValue("MRP_TYPE","X");
+			tPLANTDATAX.setValue("REORDER_PT","X");
+			tPLANTDATAX.setValue("MRP_CTRLER", "X");
+			tPLANTDATAX.setValue("LOTSIZEKEY","X");
+			tPLANTDATAX.setValue("MINLOTSIZE", "X");
+			tPLANTDATAX.setValue("PROC_TYPE", "X");
+			tPLANTDATAX.setValue("SPPROCTYPE", "X");
+			tPLANTDATAX.setValue("ISS_ST_LOC", "X");
+			tPLANTDATAX.setValue("SLOC_EXPRC", "X");
+			tPLANTDATAX.setValue("PLND_DELRY", "X");
+			tPLANTDATAX.setValue("PERIOD_IND", "X");
+			tPLANTDATAX.setValue("AVAILCHECK", "X");
+			tPLANTDATAX.setValue("DEP_REQ_ID", "X");
+			tPLANTDATAX.setValue("NO_COSTING", "X");
+			
+			tSTORAGELOCATIONDATA.appendRow();
+			tSTORAGELOCATIONDATA.setValue("F_MATERIAL_SAVE","INS");
+			tSTORAGELOCATIONDATA.setValue("MATERIAL", material.getMaterialId());
+			tSTORAGELOCATIONDATA.setValue("PLANT",plantData.getPlant());
+			tSTORAGELOCATIONDATA.setValue("STGE_LOC", plantData.getStorageLocation());
+			tSTORAGELOCATIONDATA.setValue("MRP_VIEW","X");
+			tSTORAGELOCATIONDATA.setValue("STORAGE_VIEW","X");
+			
+			tSTORAGELOCATIONDATAX.appendRow();
+			tSTORAGELOCATIONDATAX.setValue("F_MATERIAL_SAVE","INS");
+			tSTORAGELOCATIONDATAX.setValue("MATERIAL", material.getMaterialId());
+			tSTORAGELOCATIONDATAX.setValue("PLANT",plantData.getPlant());
+			tSTORAGELOCATIONDATAX.setValue("STGE_LOC", plantData.getStorageLocation());
+		
+			tVALUATIONDATA.appendRow();
+			tVALUATIONDATA.setValue("F_MATERIAL_SAVE", "INS");
+			tVALUATIONDATA.setValue("MATERIAL", material.getMaterialId());
+			tVALUATIONDATA.setValue("VAL_AREA", plantData.getPlant());
+			tVALUATIONDATA.setValue("PRICE_CTRL", plantData.getPriceControl());
+			tVALUATIONDATA.setValue("VAL_CLASS", plantData.getValuationClass());
+			tVALUATIONDATA.setValue("MOVING_PR", plantData.getMovingAveragePrice());
+			tVALUATIONDATA.setValue("STD_PRICE", plantData.getStandardPrice());
+			tVALUATIONDATA.setValue("PRICE_UNIT", plantData.getPriceUnit());
+			tVALUATIONDATA.setValue("QTY_STRUCT", (plantData.isCostWithQtyStructure() ? "X" : " "));
+			tVALUATIONDATA.setValue("ORIG_MAT", (plantData.isMaterialRelatedOrigin() ? "X" : " "));
+			tVALUATIONDATA.setValue("ACCOUNT_VIEW", "X");
+			tVALUATIONDATA.setValue("COST_VIEW", "X");
+			
+			tVALUATIONDATAX.appendRow();
+			tVALUATIONDATAX.setValue("F_MATERIAL_SAVE", "INS");
+			tVALUATIONDATAX.setValue("MATERIAL", material.getMaterialId());
+			tVALUATIONDATAX.setValue("VAL_AREA", plantData.getPlant());
+			tVALUATIONDATAX.setValue("PRICE_CTRL", "X");
+			tVALUATIONDATAX.setValue("VAL_CLASS", "X");
+			tVALUATIONDATAX.setValue("MOVING_PR","X");
+			tVALUATIONDATAX.setValue("STD_PRICE", "X");
+			tVALUATIONDATAX.setValue("PRICE_UNIT","X");
+			tVALUATIONDATAX.setValue("QTY_STRUCT", "X");
+			tVALUATIONDATAX.setValue("ORIG_MAT", "X");
+			
 		}
 		
+		execute(material);
+		
+		tHEADDATA.clear();
+		tPLANTDATA.clear();
+		tPLANTDATAX.clear();
+		tSTORAGELOCATIONDATA.clear();
+		tSTORAGELOCATIONDATAX.clear();
+		tVALUATIONDATA.clear();
+		tVALUATIONDATAX.clear();
+		tRETURNMESSAGES.clear();
+		
+		processedCount++;
+		progressUpdated();
 	}
 	
 	private void executeAddPlantData() throws JCoException {
 		
 		for(Material material : materials) {
 			
-			Map<String,JCoStructure> structureMap=this.getMaterialPlantData(material.getMaterialId(), "0700");
+			Map<String,JCoStructure> structureMap=super.getMaterialPlantData(material.getMaterialId(), "0700");
 			copyPlantData(structureMap,material);
 			
 			tHEADDATA.appendRow();
-			tHEADDATA.setValue("FUNCTION","INS");
+			tHEADDATA.setValue("F_MATERIAL_SAVE","INS");
 			tHEADDATA.setValue("MATERIAL",material.getMaterialId());
 			
 			Set<String> plants=material.getPlantDataMap().keySet();
@@ -54,7 +167,7 @@ public class AddPlantData extends SaveMaterialReplica {
 			for(String plant : plants) {
 				PlantData plantData=material.getPlantDataMap().get(plant);
 				tPLANTDATA.appendRow();
-				tPLANTDATA.setValue("FUNCTION", "INS");
+				tPLANTDATA.setValue("F_MATERIAL_SAVE", "INS");
 				tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
 				tPLANTDATA.setValue("PLANT", plantData.getPlant());
 				tPLANTDATA.setValue("PROFIT_CTR",plantData.getProfitCenter());
@@ -81,7 +194,7 @@ public class AddPlantData extends SaveMaterialReplica {
 				tPLANTDATA.setValue("COST_VIEW","X");
 
 				tPLANTDATAX.appendRow();
-				tPLANTDATAX.setValue("FUNCTION", "INS");
+				tPLANTDATAX.setValue("F_MATERIAL_SAVE", "INS");
 				tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
 				tPLANTDATAX.setValue("PLANT", plantData.getPlant());
 				tPLANTDATAX.setValue("PROFIT_CTR","X");
@@ -103,7 +216,7 @@ public class AddPlantData extends SaveMaterialReplica {
 				tPLANTDATAX.setValue("NO_COSTING", "X");
 				
 				tSTORAGELOCATIONDATA.appendRow();
-				tSTORAGELOCATIONDATA.setValue("FUNCTION","INS");
+				tSTORAGELOCATIONDATA.setValue("F_MATERIAL_SAVE","INS");
 				tSTORAGELOCATIONDATA.setValue("MATERIAL", material.getMaterialId());
 				tSTORAGELOCATIONDATA.setValue("PLANT",plantData.getPlant());
 				tSTORAGELOCATIONDATA.setValue("STGE_LOC", plantData.getStorageLocation());
@@ -111,13 +224,13 @@ public class AddPlantData extends SaveMaterialReplica {
 				tSTORAGELOCATIONDATA.setValue("STORAGE_VIEW","X");
 				
 				tSTORAGELOCATIONDATAX.appendRow();
-				tSTORAGELOCATIONDATAX.setValue("FUNCTION","INS");
+				tSTORAGELOCATIONDATAX.setValue("F_MATERIAL_SAVE","INS");
 				tSTORAGELOCATIONDATAX.setValue("MATERIAL", material.getMaterialId());
 				tSTORAGELOCATIONDATAX.setValue("PLANT",plantData.getPlant());
 				tSTORAGELOCATIONDATAX.setValue("STGE_LOC", plantData.getStorageLocation());
 			
 				tVALUATIONDATA.appendRow();
-				tVALUATIONDATA.setValue("FUNCTION", "INS");
+				tVALUATIONDATA.setValue("F_MATERIAL_SAVE", "INS");
 				tVALUATIONDATA.setValue("MATERIAL", material.getMaterialId());
 				tVALUATIONDATA.setValue("VAL_AREA", plantData.getPlant());
 				//tVALUATIONDATA.setValue("VAL_TYPE", " ");
@@ -132,7 +245,7 @@ public class AddPlantData extends SaveMaterialReplica {
 				tVALUATIONDATA.setValue("COST_VIEW", "X");
 				
 				tVALUATIONDATAX.appendRow();
-				tVALUATIONDATAX.setValue("FUNCTION", "INS");
+				tVALUATIONDATAX.setValue("F_MATERIAL_SAVE", "INS");
 				tVALUATIONDATAX.setValue("MATERIAL", material.getMaterialId());
 				tVALUATIONDATAX.setValue("VAL_AREA", plantData.getPlant());
 				//tVALUATIONDATAX.setValue("VAL_TYPE", " ");
@@ -189,6 +302,11 @@ public class AddPlantData extends SaveMaterialReplica {
 			
 		}
 		
+	}
+
+	@Override
+	public String getFunctionName() {
+		return FUNCTION_NAME;
 	}
 	
 }

@@ -22,7 +22,8 @@ import com.sap.conn.jco.JCoTable;
 public abstract class SaveMaterialReplica extends RunnableFunction {
 	
 	
-	public static final String FUNCTION="BAPI_MATERIAL_SAVEREPLICA";
+	public static final String F_MATERIAL_SAVE="BAPI_MATERIAL_SAVEREPLICA";
+	public static final String F_MATERIAL_GET="BAPI_MATERIAL_GET_ALL";
 	
 	protected List<Material> materials=null;
 	protected JCoFunction funcGetPlantData=null;
@@ -40,22 +41,29 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 	
 	public SaveMaterialReplica(int id,JCoDestination destination) {
 		super(id,destination);
+		this.initialize();
 	}
 	
 	public SaveMaterialReplica(int id,List<Material> materials,JCoDestination destination) {
 		super(id,destination);
 		this.materials=materials;
 		this.workload=materials.size();
+		this.initialize();
 	}
 	
 	public SaveMaterialReplica(int id,List<Material> materials,JCoDestination destination,boolean testRun) {
 		super(id,destination,testRun);
 		this.materials=materials;
 		this.workload=materials.size();
+		this.initialize();
 	}
 	
 	private void initialize() {
 		
+		JCoFunction function=null;
+		
+		super.initialize(new String[] {F_MATERIAL_SAVE,F_MATERIAL_GET});
+		function=functionMap.get(F_MATERIAL_SAVE);
 		function.getImportParameterList().setValue("NOAPPLLOG", "X");
 		function.getImportParameterList().setValue("NOCHANGEDOC", "X");
 		function.getImportParameterList().setValue("TESTRUN", (testRun==true ? "X" : " "));
@@ -70,26 +78,12 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		tVALUATIONDATAX=function.getTableParameterList().getTable("VALUATIONDATAX");
 		tRETURNMESSAGES=function.getTableParameterList().getTable("RETURNMESSAGES");
 		
-		try {
-			JCoFunctionTemplate template=repository.getFunctionTemplate("BAPI_MATERIAL_GET_ALL");
-			funcGetPlantData=template.getFunction();
-		} 
-		catch (JCoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 	
-	protected void execute(Material material)  {
+	protected void execute(Material material) throws JCoException  {
 		JCoContext.begin(destination);
-		try {
-			function.execute(destination);
-		} 
-		catch (JCoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		functionMap.get(F_MATERIAL_SAVE).execute(destination);
+		
 		List<ReturnMessage> functionMessages=createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
 		if(functionMessages!=null) {
 			material.setMessages(functionMessages);
@@ -99,14 +93,22 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		}
 	}
 	
-	protected Map<String,JCoStructure> getMaterialPlantData(String material,String plant) throws JCoException{
+	protected Map<String,JCoStructure> getMaterialPlantData(String material,String plant){
 		Map<String,JCoStructure> exports=new HashMap<String,JCoStructure>();
+		JCoFunction funcGetPlantData=functionMap.get(F_MATERIAL_GET);
 		funcGetPlantData.getImportParameterList().setValue("MATERIAL", material);
 		funcGetPlantData.getImportParameterList().setValue("COMP_CODE", "07");
 		funcGetPlantData.getImportParameterList().setValue("VAL_AREA", plant);
 		funcGetPlantData.getImportParameterList().setValue("PLANT", plant);
 		
-		funcGetPlantData.execute(destination);
+		try {
+			funcGetPlantData.execute(destination);
+		} 
+		catch (JCoException e) {
+			status=StatusCode.ERROR;
+			statusChanged();
+			e.printStackTrace();
+		}
 		
 		exports.put("CLIENTDATA", funcGetPlantData.getExportParameterList().getStructure("CLIENTDATA"));
 		exports.put("PLANTDATA", funcGetPlantData.getExportParameterList().getStructure("PLANTDATA"));
@@ -160,25 +162,27 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		this.workload=materials.size();
 	}
 	
-	protected void doWork() {
-		try {
-			super.initialize(FUNCTION);
-		} 
-		catch (JCoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	protected void doWork() throws JCoException {
 		this.initialize();
+		for(Material material : materials) {
+			if(status==StatusCode.PAUSED) {
+				pauseThread();
+			}
+			executeFunction(material);
+			processedCount++;
+			progressUpdated();
+		}
 	}
+	
+	abstract void executeFunction(Material material) throws JCoException;
 	
 	public static List<ReturnMessage> getReturnMessages(){ 
 		return returnMessages;
 	}
 
 	@Override
-	public String getFunctionName() {
-		return FUNCTION;
-	}
+	public abstract String getFunctionName();
+	
 	
 	protected void setFieldValue(String sapField,Object value) {
 		JCoTable tables[]=getTables(sapField);

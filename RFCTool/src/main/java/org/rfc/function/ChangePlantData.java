@@ -11,6 +11,8 @@ import com.sap.conn.jco.JCoException;
 
 public class ChangePlantData extends SaveMaterialReplica {
 	
+	public static final String FUNCTION_NAME="ChangePlantData";
+	
 	public ChangePlantData(int id,JCoDestination destination) {
 		super(id,destination);
 	}
@@ -23,23 +25,49 @@ public class ChangePlantData extends SaveMaterialReplica {
 		super(id,materials,destination,testRun);
 	}
 	
-	protected void doWork() {
-		super.doWork();
-		try {
-			executePlannedDeliveryTimeUpdate();
-		} 
-		catch (JCoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+//	protected void doWork() throws JCoException  {
+//		super.doWork();
+//		executeChangePlantData();
+//	}
+	
+	protected void executeFunction(Material material) throws JCoException{
+		
+		tHEADDATA.appendRow();
+		tHEADDATA.setValue("F_MATERIAL_SAVE","UPD");
+		tHEADDATA.setValue("MATERIAL",material.getMaterialId());
+		
+		Set<String> plants=material.getPlantDataMap().keySet();
+		
+		for(String plant : plants) {
+			PlantData plantData=material.getPlantDataMap().get(plant);
+			tPLANTDATA.appendRow();
+			tPLANTDATA.setValue("F_MATERIAL_SAVE", "UPD");
+			tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
+			tPLANTDATA.setValue("PLANT", plantData.getPlant());
+			tPLANTDATA.setValue("PLND_DELRY", plantData.getPlannedDeliveryTime());
+
+			tPLANTDATAX.appendRow();
+			tPLANTDATAX.setValue("F_MATERIAL_SAVE", "UPD");
+			tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
+			tPLANTDATAX.setValue("PLANT", plantData.getPlant());
+			tPLANTDATAX.setValue("PLND_DELRY", "X");
 		}
+		
+		execute(material);
+		
+		tHEADDATA.clear();
+		tPLANTDATA.clear();
+		tPLANTDATAX.clear();
+		tRETURNMESSAGES.clear();
+	
 	}
 	
-	private void executePlannedDeliveryTimeUpdate() throws JCoException {
+	private void executeChangePlantData() throws JCoException {
 		
 		for(Material material : materials) {
 			
 			tHEADDATA.appendRow();
-			tHEADDATA.setValue("FUNCTION","UPD");
+			tHEADDATA.setValue("F_MATERIAL_SAVE","UPD");
 			tHEADDATA.setValue("MATERIAL",material.getMaterialId());
 			
 			Set<String> plants=material.getPlantDataMap().keySet();
@@ -47,13 +75,13 @@ public class ChangePlantData extends SaveMaterialReplica {
 			for(String plant : plants) {
 				PlantData plantData=material.getPlantDataMap().get(plant);
 				tPLANTDATA.appendRow();
-				tPLANTDATA.setValue("FUNCTION", "UPD");
+				tPLANTDATA.setValue("F_MATERIAL_SAVE", "UPD");
 				tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
 				tPLANTDATA.setValue("PLANT", plantData.getPlant());
 				tPLANTDATA.setValue("PLND_DELRY", plantData.getPlannedDeliveryTime());
 
 				tPLANTDATAX.appendRow();
-				tPLANTDATAX.setValue("FUNCTION", "UPD");
+				tPLANTDATAX.setValue("F_MATERIAL_SAVE", "UPD");
 				tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
 				tPLANTDATAX.setValue("PLANT", plantData.getPlant());
 				tPLANTDATAX.setValue("PLND_DELRY", "X");
@@ -70,6 +98,11 @@ public class ChangePlantData extends SaveMaterialReplica {
 			this.progressUpdated();
 		}
 		
+	}
+
+	@Override
+	public String getFunctionName() {
+		return FUNCTION_NAME;
 	}
 	
 }

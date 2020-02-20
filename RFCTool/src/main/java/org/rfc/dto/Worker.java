@@ -12,13 +12,14 @@ public interface Worker {
 		RUNNING,
 		PAUSED,
 		FINISHED,
-		STOPPED
+		STOPPED,
+		ERROR
 	}
 	
 	public int getId();
 	public String getFunctionName();
 	public boolean isTestRun();
-	public StatusCode getStatusCode();
+	public StatusCode getStatus();
 	public int getWorkload();
 	public int getProcessedCount();
 	public double getProgress();

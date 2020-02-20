@@ -103,7 +103,7 @@ public class RFCMain {
 		while(finished==false){
 			finished=true;
 			for(Worker w : workers) {
-				if(w.getStatusCode()==StatusCode.RUNNING) {
+				if(w.getStatus()==StatusCode.RUNNING) {
 					System.out.println(w.getProgress());
 					finished=false;
 				}
@@ -120,7 +120,7 @@ public class RFCMain {
 		
 		System.out.println("End results");
 		for(Worker w1 : workers) {
-			System.out.println(w1.getProgress()+"\tstatus: "+w1.getStatusCode()+"\tsuccess: "+w1.getSuccessCount()+"\terror: "+w1.getErrorCount());
+			System.out.println(w1.getProgress()+"\tstatus: "+w1.getStatus()+"\tsuccess: "+w1.getSuccessCount()+"\terror: "+w1.getErrorCount());
 		}
 		
 		long endTime=System.currentTimeMillis();
@@ -247,17 +247,17 @@ public class RFCMain {
 			tRETURNMESSAGES=function.getTableParameterList().getTable("RETURNMESSAGES");
 			
 			tHEADDATA.appendRow();
-			tHEADDATA.setValue("FUNCTION","UPD");
+			tHEADDATA.setValue("F_MATERIAL_SAVE","UPD");
 			tHEADDATA.setValue("MATERIAL",material);
 			
 			tPLANTDATA.appendRow();
-			tPLANTDATA.setValue("FUNCTION", "UPD");
+			tPLANTDATA.setValue("F_MATERIAL_SAVE", "UPD");
 			tPLANTDATA.setValue("MATERIAL", material);
 			tPLANTDATA.setValue("PLANT", plant);
 			tPLANTDATA.setValue("PLND_DELRY", plannedDeliveryTime);
 			
 			tPLANTDATAX.appendRow();
-			tPLANTDATAX.setValue("FUNCTION", "UPD");
+			tPLANTDATAX.setValue("F_MATERIAL_SAVE", "UPD");
 			tPLANTDATAX.setValue("MATERIAL", material);
 			tPLANTDATAX.setValue("PLANT", plant);
 			tPLANTDATAX.setValue("PLND_DELRY", "X");

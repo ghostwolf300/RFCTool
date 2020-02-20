@@ -79,11 +79,11 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 				case COL_ERROR :
 					return worker.getErrorCount();
 				case COL_STATUS :
-					return worker.getStatusCode();
+					return worker.getStatus();
 				case COL_LOG :
 					return null;
 				case COL_CONTROL :
-					return worker.getStatusCode();
+					return worker.getStatus();
 				default :
 					return null;
 			}
@@ -95,10 +95,10 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 		if(col==COL_CONTROL) {
 			System.out.println("trying to update...");
 			StatusCode statusCode=(StatusCode) value;
-			if(statusCode==StatusCode.RUNNING && worker.getStatusCode()==StatusCode.CREATED) {
+			if(statusCode==StatusCode.RUNNING && worker.getStatus()==StatusCode.CREATED) {
 				worker.startWorking();
 			}
-			else if(statusCode==StatusCode.PAUSED && worker.getStatusCode()==StatusCode.RUNNING) {
+			else if(statusCode==StatusCode.PAUSED && worker.getStatus()==StatusCode.RUNNING) {
 				worker.pauseWorking();
 			}
 		}

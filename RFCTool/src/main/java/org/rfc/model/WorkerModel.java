@@ -107,7 +107,7 @@ public class WorkerModel extends AbstractModel implements WorkerListener {
 		statusCountMap.put(StatusCode.STOPPED, 0);
 		
 		for(Worker w : workers) {
-			switch(w.getStatusCode()) {
+			switch(w.getStatus()) {
 				case CREATED :
 					statusCountMap.put(StatusCode.CREATED, statusCountMap.get(StatusCode.CREATED)+1);
 					break;
