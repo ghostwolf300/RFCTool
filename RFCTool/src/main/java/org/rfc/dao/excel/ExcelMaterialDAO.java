@@ -68,10 +68,15 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 	}
 	
 	private PlantData createPlantDataShort(Row row,Material material) {
+		
 		PlantData pd=new PlantData();
+		
 		pd.setMaterial(material);
 		pd.setPlant(row.getCell(1).getStringCellValue());
-		pd.setPlannedDeliveryTime((int) row.getCell(2).getNumericCellValue());
+		//pd.setProfitCenter(row.getCell(2).getStringCellValue());
+		pd.setPlannedDeliveryTime((int) row.getCell(3).getNumericCellValue());
+		//pd.setGrProcessingTime((int) row.getCell(4).getNumericCellValue());
+		//pd.setSpecialProcurement(row.getCell(5).getStringCellValue());
 		
 		return pd;
 	}

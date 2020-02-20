@@ -2,6 +2,7 @@ package org.rfc.function;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +61,7 @@ public abstract class RunnableFunction implements Runnable,Worker {
 		JCoFunctionTemplate template=null;
 		JCoFunction function=null;
 		JCoRepository repo=null;
+		functionMap=new HashMap<String,JCoFunction>();
 		try {
 			repo=destination.getRepository();
 			for(String functionName : functionNames) {

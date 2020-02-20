@@ -2,8 +2,6 @@ package org.rfc.controller;
 
 import java.io.File;
 
-import org.rfc.dto.Worker;
-import org.rfc.dto.Worker.StatusCode;
 import org.rfc.service.RFCService;
 
 public class DefaultController extends AbstractController {
@@ -13,6 +11,7 @@ public class DefaultController extends AbstractController {
 	public DefaultController() {
 		super();
 		service=new RFCService();
+		this.addModel(service.getFunctionModel());
 		this.addModel(service.getMaterialDataModel());
 		this.addModel(service.getWorkerModel());
 		
