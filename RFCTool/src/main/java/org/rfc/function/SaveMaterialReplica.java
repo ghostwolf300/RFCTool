@@ -39,6 +39,14 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 
 	private static List<ReturnMessage> returnMessages=Collections.synchronizedList(new ArrayList<ReturnMessage>());
 	
+	public SaveMaterialReplica() {
+		super();
+	}
+	
+	public SaveMaterialReplica(int id) {
+		super(id);
+	}
+	
 	public SaveMaterialReplica(int id,JCoDestination destination) {
 		super(id,destination);
 		this.initialize();

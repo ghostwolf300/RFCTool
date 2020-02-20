@@ -9,7 +9,9 @@ import javax.swing.filechooser.FileSystemView;
 import org.rfc.controller.DefaultController;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
+import org.rfc.dto.UserFunction;
 import org.rfc.model.MaterialDataModel;
+import org.rfc.model.UserFunctionModel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +40,8 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	private DefaultController controller=null;
 	private File plantDataFile;
 	private ActionListener cardManager=null;
+	private JTextField fldSelectedUserFunction;
+	private JLabel lblSelectedUserFunction;
 
 	/**
 	 * Create the panel.
@@ -49,13 +53,15 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 		initialize();
 	}
 	private void initialize() {
-		setLayout(new MigLayout("", "[grow][grow]", "[][grow][]"));
-		add(getLblNewLabel(), "cell 0 0,alignx trailing");
-		add(getFldFilePath(), "flowx,cell 1 0,growx");
-		add(getBtnChooseFile(), "cell 1 0");
-		add(getBtnOpenFile(), "cell 1 0");
-		add(getScrollPane(), "cell 0 1 2 1,grow");
-		add(getBtnNext(), "cell 0 2");
+		setLayout(new MigLayout("", "[grow][grow]", "[][][grow][]"));
+		add(getLblSelectedUserFunction(), "cell 0 0,alignx left");
+		add(getFldSelectedUserFunction(), "cell 1 0,growx");
+		add(getLblNewLabel(), "cell 0 1,alignx left");
+		add(getFldFilePath(), "flowx,cell 1 1,growx");
+		add(getBtnChooseFile(), "cell 1 1");
+		add(getBtnOpenFile(), "cell 1 1");
+		add(getScrollPane(), "cell 0 2 2 1,grow");
+		add(getBtnNext(), "cell 0 3");
 	}
 
 	private JLabel getLblNewLabel() {
@@ -108,8 +114,23 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 		}
 		return btnNext;
 	}
+	private JTextField getFldSelectedUserFunction() {
+		if (fldSelectedUserFunction == null) {
+			fldSelectedUserFunction = new JTextField();
+			fldSelectedUserFunction.setEditable(false);
+			fldSelectedUserFunction.setColumns(10);
+			
+		}
+		return fldSelectedUserFunction;
+	}
+	private JLabel getLblSelectedUserFunction() {
+		if (lblSelectedUserFunction == null) {
+			lblSelectedUserFunction = new JLabel("Selected function:");
+		}
+		return lblSelectedUserFunction;
+	}
+	
 	public void actionPerformed(ActionEvent e) {
-		System.out.println("action");
 		if(e.getSource().equals(this.getBtnChooseFile())) {
 			plantDataFile=chooseFile();
 			if(plantDataFile!=null) {
@@ -117,7 +138,7 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 			}
 		}
 		else if(e.getSource().equals(this.getBtnOpenFile())) {
-			controller.loadPlantDataFile(plantDataFile);
+			controller.loadInputDataFile(plantDataFile);
 		}
 		
 	}
@@ -140,6 +161,11 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 			updatePlantDataList(pdList);
 			btnNext.setEnabled(true);
 		}
+		else if(pce.getPropertyName().equals(UserFunctionModel.P_SELECTED_FUNCTION)) {
+			System.out.println("Function selected!");
+			UserFunction uf=(UserFunction) pce.getNewValue();
+			fldSelectedUserFunction.setText(uf.getName());
+		}
 		
 	}
 	
@@ -147,4 +173,5 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 		PlantDataTableModel model=(PlantDataTableModel) tblPlantData.getModel();
 		model.setPlantDataList(plantDataList);
 	}
+	
 }

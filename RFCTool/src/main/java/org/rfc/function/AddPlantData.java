@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
+
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoStructure;
@@ -15,6 +16,14 @@ import com.sap.conn.jco.JCoTable;
 public class AddPlantData extends SaveMaterialReplica {
 	
 	public static final String FUNCTION_NAME="AddPlantData";
+	
+	public AddPlantData() {
+		super();
+	}
+	
+	public AddPlantData(int id) {
+		super(id);
+	}
 	
 	public AddPlantData(int id,JCoDestination destination) {
 		super(id,destination);

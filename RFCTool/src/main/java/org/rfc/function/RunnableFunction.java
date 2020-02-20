@@ -42,6 +42,15 @@ public abstract class RunnableFunction implements Runnable,Worker {
 	private Thread thread=null;
 	private static int threadCount=0;
 	
+	public RunnableFunction() {
+		status=StatusCode.CREATED;
+	}
+	
+	public RunnableFunction(int id) {
+		this.id=id;
+		status=StatusCode.CREATED;
+	}
+	
 	public RunnableFunction(int id,JCoDestination destination) {
 		this.id=id;
 		this.destination=destination;

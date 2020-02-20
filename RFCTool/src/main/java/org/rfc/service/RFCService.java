@@ -1,6 +1,8 @@
 package org.rfc.service;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,12 +10,13 @@ import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dto.Material;
+import org.rfc.dto.UserFunction;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.AddPlantData;
 import org.rfc.function.ChangePlantData;
 import org.rfc.model.MaterialDataModel;
-import org.rfc.model.RFCFunctionModel;
+import org.rfc.model.UserFunctionModel;
 import org.rfc.model.WorkerModel;
 import org.rfc.sap.SapSystem;
 import org.rfc.sap.SapSystemFactory;
@@ -22,7 +25,7 @@ import com.sap.conn.jco.JCoException;
 
 public class RFCService {
 	
-	private RFCFunctionModel functionModel=null;
+	private UserFunctionModel functionModel=null;
 	private MaterialDataModel materialDataModel=null;
 	private MaterialDAO<Material> materialDao=null;
 	private WorkerModel workerModel=null;
@@ -31,16 +34,17 @@ public class RFCService {
 	
 	public RFCService() {
 		super();
+		functionModel=new UserFunctionModel();
 		materialDataModel=new MaterialDataModel();
 		workerModel=new WorkerModel();
 		
 	}
 
-	public RFCFunctionModel getFunctionModel() {
+	public UserFunctionModel getFunctionModel() {
 		return functionModel;
 	}
 
-	public void setFunctionModel(RFCFunctionModel functionModel) {
+	public void setFunctionModel(UserFunctionModel functionModel) {
 		this.functionModel = functionModel;
 	}
 
@@ -59,12 +63,54 @@ public class RFCService {
 	public void setWorkerModel(WorkerModel workerModel) {
 		this.workerModel = workerModel;
 	}
+	
+	public void loadFunctions() {
+		List<String> functionNames=new ArrayList<String>();
+		functionNames.add("AddPlantData");
+		functionNames.add("ChangePlantData");
+		List<UserFunction> functions=new ArrayList<UserFunction>();
+		int counter=1;
+		for(String fname : functionNames) {
+			functions.add(new UserFunction(counter,fname));
+			counter++;
+		}
+		functionModel.setFunctions(functions);
+		
+	}
+	
+	public void selectUserFunction(UserFunction userFunction) {
+		functionModel.setSelectedFunction(userFunction);
+	}
 
-	public void loadPlantDataFile(File file) {
+	public void loadInputDataFile(File file) {
+		List<Material> materials=null;
+		UserFunction uf=functionModel.getSelectedFunction();
 		DAOFactory factory=new ExcelDAOFactory(file);
 		materialDao=factory.getMaterialDAO();
-		List<Material> materials=materialDao.getChangePlantDataList();
-		//List<Material> materials=materialDao.getAddPlantDataList();
+		try {
+			Method method=materialDao.getClass().getMethod("get"+uf.getName()+"List", null);
+			materials=(List<Material>) method.invoke(materialDao, null);
+		} 
+		catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		materialDataModel.setMaterials(materials);
 	}
 	

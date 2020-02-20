@@ -12,7 +12,7 @@ public class WorkerTable extends JTable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public static final String HEADERS[]= {"Id","RFCFunction","Testrun","Workload","Processed","Progress","Run Time","Success","Warning","Error","Status","Log","Control"};
+	public static final String HEADERS[]= {"Id","UserFunction","Testrun","Workload","Processed","Progress","Run Time","Success","Warning","Error","Status","Log","Control"};
 
 	public WorkerTable() {
 		super(new WorkerTableModel());

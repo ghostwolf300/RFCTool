@@ -2,6 +2,7 @@ package org.rfc.controller;
 
 import java.io.File;
 
+import org.rfc.dto.UserFunction;
 import org.rfc.service.RFCService;
 
 public class DefaultController extends AbstractController {
@@ -14,11 +15,18 @@ public class DefaultController extends AbstractController {
 		this.addModel(service.getFunctionModel());
 		this.addModel(service.getMaterialDataModel());
 		this.addModel(service.getWorkerModel());
-		
 	}
 	
-	public void loadPlantDataFile(File file) {
-		service.loadPlantDataFile(file);
+	public void loadFunctions() {
+		service.loadFunctions();
+	}
+	
+	public void selectUserFunction(UserFunction userFunction) {
+		service.selectUserFunction(userFunction);
+	}
+	
+	public void loadInputDataFile(File file) {
+		service.loadInputDataFile(file);
 	}
 	
 	public void createWorkers(int maxMaterials,boolean testRun) {

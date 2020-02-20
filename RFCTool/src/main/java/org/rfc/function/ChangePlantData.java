@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
+
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
 
@@ -12,6 +13,14 @@ import com.sap.conn.jco.JCoException;
 public class ChangePlantData extends SaveMaterialReplica {
 	
 	public static final String FUNCTION_NAME="ChangePlantData";
+	
+	public ChangePlantData() {
+		super();
+	}
+	
+	public ChangePlantData(int id) {
+		super(id);
+	}
 	
 	public ChangePlantData(int id,JCoDestination destination) {
 		super(id,destination);

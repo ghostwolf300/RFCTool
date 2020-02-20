@@ -12,6 +12,7 @@ import org.rfc.dao.access.AccessDAOFactory;
 import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
+import org.rfc.dto.UserFunction;
 import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
@@ -38,8 +39,29 @@ public class RFCMain {
 		RFCMain main=new RFCMain();
 		//main.ExecuteTest();
 		//main.ExecuteThreadTest();
-		main.daoTest();
+		//main.daoTest();
+		main.reflectionTest();
 
+	}
+	
+	public void reflectionTest() {
+		UserFunction f1=new UserFunction(1,"AddPlantData");
+		UserFunction f2=new UserFunction(2,"ChangePlantData");
+		int id=1;
+		Object[] param1=new Object[1];
+		param1[0]=id;
+		Class[] paramClass1=new Class[1];
+		paramClass1[0]=int.class;
+		Worker w1=f1.createWorker(param1,paramClass1);
+		
+		id=2;
+		Object[] param2=new Object[1];
+		param2[0]=id;
+		Class[] paramClass2=new Class[1];
+		paramClass2[0]=int.class;
+		Worker w2=f2.createWorker(param2,paramClass2);
+		System.out.println(w1.getId()+"\t"+w1.getFunctionName());
+		System.out.println(w2.getId()+"\t"+w2.getFunctionName());
 	}
 	
 	public void daoTest() {
