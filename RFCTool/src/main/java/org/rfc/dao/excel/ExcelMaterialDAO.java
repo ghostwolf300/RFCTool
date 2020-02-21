@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.rfc.dao.MaterialDAO;
@@ -15,6 +16,7 @@ import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
 import org.rfc.dto.Material3;
 import org.rfc.dto.PlantData3;
+import org.rfc.dto.PreviewRow;
 import org.rfc.dto.PlantData;
 import org.rfc.function.ChangePlantData;
 
@@ -32,6 +34,32 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		super(dbFile);
 	}
 	
+	@Override
+	public List<Row> getPreviewDataList(int maxRows) {
+		
+		List<Row> previewDataList=null;
+		int rowCount=0;
+		
+		try {
+			openConnection();
+			Sheet sheet=this.workbook.getSheetAt(0);
+			previewDataList=new ArrayList<Row>();
+			
+			Iterator<Row> rowIter=sheet.iterator();
+			while(rowIter.hasNext() && rowCount<=maxRows) {
+				Row row=rowIter.next();
+				previewDataList.add(row);
+				rowCount++;
+			}
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return previewDataList;
+	}
+	
 	public List<Material> getChangePlantDataList() {
 		List<Material> materials=new ArrayList<Material>();
 		Material material=null;
@@ -43,6 +71,7 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 			this.openConnection();
 			Sheet sheet=this.workbook.getSheetAt(0);
 			Iterator<Row> rowIter=sheet.iterator();
+			
 			//skip header row
 			rowIter.next();
 			while(rowIter.hasNext()) {
@@ -159,5 +188,7 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 //		}
 		return null;
 	}
+
+	
 
 }

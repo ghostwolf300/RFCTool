@@ -6,6 +6,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.excel.ExcelDAOFactory;
@@ -17,6 +18,7 @@ import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.AddPlantData;
 import org.rfc.function.ChangePlantData;
 import org.rfc.model.MaterialDataModel;
+import org.rfc.model.PreviewDataModel;
 import org.rfc.model.UserFunctionModel;
 import org.rfc.model.WorkerModel;
 import org.rfc.sap.SapSystem;
@@ -27,6 +29,7 @@ import com.sap.conn.jco.JCoException;
 public class RFCService {
 	
 	private UserFunctionModel functionModel=null;
+	private PreviewDataModel previewDataModel=null;
 	private MaterialDataModel materialDataModel=null;
 	private MaterialDAO<Material> materialDao=null;
 	private WorkerModel workerModel=null;
@@ -36,6 +39,7 @@ public class RFCService {
 	public RFCService() {
 		super();
 		functionModel=new UserFunctionModel();
+		previewDataModel=new PreviewDataModel();
 		materialDataModel=new MaterialDataModel();
 		workerModel=new WorkerModel();
 		
@@ -47,6 +51,14 @@ public class RFCService {
 
 	public void setFunctionModel(UserFunctionModel functionModel) {
 		this.functionModel = functionModel;
+	}
+
+	public PreviewDataModel getPreviewDataModel() {
+		return previewDataModel;
+	}
+
+	public void setPreviewDataModel(PreviewDataModel previewDataModel) {
+		this.previewDataModel = previewDataModel;
 	}
 
 	public MaterialDataModel getMaterialDataModel() {
@@ -82,7 +94,15 @@ public class RFCService {
 	public void selectUserFunction(UserFunction userFunction) {
 		functionModel.setSelectedFunction(userFunction);
 	}
-
+	
+	public void loadPreviewDataFile(File file) {
+		DAOFactory factory=new ExcelDAOFactory(file);
+		materialDao=factory.getMaterialDAO();
+		List<Row> previewDataList=materialDao.getPreviewDataList(50);
+		System.out.println("Preview: "+previewDataList.size());
+		previewDataModel.setPreviewDataList(previewDataList);
+	}
+	
 	public void loadInputDataFile(File file) {
 		List<Material> materials=null;
 		UserFunction uf=functionModel.getSelectedFunction();

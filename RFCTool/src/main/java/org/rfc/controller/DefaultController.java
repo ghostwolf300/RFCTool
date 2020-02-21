@@ -13,6 +13,7 @@ public class DefaultController extends AbstractController {
 		super();
 		service=new RFCService();
 		this.addModel(service.getFunctionModel());
+		this.addModel(service.getPreviewDataModel());
 		this.addModel(service.getMaterialDataModel());
 		this.addModel(service.getWorkerModel());
 	}
@@ -23,6 +24,10 @@ public class DefaultController extends AbstractController {
 	
 	public void selectUserFunction(UserFunction userFunction) {
 		service.selectUserFunction(userFunction);
+	}
+	
+	public void loadPreviewDataFile(File file) {
+		service.loadPreviewDataFile(file);
 	}
 	
 	public void loadInputDataFile(File file) {

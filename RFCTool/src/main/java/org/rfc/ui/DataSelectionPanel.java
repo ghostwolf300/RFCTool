@@ -6,12 +6,14 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.rfc.controller.DefaultController;
 import org.rfc.dto.Material3;
 import org.rfc.dto.PlantData3;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.UserFunction;
 import org.rfc.model.MaterialDataModel;
+import org.rfc.model.PreviewDataModel;
 import org.rfc.model.UserFunctionModel;
 
 import java.awt.event.ActionEvent;
@@ -36,10 +38,10 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	private JButton btnChooseFile;
 	private JButton btnOpenFile;
 	private JScrollPane scrollPane;
-	private JTable tblPlantData;
+	private JTable tblPreviewData;
 	private JButton btnNext;
 	private DefaultController controller=null;
-	private File plantDataFile;
+	private File previewDataFile;
 	private ActionListener cardManager=null;
 	private JTextField fldSelectedUserFunction;
 	private JLabel lblSelectedUserFunction;
@@ -96,16 +98,16 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	private JScrollPane getScrollPane() {
 		if (scrollPane == null) {
 			scrollPane = new JScrollPane();
-			scrollPane.setViewportView(getTblPlantData());
+			scrollPane.setViewportView(getTblPreviewData());
 		}
 		return scrollPane;
 	}
-	private JTable getTblPlantData() {
-		if (tblPlantData == null) {
-			tblPlantData = new JTable();
-			tblPlantData.setModel(new PlantDataTableModel());
+	private JTable getTblPreviewData() {
+		if (tblPreviewData == null) {
+			tblPreviewData = new JTable();
+			tblPreviewData.setModel(new PreviewDataTableModel());
 		}
-		return tblPlantData;
+		return tblPreviewData;
 	}
 	public JButton getBtnNext() {
 		if (btnNext == null) {
@@ -133,13 +135,13 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(this.getBtnChooseFile())) {
-			plantDataFile=chooseFile();
-			if(plantDataFile!=null) {
-				fldFilePath.setText(plantDataFile.getAbsolutePath());
+			previewDataFile=chooseFile();
+			if(previewDataFile!=null) {
+				fldFilePath.setText(previewDataFile.getAbsolutePath());
 			}
 		}
 		else if(e.getSource().equals(this.getBtnOpenFile())) {
-			controller.loadInputDataFile(plantDataFile);
+			controller.loadPreviewDataFile(previewDataFile);
 		}
 		
 	}
@@ -157,9 +159,10 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	
 	@SuppressWarnings("unchecked")
 	public void modelPropertyChange(PropertyChangeEvent pce) {
-		if(pce.getPropertyName().equals(MaterialDataModel.P_PLANT_DATA_LIST)) {
-			List<PlantData> pdList=(List<PlantData>) pce.getNewValue();
-			updatePlantDataList(pdList);
+		if(pce.getPropertyName().equals(PreviewDataModel.P_PREVIEW_DATA)) {
+			List<Row> previewDataList=(List<Row>) pce.getNewValue();
+			System.out.println("GUI received: "+previewDataList.size());
+			updatePreviewDataList(previewDataList);
 			btnNext.setEnabled(true);
 		}
 		else if(pce.getPropertyName().equals(UserFunctionModel.P_SELECTED_FUNCTION)) {
@@ -170,9 +173,9 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 		
 	}
 	
-	private void updatePlantDataList(List<PlantData> plantDataList) {
-		PlantDataTableModel model=(PlantDataTableModel) tblPlantData.getModel();
-		model.setPlantDataList(plantDataList);
+	private void updatePreviewDataList(List<Row> previewDataList) {
+		PreviewDataTableModel model=(PreviewDataTableModel)tblPreviewData.getModel();
+		model.setPreviewDataList(previewDataList);
 	}
 	
 }

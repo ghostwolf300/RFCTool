@@ -26,9 +26,18 @@ public class ChangePlantData extends SaveMaterialReplica {
 	
 	private static Map<String,InputField<?>> initInputFieldMap(){
 		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
-		map.put("MATERIAL",new InputField<String>("MATERIAL",null,"MaterialId",true));
-		map.put("PLANT",new InputField<String>("PLANT",null,"Plant",true));
-		map.put("PLND_DELRY",new InputField<Integer>("PLND_DELRY",null,"PlannedDeliveryTime"));
+		
+		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true);
+		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true);
+		InputField<Integer> plannedDeliveryTime=new InputField<Integer>("PLND_DELRY",null,"PlannedDeliveryTime");
+		
+		materialId.setMappedColumn(0);
+		plant.setMappedColumn(1);
+		plannedDeliveryTime.setMappedColumn(2);
+		
+		map.put("MATERIAL",materialId);
+		map.put("PLANT",plant);
+		map.put("PLND_DELRY",plannedDeliveryTime);
 		return Collections.unmodifiableMap(map);
 	}
 	
