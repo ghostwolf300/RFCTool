@@ -4,60 +4,63 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Material {
+public class Material extends DataObject {
 	
-	private String materialId=null;
-	private String type=null;
-	private String industrySector=null;
-	private String baseUom=null;
-	private String group=null;
+	private FieldValue<String> materialId=null;
+	private FieldValue<String> type=null;
+	private FieldValue<String> industrySector=null;
+	private FieldValue<String> baseUom=null;
+	private FieldValue<String> group=null;
 	private Map<String,String> descriptionMap=null;
 	private Map<String,PlantData> plantDataMap=null;
 	private List<ReturnMessage> messages=null;
+	
 	
 	public Material() {
 		super();
 	}
 
-	public String getMaterialId() {
+	public FieldValue<String> getMaterialId() {
 		return materialId;
 	}
 
-	public void setMaterialId(String materialId) {
+	public void setMaterialId(FieldValue<String> materialId) {
 		this.materialId = materialId;
 	}
 
-	public String getIndustrySector() {
-		return industrySector;
-	}
-
-	public void setIndustrySector(String industrySector) {
-		this.industrySector = industrySector;
-	}
-
-	public String getType() {
+	public FieldValue<String> getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(FieldValue<String> type) {
 		this.type = type;
 	}
 
-	public String getBaseUom() {
+	public FieldValue<String> getIndustrySector() {
+		return industrySector;
+	}
+
+	public void setIndustrySector(FieldValue<String> industrySector) {
+		this.industrySector = industrySector;
+	}
+
+	public FieldValue<String> getBaseUom() {
 		return baseUom;
 	}
 
-	public void setBaseUom(String baseUom) {
+	public void setBaseUom(FieldValue<String> baseUom) {
 		this.baseUom = baseUom;
 	}
 
-	public String getGroup() {
+	public FieldValue<String> getGroup() {
 		return group;
 	}
 
-	public void setGroup(String group) {
+	public void setGroup(FieldValue<String> group) {
 		this.group = group;
 	}
+
+
 
 	public Map<String, String> getDescriptionMap() {
 		return descriptionMap;

@@ -7,7 +7,8 @@ import javax.swing.JTextField;
 import javax.swing.filechooser.FileSystemView;
 
 import org.rfc.controller.DefaultController;
-import org.rfc.dto.Material;
+import org.rfc.dto.Material3;
+import org.rfc.dto.PlantData3;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.UserFunction;
 import org.rfc.model.MaterialDataModel;

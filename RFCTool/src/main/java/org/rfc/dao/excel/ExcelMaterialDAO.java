@@ -5,12 +5,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.rfc.dao.MaterialDAO;
+import org.rfc.dto.FieldValue;
+import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
+import org.rfc.dto.Material3;
+import org.rfc.dto.PlantData3;
 import org.rfc.dto.PlantData;
+import org.rfc.function.ChangePlantData;
 
 public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> {
 	
@@ -32,6 +38,7 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		PlantData plantData=null;
 		String currentMaterialID=null;
 		String nextMaterialID=null;
+		Map<String,InputField<?>> fldMap=ChangePlantData.INPUT_FIELD_MAP;
 		try {
 			this.openConnection();
 			Sheet sheet=this.workbook.getSheetAt(0);
@@ -43,12 +50,14 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 				nextMaterialID=row.getCell(0).getStringCellValue();
 				if(currentMaterialID==null || !currentMaterialID.equals(nextMaterialID)) {
 					material=new Material();
-					material.setMaterialId(nextMaterialID);
+					FieldValue<String> materialId=(FieldValue<String>)fldMap.get("MATERIAL").createFieldValue();
+					materialId.setValue(nextMaterialID);
+					material.setMaterialId(materialId);
 					materials.add(material);
 					currentMaterialID=nextMaterialID;
 				}
 				plantData=createPlantDataShort(row,material);
-				material.addPlantData(plantData.getPlant(), plantData);
+				material.addPlantData(plantData.getPlant().getValue(), plantData);
 			}
 		} 
 		catch (IOException e) {
@@ -72,18 +81,20 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		PlantData pd=new PlantData();
 		
 		pd.setMaterial(material);
-		pd.setPlant(row.getCell(1).getStringCellValue());
-		//pd.setProfitCenter(row.getCell(2).getStringCellValue());
-		pd.setPlannedDeliveryTime((int) row.getCell(3).getNumericCellValue());
-		//pd.setGrProcessingTime((int) row.getCell(4).getNumericCellValue());
-		//pd.setSpecialProcurement(row.getCell(5).getStringCellValue());
+		FieldValue<String> plant=(FieldValue<String>)ChangePlantData.INPUT_FIELD_MAP.get("PLANT").createFieldValue();
+		plant.setValue(row.getCell(1).getStringCellValue());
+		pd.setPlant(plant);
+		FieldValue<Integer> plannedDeliveryTime=(FieldValue<Integer>)ChangePlantData.INPUT_FIELD_MAP.get("PLND_DELRY").createFieldValue();
+		plannedDeliveryTime.setValue((int) row.getCell(3).getNumericCellValue());
+		pd.setPlannedDeliveryTime(plannedDeliveryTime);
+		
 		
 		return pd;
 	}
 	
-	private PlantData createPlantDataLong(Row row,Material material) {
-		PlantData pd=new PlantData();
-		pd.setMaterial(material);
+	private PlantData3 createPlantDataLong(Row row,Material3 material3) {
+		PlantData3 pd=new PlantData3();
+		pd.setMaterial(material3);
 		pd.setPlant(row.getCell(1).getStringCellValue());
 		pd.setProfitCenter(row.getCell(2).getStringCellValue());
 		pd.setLoadingGroup("Z700");
@@ -109,44 +120,44 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 
 	@Override
 	public List<Material> getAddPlantDataList() {
-		List<Material> materials=new ArrayList<Material>();
-		Material material=null;
-		PlantData plantData=null;
-		String currentMaterialID=null;
-		String nextMaterialID=null;
-		try {
-			this.openConnection();
-			Sheet sheet=this.workbook.getSheetAt(0);
-			Iterator<Row> rowIter=sheet.iterator();
-			//skip header row
-			rowIter.next();
-			while(rowIter.hasNext()) {
-				Row row=rowIter.next();
-				nextMaterialID=row.getCell(0).getStringCellValue();
-				if(currentMaterialID==null || !currentMaterialID.equals(nextMaterialID)) {
-					material=new Material();
-					material.setMaterialId(nextMaterialID);
-					materials.add(material);
-					currentMaterialID=nextMaterialID;
-				}
-				plantData=createPlantDataLong(row,material);
-				material.addPlantData(plantData.getPlant(), plantData);
-			}
-		} 
-		catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		finally {
-			try {
-				this.closeConnection();
-			} 
-			catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return materials;
+//		List<Material> materials=new ArrayList<Material>();
+//		Material material=null;
+//		PlantData3 plantData=null;
+//		String currentMaterialID=null;
+//		String nextMaterialID=null;
+//		try {
+//			this.openConnection();
+//			Sheet sheet=this.workbook.getSheetAt(0);
+//			Iterator<Row> rowIter=sheet.iterator();
+//			//skip header row
+//			rowIter.next();
+//			while(rowIter.hasNext()) {
+//				Row row=rowIter.next();
+//				nextMaterialID=row.getCell(0).getStringCellValue();
+//				if(currentMaterialID==null || !currentMaterialID.equals(nextMaterialID)) {
+//					material=new Material();
+//					material.setMaterialId(nextMaterialID);
+//					materials.add(material);
+//					currentMaterialID=nextMaterialID;
+//				}
+//				plantData=createPlantDataLong(row,material);
+//				material.addPlantData(plantData.getPlant(), plantData);
+//			}
+//		} 
+//		catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		finally {
+//			try {
+//				this.closeConnection();
+//			} 
+//			catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+		return null;
 	}
 
 }

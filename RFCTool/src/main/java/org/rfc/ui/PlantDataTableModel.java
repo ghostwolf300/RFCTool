@@ -4,7 +4,8 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.rfc.dto.Material;
+import org.rfc.dto.Material3;
+import org.rfc.dto.PlantData3;
 import org.rfc.dto.PlantData;
 
 public class PlantDataTableModel extends AbstractTableModel {
@@ -50,11 +51,11 @@ public class PlantDataTableModel extends AbstractTableModel {
 			PlantData plantData=plantDataList.get(rowIndex);
 			switch(columnIndex) {
 				case COL_MATERIAL :  
-					return plantData.getMaterial().getMaterialId();
+					return plantData.getMaterial().getMaterialId().getValue();
 				case COL_TYPE :
 					return plantData.getMaterial().getType();
 				case COL_PLANT:
-					return plantData.getPlant();
+					return plantData.getPlant().getValue();
 				case COL_PURCH_GROUP :
 					return plantData.getPurchasingGroup();
 				case COL_PRICE_CTRL :
@@ -64,7 +65,7 @@ public class PlantDataTableModel extends AbstractTableModel {
 				case COL_STD_PRICE :
 					return plantData.getStandardPrice();
 				case COL_PLAN_DEL_TIME:
-					return plantData.getPlannedDeliveryTime();
+					return plantData.getPlannedDeliveryTime().getValue();
 				default :
 					return null;
 			}

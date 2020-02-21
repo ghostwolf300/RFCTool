@@ -10,6 +10,7 @@ import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dto.Material;
+import org.rfc.dto.Material3;
 import org.rfc.dto.UserFunction;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;

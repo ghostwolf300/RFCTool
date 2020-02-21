@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
-import org.rfc.dto.PlantData;
+import org.rfc.dto.Material3;
+import org.rfc.dto.PlantData3;
 import org.rfc.dto.ReturnMessage;
 
 import com.sap.conn.jco.JCoContext;
@@ -92,7 +94,7 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		JCoContext.begin(destination);
 		functionMap.get(F_MATERIAL_SAVE).execute(destination);
 		
-		List<ReturnMessage> functionMessages=createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
+		List<ReturnMessage> functionMessages=createReturnMessages(tRETURNMESSAGES,material.getMaterialId().getValue());
 		if(functionMessages!=null) {
 			material.setMessages(functionMessages);
 			synchronized(returnMessages) {
@@ -172,17 +174,17 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 	
 	protected void doWork() throws JCoException {
 		this.initialize();
-		for(Material material : materials) {
+		for(Material material3 : materials) {
 			if(status==StatusCode.PAUSED) {
 				pauseThread();
 			}
-			executeFunction(material);
+			executeFunction(material3);
 			processedCount++;
 			progressUpdated();
 		}
 	}
 	
-	abstract void executeFunction(Material material) throws JCoException;
+	abstract void executeFunction(Material materials) throws JCoException;
 	
 	public static List<ReturnMessage> getReturnMessages(){ 
 		return returnMessages;
@@ -190,26 +192,7 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 
 	@Override
 	public abstract String getFunctionName();
-	
-	
-	protected void setFieldValue(String sapField,Object value) {
-		JCoTable tables[]=getTables(sapField);
-		tables[0].setValue(getFunctionField(sapField), value);
-		tables[1].setValue(getFunctionField(sapField), "X");
-	}
-	
-	private JCoTable[] getTables(String sapField) {
-		JCoTable[] tables=new JCoTable[2];
-		JCoTable table=tPLANTDATA;
-		JCoTable tablex=tPLANTDATAX;
-		tables[0]=table;
-		tables[1]=tablex;
-		return tables;
-	}
-	
-	private String getFunctionField(String sapField) {
-		return "MRP_TYPE";
-	}
+
 	
 
 }

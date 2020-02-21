@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.rfc.dto.InputField;
 import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.Worker;
 
@@ -21,10 +22,7 @@ public abstract class RunnableFunction implements Runnable,Worker {
 	
 	protected int id=-1;
 	protected JCoDestination destination=null;
-	//protected JCoFunctionTemplate template=null;
-	//protected JCoFunction function=null;
 	protected Map<String,JCoFunction> functionMap=null;
-	//protected JCoRepository repository=null;
 	protected boolean testRun=true;
 	protected StatusCode status=null;
 	protected int workload=0;

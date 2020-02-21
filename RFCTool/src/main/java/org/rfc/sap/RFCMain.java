@@ -8,10 +8,13 @@ import java.util.Set;
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.ReturnMessageDAO;
-import org.rfc.dao.access.AccessDAOFactory;
 import org.rfc.dao.excel.ExcelDAOFactory;
-import org.rfc.dto.Material;
+import org.rfc.dto.FieldValue;
+import org.rfc.dto.InputField;
+import org.rfc.dto.Material3;
 import org.rfc.dto.PlantData;
+import org.rfc.dto.Material;
+import org.rfc.dto.PlantData3;
 import org.rfc.dto.UserFunction;
 import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.Worker;
@@ -41,27 +44,42 @@ public class RFCMain {
 		//main.ExecuteThreadTest();
 		//main.daoTest();
 		main.reflectionTest();
+		//main.fieldsTest();
 
 	}
 	
 	public void reflectionTest() {
-		UserFunction f1=new UserFunction(1,"AddPlantData");
-		UserFunction f2=new UserFunction(2,"ChangePlantData");
-		int id=1;
-		Object[] param1=new Object[1];
-		param1[0]=id;
-		Class[] paramClass1=new Class[1];
-		paramClass1[0]=int.class;
-		Worker w1=f1.createWorker(param1,paramClass1);
+		Material m1=new Material();
+		InputField<String> fld1=new InputField<String>("MATNR",true);
+		InputField<String> fld2=new InputField<String>("TYPE");
 		
-		id=2;
-		Object[] param2=new Object[1];
-		param2[0]=id;
-		Class[] paramClass2=new Class[1];
-		paramClass2[0]=int.class;
-		Worker w2=f2.createWorker(param2,paramClass2);
-		System.out.println(w1.getId()+"\t"+w1.getFunctionName());
-		System.out.println(w2.getId()+"\t"+w2.getFunctionName());
+		FieldValue<String> val1=new FieldValue<String>(fld1);
+		val1.setValue("TESTI1");
+		
+		FieldValue<String> val2=new FieldValue<String>(fld2);
+		val2.setValue("ZT02");
+		
+		m1.setMaterialId(val1);
+		m1.setType(val2);
+		
+		System.out.println(m1.getFieldValue("MaterialId").getValue());
+		System.out.println(m1.getFieldValue("Type").getValue());
+	}
+	
+	public void fieldsTest() {
+		InputField<String> fMaterialId=new InputField<String>("MATERIAL",true);
+		InputField<String> fType=new InputField<String>("MATL_TYPE",false);
+		InputField<Double> fGroup=new InputField<Double>("GROUP_ID",false);
+		
+		Material m = new Material();
+		FieldValue<String> fval=new FieldValue<String>(fMaterialId,false);
+		fval.setValue("TESTI00001");
+	
+		m.setMaterialId(fval);
+		
+		
+		System.out.println(m.getMaterialId().getValue());
+		
 	}
 	
 	public void daoTest() {
@@ -73,10 +91,10 @@ public class RFCMain {
 		DAOFactory daoFactory=new ExcelDAOFactory(new File(dbPath));
 		MaterialDAO<Material> daoMaterial=daoFactory.getMaterialDAO();
 		ReturnMessageDAO<ReturnMessage> daoReturnMessage=daoFactory.getReturnMessageDAO();
-		//List<Material> materials=daoMaterial.getPlantDataList();
-		List<Material> materials=daoMaterial.getAddPlantDataList();
+		//List<Material3> materials=daoMaterial.getPlantDataList();
+		List<Material> material3s=daoMaterial.getAddPlantDataList();
 		
-		for(Material m : materials) { 
+		for(Material m : material3s) { 
 			System.out.println(m.getMaterialId());
 			Set<String> plants=m.getPlantDataMap().keySet(); 
 			for(String plant : plants) {
@@ -86,7 +104,7 @@ public class RFCMain {
 		}
 		 
 		
-		List<List<Material>> runs=this.slice(materials, 10000);
+		List<List<Material>> runs=this.slice(material3s, 10000);
 		System.out.println(runs.size());
 		
 		SapSystemFactory factory=new SapSystemFactory();
@@ -106,7 +124,7 @@ public class RFCMain {
 		
 		for(List<Material> run : runs) {
 			System.out.println("Run count: "+run.size());
-			func=new AddPlantData(-1,run,sap.getDestination());
+			//func=new AddPlantData(-1,run,sap.getDestination());
 			func.setTestRun(testRun);
 			workers.add(func);
 			t=new Thread(func);
@@ -156,11 +174,11 @@ public class RFCMain {
 		
 	}
 	
-	private List<List<Material>> slice(List<Material> materials, int maxRows){
+	private List<List<Material>> slice(List<Material> material3s, int maxRows){
 		List<List<Material>> slicedList=new ArrayList<List<Material>>();
 		List<Material> slice=new ArrayList<Material>();
 		int counter=0;
-		for(Material m : materials) {
+		for(Material m : material3s) {
 			if(counter % maxRows==0 && counter>0) {
 				slicedList.add(slice);
 				slice=new ArrayList<Material>();
