@@ -30,7 +30,6 @@ public class PreviewDataTableModel extends AbstractTableModel {
 		System.out.println("Model received: "+previewDataList.size());
 		this.previewDataList = previewDataList;
 		this.fireTableStructureChanged();
-		this.fireTableDataChanged();
 	}
 
 	@Override

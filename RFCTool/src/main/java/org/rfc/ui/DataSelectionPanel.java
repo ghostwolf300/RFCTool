@@ -38,7 +38,7 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	private JButton btnChooseFile;
 	private JButton btnOpenFile;
 	private JScrollPane scrollPane;
-	private JTable tblPreviewData;
+	private PreviewDataTable tblPreviewData;
 	private JButton btnNext;
 	private DefaultController controller=null;
 	private File previewDataFile;
@@ -102,10 +102,9 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 		}
 		return scrollPane;
 	}
-	private JTable getTblPreviewData() {
+	private PreviewDataTable getTblPreviewData() {
 		if (tblPreviewData == null) {
-			tblPreviewData = new JTable();
-			tblPreviewData.setModel(new PreviewDataTableModel());
+			tblPreviewData = new PreviewDataTable();
 		}
 		return tblPreviewData;
 	}
