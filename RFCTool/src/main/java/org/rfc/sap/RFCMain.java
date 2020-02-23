@@ -3,6 +3,7 @@ package org.rfc.sap;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.rfc.dao.DAOFactory;
@@ -49,21 +50,15 @@ public class RFCMain {
 	}
 	
 	public void reflectionTest() {
-		Material m1=new Material();
-		InputField<String> fld1=new InputField<String>("MATNR",true);
-		InputField<String> fld2=new InputField<String>("TYPE");
+		UserFunction<ChangePlantData> f=new UserFunction<ChangePlantData>(ChangePlantData.class,1);
+		Map<String,InputField<?>> fieldMap=f.getFieldMap();
+		InputField<Double> mappedField=(InputField<Double>) fieldMap.get("PLND_DELRY");
+		System.out.println("PLND_DELRY mapped field: "+mappedField.getMappedColumn());
+		List<Material> materials=new ArrayList<Material>();
+		materials.add(new Material());
+		materials.add(new Material());
+		Worker w=f.createWorker(1, materials, null, true);
 		
-		FieldValue<String> val1=new FieldValue<String>(fld1);
-		val1.setValue("TESTI1");
-		
-		FieldValue<String> val2=new FieldValue<String>(fld2);
-		val2.setValue("ZT02");
-		
-		m1.setMaterialId(val1);
-		m1.setType(val2);
-		
-		System.out.println(m1.getFieldValue("MaterialId").getValue());
-		System.out.println(m1.getFieldValue("Type").getValue());
 	}
 	
 	public void fieldsTest() {

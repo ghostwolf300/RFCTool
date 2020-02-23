@@ -22,7 +22,7 @@ public class ChangePlantData extends SaveMaterialReplica {
 	
 	public static final String FUNCTION_NAME="ChangePlantData";
 	
-	public static final Map<String,InputField<?>> INPUT_FIELD_MAP=initInputFieldMap();
+	public static final Map<String,InputField<?>> FIELD_MAP=initInputFieldMap();
 	
 	private static Map<String,InputField<?>> initInputFieldMap(){
 		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
@@ -68,7 +68,7 @@ public class ChangePlantData extends SaveMaterialReplica {
 		tHEADDATA.setValue("FUNCTION","UPD");
 		tHEADDATA.setValue("MATERIAL",material.getMaterialId().getValue());
 		
-		Set<String> fieldNameSet=INPUT_FIELD_MAP.keySet();
+		Set<String> fieldNameSet=FIELD_MAP.keySet();
 		Set<String> plants=material.getPlantDataMap().keySet();
 		
 		for(String plant : plants) {
@@ -85,7 +85,7 @@ public class ChangePlantData extends SaveMaterialReplica {
 			tPLANTDATAX.setValue("PLANT", plantData.getPlant().getValue());
 				
 			for(String fieldName : fieldNameSet) {
-				InputField<?> inputField=INPUT_FIELD_MAP.get(fieldName);
+				InputField<?> inputField=FIELD_MAP.get(fieldName);
 				FieldValue<?> fval=plantData.getFieldValue(inputField.getPropertyName());
 				tPLANTDATA.setValue(inputField.getRfcName(), fval.getValue());
 			}
@@ -106,6 +106,11 @@ public class ChangePlantData extends SaveMaterialReplica {
 	@Override
 	public String getFunctionName() {
 		return FUNCTION_NAME;
+	}
+
+
+	public static Map<String, InputField<?>> getFieldMap() {
+		return FIELD_MAP;
 	}
 
 	

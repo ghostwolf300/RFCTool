@@ -3,35 +3,38 @@ package org.rfc.model;
 import java.util.List;
 
 import org.rfc.dto.UserFunction;
+import org.rfc.function.RunnableFunction;
 
 public class UserFunctionModel extends AbstractModel {
 	
-	public static final String P_FUNCTIONS="p_functions";
-	public static final String P_SELECTED_FUNCTION="p_selected_function";
+	public static enum Property{
+		FUNCTIONS,
+		SELECTED_FUNCTION
+	}
 	
-	private List<UserFunction> functions=null;
-	private UserFunction selectedFunction=null;
+	private List<UserFunction<? extends RunnableFunction>> functions=null;
+	private UserFunction<? extends RunnableFunction> selectedFunction=null;
 	
 	public UserFunctionModel() {
 		super();
 	}
 
-	public List<UserFunction> getFunctions() {
+	public List<UserFunction<? extends RunnableFunction>> getFunctions() {
 		return functions;
 	}
 
-	public void setFunctions(List<UserFunction> functions) {
+	public void setFunctions(List<UserFunction<? extends RunnableFunction>> functions) {
 		this.functions = functions;
-		this.firePropertyChange(P_FUNCTIONS, null, functions);
+		this.firePropertyChange(Property.FUNCTIONS.toString(), null, functions);
 	}
 
-	public UserFunction getSelectedFunction() {
+	public UserFunction<? extends RunnableFunction> getSelectedFunction() {
 		return selectedFunction;
 	}
 
-	public void setSelectedFunction(UserFunction selectedFunction) {
+	public void setSelectedFunction(UserFunction<? extends RunnableFunction> selectedFunction) {
 		this.selectedFunction = selectedFunction;
-		this.firePropertyChange(P_SELECTED_FUNCTION, null, this.selectedFunction);
+		this.firePropertyChange(Property.SELECTED_FUNCTION.toString(), null, this.selectedFunction);
 	}
 	
 }

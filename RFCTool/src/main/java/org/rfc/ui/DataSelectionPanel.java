@@ -41,7 +41,7 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	private PreviewDataTable tblPreviewData;
 	private JButton btnNext;
 	private DefaultController controller=null;
-	private File previewDataFile;
+	private File dataFile=null;
 	private ActionListener cardManager=null;
 	private JTextField fldSelectedUserFunction;
 	private JLabel lblSelectedUserFunction;
@@ -112,6 +112,7 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 		if (btnNext == null) {
 			btnNext = new JButton("Next");
 			btnNext.setEnabled(false);
+			btnNext.addActionListener(this);
 			btnNext.addActionListener(cardManager);
 		}
 		return btnNext;
@@ -134,13 +135,16 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource().equals(this.getBtnChooseFile())) {
-			previewDataFile=chooseFile();
-			if(previewDataFile!=null) {
-				fldFilePath.setText(previewDataFile.getAbsolutePath());
+			dataFile=chooseFile();
+			if(dataFile!=null) {
+				fldFilePath.setText(dataFile.getAbsolutePath());
 			}
 		}
 		else if(e.getSource().equals(this.getBtnOpenFile())) {
-			controller.loadPreviewDataFile(previewDataFile);
+			controller.loadPreviewDataFile(dataFile);
+		}
+		else if(e.getSource().equals(this.getBtnNext())) {
+			controller.loadInputDataFile(dataFile);
 		}
 		
 	}
@@ -158,15 +162,15 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	
 	@SuppressWarnings("unchecked")
 	public void modelPropertyChange(PropertyChangeEvent pce) {
-		if(pce.getPropertyName().equals(PreviewDataModel.P_PREVIEW_DATA)) {
+		if(pce.getPropertyName().equals(PreviewDataModel.Property.PREVIEW_DATA.toString())) {
 			List<Row> previewDataList=(List<Row>) pce.getNewValue();
 			System.out.println("GUI received: "+previewDataList.size());
 			updatePreviewDataList(previewDataList);
 			btnNext.setEnabled(true);
 		}
-		else if(pce.getPropertyName().equals(UserFunctionModel.P_SELECTED_FUNCTION)) {
+		else if(pce.getPropertyName().equals(UserFunctionModel.Property.SELECTED_FUNCTION.toString())) {
 			System.out.println("Function selected!");
-			UserFunction uf=(UserFunction) pce.getNewValue();
+			UserFunction<?> uf=(UserFunction<?>) pce.getNewValue();
 			fldSelectedUserFunction.setText(uf.getName());
 		}
 		

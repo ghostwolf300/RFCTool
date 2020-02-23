@@ -75,7 +75,7 @@ public class FunctionSelectionPanel extends JPanel implements IView,ActionListen
 	@SuppressWarnings("unchecked")
 	@Override
 	public void modelPropertyChange(PropertyChangeEvent pce) {
-		if(pce.getPropertyName().equals(UserFunctionModel.P_FUNCTIONS)) {
+		if(pce.getPropertyName().equals(UserFunctionModel.Property.FUNCTIONS.toString())) {
 			List<UserFunction> functions=(List<UserFunction>) pce.getNewValue();
 			FunctionListModel m=(FunctionListModel) list.getModel();
 			System.out.println("Adding functions: "+m.getSize());

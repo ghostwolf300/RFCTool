@@ -66,7 +66,7 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		PlantData plantData=null;
 		String currentMaterialID=null;
 		String nextMaterialID=null;
-		Map<String,InputField<?>> fldMap=ChangePlantData.INPUT_FIELD_MAP;
+		Map<String,InputField<?>> fldMap=ChangePlantData.FIELD_MAP;
 		try {
 			this.openConnection();
 			Sheet sheet=this.workbook.getSheetAt(0);
@@ -110,10 +110,10 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		PlantData pd=new PlantData();
 		
 		pd.setMaterial(material);
-		FieldValue<String> plant=(FieldValue<String>)ChangePlantData.INPUT_FIELD_MAP.get("PLANT").createFieldValue();
+		FieldValue<String> plant=(FieldValue<String>)ChangePlantData.FIELD_MAP.get("PLANT").createFieldValue();
 		plant.setValue(row.getCell(1).getStringCellValue());
 		pd.setPlant(plant);
-		FieldValue<Integer> plannedDeliveryTime=(FieldValue<Integer>)ChangePlantData.INPUT_FIELD_MAP.get("PLND_DELRY").createFieldValue();
+		FieldValue<Integer> plannedDeliveryTime=(FieldValue<Integer>)ChangePlantData.FIELD_MAP.get("PLND_DELRY").createFieldValue();
 		plannedDeliveryTime.setValue((int) row.getCell(3).getNumericCellValue());
 		pd.setPlannedDeliveryTime(plannedDeliveryTime);
 		

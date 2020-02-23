@@ -192,7 +192,6 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 
 	@Override
 	public abstract String getFunctionName();
-
 	
 
 }

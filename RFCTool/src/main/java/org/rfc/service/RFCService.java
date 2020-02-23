@@ -17,6 +17,7 @@ import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.AddPlantData;
 import org.rfc.function.ChangePlantData;
+import org.rfc.function.RunnableFunction;
 import org.rfc.model.MaterialDataModel;
 import org.rfc.model.PreviewDataModel;
 import org.rfc.model.UserFunctionModel;
@@ -78,13 +79,15 @@ public class RFCService {
 	}
 	
 	public void loadFunctions() {
-		List<String> functionNames=new ArrayList<String>();
-		functionNames.add("AddPlantData");
-		functionNames.add("ChangePlantData");
-		List<UserFunction> functions=new ArrayList<UserFunction>();
+		List<Class<? extends RunnableFunction>> functionClasses=new ArrayList<Class<? extends RunnableFunction>>();
+		//functionClasses.add(AddPlantData.class);
+		functionClasses.add(ChangePlantData.class);
+		List<UserFunction<? extends RunnableFunction>> functions=new ArrayList<UserFunction<? extends RunnableFunction>>();
 		int counter=1;
-		for(String fname : functionNames) {
-			functions.add(new UserFunction(counter,fname));
+		for(Class<? extends RunnableFunction> fclass : functionClasses) {
+			UserFunction<?> f=new UserFunction(fclass,counter);
+			System.out.println(f.getId()+"\t"+f.getName());
+			functions.add(f);
 			counter++;
 		}
 		functionModel.setFunctions(functions);
@@ -105,7 +108,7 @@ public class RFCService {
 	
 	public void loadInputDataFile(File file) {
 		List<Material> materials=null;
-		UserFunction uf=functionModel.getSelectedFunction();
+		UserFunction<?> uf=functionModel.getSelectedFunction();
 		DAOFactory factory=new ExcelDAOFactory(file);
 		materialDao=factory.getMaterialDAO();
 		try {
@@ -136,6 +139,7 @@ public class RFCService {
 	}
 	
 	public void createWorkers(int maxMaterials,boolean testRun) {
+		UserFunction<?> function=functionModel.getSelectedFunction();
 		List<Material> materials=materialDataModel.getMaterials();
 		List<List<Material>> workerLists=this.slice(materials, maxMaterials);
 		List<Worker> workers=new ArrayList<Worker>();
@@ -153,7 +157,7 @@ public class RFCService {
 		int counter=1;
 		for(List<Material> workerList : workerLists) {
 			//Worker worker=new ChangePlantData(counter,workerList,sap.getDestination(),testRun);
-			Worker worker=new ChangePlantData(counter,workerList,sap.getDestination(),testRun);
+			Worker worker=function.createWorker(counter,workerList,sap.getDestination(),testRun);
 			workers.add(worker);
 			counter++;
 		}

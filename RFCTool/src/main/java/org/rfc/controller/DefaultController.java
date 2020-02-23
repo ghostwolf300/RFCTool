@@ -22,7 +22,7 @@ public class DefaultController extends AbstractController {
 		service.loadFunctions();
 	}
 	
-	public void selectUserFunction(UserFunction userFunction) {
+	public void selectUserFunction(UserFunction<?> userFunction) {
 		service.selectUserFunction(userFunction);
 	}
 	
