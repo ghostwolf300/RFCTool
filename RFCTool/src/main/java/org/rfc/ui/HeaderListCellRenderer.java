@@ -5,11 +5,10 @@ import java.awt.Component;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingConstants;
 
 public class HeaderListCellRenderer implements ListCellRenderer<String> { 
 	
-	private JLabel lblMappedField=null;
-	private JLabel lblSourceFieldNumber=null;
 	private JLabel lblText=null;
 	
 	public HeaderListCellRenderer() {
@@ -18,9 +17,9 @@ public class HeaderListCellRenderer implements ListCellRenderer<String> {
 	}
 	
 	private void initialize() {
-		lblMappedField=new JLabel("Field");
-		lblSourceFieldNumber=new JLabel("Source");
 		lblText=new JLabel("Text");
+		lblText.setHorizontalAlignment(SwingConstants.CENTER);
+		lblText.setVerticalAlignment(SwingConstants.CENTER);
 	}
 
 	@Override
@@ -28,7 +27,7 @@ public class HeaderListCellRenderer implements ListCellRenderer<String> {
 			boolean isSelected, boolean cellHasFocus) {
 		switch(index) {
 		case 0 :
-			lblText.setText("Mapped Field");
+			lblText.setText(value);
 			break;
 		case 1 :
 			lblText.setText(value);

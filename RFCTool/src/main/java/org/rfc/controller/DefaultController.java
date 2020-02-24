@@ -1,8 +1,11 @@
 package org.rfc.controller;
 
 import java.io.File;
+import java.util.List;
 
+import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.UserFunction;
+import org.rfc.dto.Worker;
 import org.rfc.service.RFCService;
 
 public class DefaultController extends AbstractController {
@@ -44,6 +47,11 @@ public class DefaultController extends AbstractController {
 	
 	public void stopAll() {
 		service.stopAll();
+	}
+	
+	public void showLog(Worker worker) {
+		System.out.println("Show log for worker "+worker.getId());
+		service.setSelectedWorker(worker);
 	}
 	
 }

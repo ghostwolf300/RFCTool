@@ -10,11 +10,14 @@ import org.rfc.function.WorkerListener;
 
 public class WorkerModel extends AbstractModel implements WorkerListener {
 	
-	public static final String P_WORKERS="p_workers";
-	public static final String P_WORKER_STATUS="p_worker_status";
-	public static final String P_WORKER_PROGRESS="p_worker_progress";
-	public static final String P_TOTAL_RUN_TIME="p_total_run_time";
-	public static final String P_WORKERS_EXECUTING="p_workers_executing";
+	public static enum Property{
+		WORKERS,
+		SELECTED_WORKER,
+		WORKER_STATUS,
+		WORKER_PROGRESS,
+		TOTAL_RUN_TIME,
+		WORKERS_EXECUTING
+	};
 	
 	private List<Worker> workers=null;
 	private long startTimeMs=-1;
@@ -23,6 +26,7 @@ public class WorkerModel extends AbstractModel implements WorkerListener {
 	private int workerCount=0;
 	private boolean executing=false;
 	private Map<StatusCode,Integer> statusCountMap=null;
+	private Worker selectedWorker=null;
 	
 	public WorkerModel() {
 		super();
@@ -50,7 +54,16 @@ public class WorkerModel extends AbstractModel implements WorkerListener {
 		for(Worker w : this.workers) {
 			w.addWorkerListener(this);
 		}
-		this.firePropertyChange(P_WORKERS, null, workers);
+		this.firePropertyChange(Property.WORKERS.toString(), null, workers);
+	}
+
+	public Worker getSelectedWorker() {
+		return selectedWorker;
+	}
+
+	public void setSelectedWorker(Worker selectedWorker) {
+		this.selectedWorker = selectedWorker;
+		this.firePropertyChange(Property.SELECTED_WORKER.toString(), null, this.selectedWorker);
 	}
 
 	public Map<StatusCode, Integer> getStatusCountMap() {
@@ -84,16 +97,16 @@ public class WorkerModel extends AbstractModel implements WorkerListener {
 				&& statusCountMap.get(StatusCode.RUNNING)>0) {
 			startTimeMs=System.currentTimeMillis();
 			executing=true;
-			this.firePropertyChange(P_WORKERS_EXECUTING, null, executing);
+			this.firePropertyChange(Property.WORKERS_EXECUTING.toString(), null, executing);
 		}
 		else if(statusCountMap.get(StatusCode.FINISHED)+statusCountMap.get(StatusCode.STOPPED)==workerCount) {
 			endTimeMs=System.currentTimeMillis();
 			runTimeMs=endTimeMs-startTimeMs;
 			executing=false;
-			this.firePropertyChange(P_WORKERS_EXECUTING, null, executing);
-			this.firePropertyChange(P_TOTAL_RUN_TIME, null, runTimeMs);
+			this.firePropertyChange(Property.WORKERS_EXECUTING.toString(), null, executing);
+			this.firePropertyChange(Property.TOTAL_RUN_TIME.toString(), null, runTimeMs);
 		}
-		this.firePropertyChange(P_WORKER_STATUS, null, worker);
+		this.firePropertyChange(Property.WORKER_STATUS.toString(), null, worker);
 		
 		
 	}
@@ -134,11 +147,11 @@ public class WorkerModel extends AbstractModel implements WorkerListener {
 
 	@Override
 	public void progressUpdated(Worker worker) {
-		this.firePropertyChange(P_WORKER_PROGRESS, null, worker);
+		this.firePropertyChange(Property.WORKER_PROGRESS.toString(), null, worker);
 		long updTimeMs=System.currentTimeMillis()-startTimeMs;
 		if(updTimeMs>=(runTimeMs+1000)) {
 			runTimeMs=updTimeMs;
-			this.firePropertyChange(P_TOTAL_RUN_TIME, null, runTimeMs);
+			this.firePropertyChange(Property.TOTAL_RUN_TIME.toString(), null, runTimeMs);
 		}
 		else {
 			runTimeMs=updTimeMs;

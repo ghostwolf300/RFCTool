@@ -64,7 +64,7 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	}
 	private JTable getTblWorkers() {
 		if (tblWorkers == null) {
-			tblWorkers = new WorkerTable();
+			tblWorkers = new WorkerTable(controller);
 		}
 		return tblWorkers;
 	}
@@ -113,17 +113,23 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void modelPropertyChange(PropertyChangeEvent pce) {
-		if(pce.getPropertyName().equals(WorkerModel.P_WORKERS)) {
+		if(pce.getPropertyName().equals(WorkerModel.Property.WORKERS.toString())) {
 			List<Worker> workers=(List<Worker>) pce.getNewValue();
 			WorkerTableModel model=(WorkerTableModel)tblWorkers.getModel();
 			model.setWorkers(workers);
 		}
-		else if(pce.getPropertyName().equals(WorkerModel.P_WORKER_PROGRESS)) {
+		else if(pce.getPropertyName().equals(WorkerModel.Property.SELECTED_WORKER.toString())) {
 			Worker worker=(Worker) pce.getNewValue();
-			if(worker.getNewMessages()!=null) {
-				((LogTableModel)tblLog.getModel()).addMessages(worker.getNewMessages());
+			if(worker.getAllMessages()!=null) {
+				((LogTableModel)tblLog.getModel()).setMessages(worker.getAllMessages());
 			}
 		}
+//		else if(pce.getPropertyName().equals(WorkerModel.Property.WORKER_PROGRESS.toString())) {
+//			Worker worker=(Worker) pce.getNewValue();
+//			if(worker.getNewMessages()!=null) {
+//				((LogTableModel)tblLog.getModel()).addMessages(worker.getNewMessages());
+//			}
+//		}
 		
 	}
 

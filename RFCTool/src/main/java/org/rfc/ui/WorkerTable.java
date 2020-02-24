@@ -5,6 +5,8 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
+import org.rfc.controller.DefaultController;
+
 public class WorkerTable extends JTable {
 	
 	/**
@@ -14,8 +16,8 @@ public class WorkerTable extends JTable {
 	
 	public static final String HEADERS[]= {"Id","UserFunction","Testrun","Workload","Processed","Progress","Run Time","Success","Warning","Error","Status","Log","Control"};
 
-	public WorkerTable() {
-		super(new WorkerTableModel());
+	public WorkerTable(DefaultController controller) {
+		super(new WorkerTableModel(controller));
 		configureHeader();
 	}
 	
@@ -36,6 +38,10 @@ public class WorkerTable extends JTable {
 			else if(i==WorkerTableModel.COL_STATUS) {
 				col.setCellRenderer(new StatusCellRenderer());
 			}
+			else if(i==WorkerTableModel.COL_LOG) {
+				col.setCellRenderer(new LogCellRenderer());
+				col.setCellEditor(new LogCellEditor());
+			}
 			else if(i==WorkerTableModel.COL_CONTROL) {
 				col.setCellRenderer(new ControlCellRenderer());
 				col.setCellEditor(new ControlCellEditor());
@@ -46,6 +52,9 @@ public class WorkerTable extends JTable {
 	
 	public boolean isCellEditable(int row,int col) {
 		if(col==WorkerTableModel.COL_CONTROL) {
+			return true;
+		}
+		else if(col==WorkerTableModel.COL_LOG) {
 			return true;
 		}
 		else {

@@ -33,7 +33,7 @@ public class ChangePlantData extends SaveMaterialReplica {
 		
 		materialId.setMappedColumn(0);
 		plant.setMappedColumn(1);
-		plannedDeliveryTime.setMappedColumn(2);
+		plannedDeliveryTime.setMappedColumn(3);
 		
 		map.put("MATERIAL",materialId);
 		map.put("PLANT",plant);

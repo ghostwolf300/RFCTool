@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+import org.rfc.controller.DefaultController;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.WorkerListener;
@@ -30,9 +31,11 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 	public static final int COL_CONTROL=12;
 	
 	private List<Worker> workers=null;
+	private DefaultController controller=null;
 	
-	public WorkerTableModel() {
+	public WorkerTableModel(DefaultController controller) {
 		super();
+		this.controller=controller;
 	}
 	
 	@Override
@@ -102,6 +105,9 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 				worker.pauseWorking();
 			}
 		}
+		else if(col==COL_LOG) {
+			controller.showLog(worker);
+		}
 	}
 
 	public List<Worker> getWorkers() {
@@ -121,8 +127,6 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 	public void statusChanged(Worker worker) {
 		int row=getTableRow(worker);
 		this.fireTableRowsUpdated(row, row);
-		//this.fireTableDataChanged();
-		
 	}
 
 
@@ -130,7 +134,6 @@ public class WorkerTableModel extends AbstractTableModel implements WorkerListen
 	public void progressUpdated(Worker worker) {
 		int row=getTableRow(worker);
 		this.fireTableRowsUpdated(row, row);
-		//this.fireTableDataChanged();	
 	}
 	
 	private int getTableRow(Worker worker) {

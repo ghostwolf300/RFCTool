@@ -123,7 +123,7 @@ public class RunSettingsPanel extends JPanel implements IView,ActionListener {
 	}
 	private JTable getTblWorkers() {
 		if (tblWorkers == null) {
-			tblWorkers = new WorkerTable();
+			tblWorkers = new WorkerTable(controller);
 		}
 		return tblWorkers;
 	}
@@ -164,7 +164,7 @@ public class RunSettingsPanel extends JPanel implements IView,ActionListener {
 			int plantDataCount=(int)pce.getNewValue();
 			this.fldTotalRowCount.setText(String.valueOf(plantDataCount));
 		}
-		else if(pce.getPropertyName().equals(WorkerModel.P_WORKERS)) {
+		else if(pce.getPropertyName().equals(WorkerModel.Property.WORKERS.toString())) {
 			List<Worker> workers=(List<Worker>) pce.getNewValue();
 			WorkerTableModel model=(WorkerTableModel)tblWorkers.getModel();
 			model.setWorkers(workers);

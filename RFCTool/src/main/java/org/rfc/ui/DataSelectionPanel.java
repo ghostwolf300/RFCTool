@@ -8,6 +8,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.rfc.controller.DefaultController;
+import org.rfc.dto.InputField;
 import org.rfc.dto.Material3;
 import org.rfc.dto.PlantData3;
 import org.rfc.dto.PlantData;
@@ -21,6 +22,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -162,23 +164,22 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	
 	@SuppressWarnings("unchecked")
 	public void modelPropertyChange(PropertyChangeEvent pce) {
-		if(pce.getPropertyName().equals(PreviewDataModel.Property.PREVIEW_DATA.toString())) {
-			List<Row> previewDataList=(List<Row>) pce.getNewValue();
-			System.out.println("GUI received: "+previewDataList.size());
-			updatePreviewDataList(previewDataList);
-			btnNext.setEnabled(true);
-		}
-		else if(pce.getPropertyName().equals(UserFunctionModel.Property.SELECTED_FUNCTION.toString())) {
+		if(pce.getPropertyName().equals(UserFunctionModel.Property.SELECTED_FUNCTION.toString())) {
 			System.out.println("Function selected!");
 			UserFunction<?> uf=(UserFunction<?>) pce.getNewValue();
 			fldSelectedUserFunction.setText(uf.getName());
 		}
+		else if(pce.getPropertyName().equals(PreviewDataModel.Property.PREVIEW_DATA.toString())) {
+			List<Row> previewDataList=(List<Row>) pce.getNewValue();
+			tblPreviewData.setPreviewDataList(previewDataList);
+			btnNext.setEnabled(true);
+		}
+		else if(pce.getPropertyName().equals(PreviewDataModel.Property.FIELD_MAP.toString())) {
+			Map<String,InputField<?>> fieldMap=(Map<String, InputField<?>>) pce.getNewValue();
+			tblPreviewData.setFieldMap(fieldMap);
+		}
 		
 	}
 	
-	private void updatePreviewDataList(List<Row> previewDataList) {
-		PreviewDataTableModel model=(PreviewDataTableModel)tblPreviewData.getModel();
-		model.setPreviewDataList(previewDataList);
-	}
 	
 }

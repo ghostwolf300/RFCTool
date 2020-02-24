@@ -5,11 +5,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.excel.ExcelDAOFactory;
+import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
 import org.rfc.dto.Material3;
 import org.rfc.dto.UserFunction;
@@ -94,7 +96,7 @@ public class RFCService {
 		
 	}
 	
-	public void selectUserFunction(UserFunction userFunction) {
+	public void selectUserFunction(UserFunction<?> userFunction) {
 		functionModel.setSelectedFunction(userFunction);
 	}
 	
@@ -102,8 +104,9 @@ public class RFCService {
 		DAOFactory factory=new ExcelDAOFactory(file);
 		materialDao=factory.getMaterialDAO();
 		List<Row> previewDataList=materialDao.getPreviewDataList(50);
-		System.out.println("Preview: "+previewDataList.size());
 		previewDataModel.setPreviewDataList(previewDataList);
+		Map<String,InputField<?>> fieldMap=functionModel.getSelectedFunction().getFieldMap();
+		previewDataModel.setFieldMap(fieldMap);
 	}
 	
 	public void loadInputDataFile(File file) {
@@ -213,6 +216,10 @@ public class RFCService {
 			worker.stopWorking();
 		}
 		statusCode=StatusCode.STOPPED;
+	}
+	
+	public void setSelectedWorker(Worker worker) {
+		workerModel.setSelectedWorker(worker);
 	}
 	
 	
