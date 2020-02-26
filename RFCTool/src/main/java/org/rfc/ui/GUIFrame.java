@@ -110,6 +110,10 @@ public class GUIFrame extends JFrame implements ActionListener {
 			CardLayout cards=(CardLayout) contentPane.getLayout();
 			cards.show(contentPane,SCREEN_RUN_MONITOR);
 		}
+		else if(e.getSource().equals(runMonitorPanel.getBtnBack())){
+			CardLayout cards=(CardLayout) contentPane.getLayout();
+			cards.show(contentPane,SCREEN_RUN_SETTINGS);
+		}
 		
 	}
 	

@@ -93,7 +93,8 @@ public class AddAcctCostData extends SaveMaterialReplica {
 			tPLANTDATA.setValue("FUNCTION", "UPD");
 			tPLANTDATA.setValue("MATERIAL", material.getMaterialId().getValue());
 			tPLANTDATA.setValue("PLANT", pd.getPlant().getValue());
-			tPLANTDATA.setValue("NO_COSTING", (pd.isDoNotCost().getValue()==true ? "X" : " "));
+			//Default "no cost=true"
+			tPLANTDATA.setValue("NO_COSTING", "X");
 			tPLANTDATA.setValue("ACCOUNT_VIEW","X");
 			tPLANTDATA.setValue("COST_VIEW","X");
 
@@ -115,6 +116,7 @@ public class AddAcctCostData extends SaveMaterialReplica {
 			tVALUATIONDATA.setValue("PRICE_UNIT", pd.getPriceUnit().getValue());
 			tVALUATIONDATA.setValue("QTY_STRUCT", (pd.isCostWithQtyStructure().getValue()==true ? "X" : " "));
 			tVALUATIONDATA.setValue("ORIG_MAT", (pd.isMaterialRelatedOrigin().getValue()==true ? "X" : " "));
+			//tVALUATIONDATA.setValue("PRVMBEWHX", (pd.getMbrue().getValue()==true ? "X" : " "));
 			tVALUATIONDATA.setValue("ACCOUNT_VIEW", "X");
 			tVALUATIONDATA.setValue("COST_VIEW", "X");
 			
@@ -129,6 +131,7 @@ public class AddAcctCostData extends SaveMaterialReplica {
 			tVALUATIONDATAX.setValue("PRICE_UNIT","X");
 			tVALUATIONDATAX.setValue("QTY_STRUCT", "X");
 			tVALUATIONDATAX.setValue("ORIG_MAT", "X");
+			//tVALUATIONDATAX.setValue("PRVMBEWHX","X");
 		}
 		
 		execute(material);
@@ -193,7 +196,24 @@ public class AddAcctCostData extends SaveMaterialReplica {
 			
 			FieldValue<Double> standardPrice=new FieldValue<Double>();
 			standardPrice.setValue(sVALUATIONDATA.getDouble("STD_PRICE"));
-			pd.setMovingAveragePrice(standardPrice);
+			pd.setStandardPrice(standardPrice);
+			
+			FieldValue<Integer> priceUnit=new FieldValue<Integer>();
+			priceUnit.setValue(sVALUATIONDATA.getInt("PRICE_UNIT"));
+			pd.setPriceUnit(priceUnit);
+			
+			FieldValue<Boolean> qtyStructure=new FieldValue<Boolean>();
+			qtyStructure.setValue((sVALUATIONDATA.getString("QTY_STRUCT").equals("X") ? true : false));
+			pd.setCostWithQtyStructure(qtyStructure);
+			
+			FieldValue<Boolean> originMaterial=new FieldValue<Boolean>();
+			originMaterial.setValue((sVALUATIONDATA.getString("ORIG_MAT").equals("X") ? true : false));
+			pd.setMaterialRelatedOrigin(originMaterial);
+			
+			//FieldValue<Boolean> mbrue=new FieldValue<Boolean>();
+			//mbrue.setValue((sVALUATIONDATA.getString("PRVMBEWHX").equals("X") ? true : false));
+			//pd.setMbrue(mbrue);
+			
 			
 		}
 		
@@ -202,6 +222,10 @@ public class AddAcctCostData extends SaveMaterialReplica {
 	@Override
 	public String getFunctionName() {
 		return FUNCTION_NAME;
+	}
+	
+	public static Map<String, InputField<?>> getFieldMap() {
+		return FIELD_MAP;
 	}
 
 

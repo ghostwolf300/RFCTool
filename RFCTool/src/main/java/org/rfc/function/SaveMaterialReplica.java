@@ -147,6 +147,7 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 			//only add errors or warnings to log; count all types
 			if(message.getType().equals("S")) {
 				successCount++;
+				//messages.add(message);
 			}
 			else if(message.getType().equals("W")) {
 				warningCount++;

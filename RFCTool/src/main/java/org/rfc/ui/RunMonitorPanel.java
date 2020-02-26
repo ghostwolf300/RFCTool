@@ -35,6 +35,7 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 	private JTable tblLog;
 	private DefaultController controller=null;
 	private ActionListener cardManager=null;
+	private JButton btnBack;
 	
 
 	/**
@@ -47,12 +48,13 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 		initialize();
 	}
 	private void initialize() {
-		setLayout(new MigLayout("", "[grow]", "[][grow][grow][]"));
+		setLayout(new MigLayout("", "[grow]", "[][grow][grow][][]"));
 		add(getBtnStartAll(), "flowx,cell 0 0");
 		add(getScrollPaneRuns(), "cell 0 1,grow");
 		add(getBtnPauseAll(), "cell 0 0");
 		add(getBtnStopAll(), "cell 0 0");
 		add(getScrollPaneLog(), "cell 0 2,grow");
+		add(getBtnBack(), "cell 0 3");
 	}
 
 	private JScrollPane getScrollPaneRuns() {
@@ -95,6 +97,13 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 			btnStopAll.setEnabled(true);
 		}
 		return btnStopAll;
+	}
+	public JButton getBtnBack() {
+		if (btnBack == null) {
+			btnBack = new JButton("Back");
+			btnBack.addActionListener(cardManager);
+		}
+		return btnBack;
 	}
 	private JScrollPane getScrollPaneLog() {
 		if (scrollPaneLog == null) {
@@ -146,6 +155,7 @@ public class RunMonitorPanel extends JPanel implements IView,ActionListener {
 		}
 		
 	}
+	
 	
 	
 }

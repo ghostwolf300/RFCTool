@@ -33,6 +33,7 @@ public class PlantData extends DataObject {
 	private FieldValue<Boolean> doNotCost=null;
 	private FieldValue<Boolean> costWithQtyStructure=null;
 	private FieldValue<Boolean> materialRelatedOrigin=null;
+	private FieldValue<Boolean> mbrue=null;
 	//Storage Location
 	private FieldValue<String> storageLocation=null;
 	
@@ -263,6 +264,14 @@ public class PlantData extends DataObject {
 
 	public void setMaterialRelatedOrigin(FieldValue<Boolean> materialRelatedOrigin) {
 		this.materialRelatedOrigin = materialRelatedOrigin;
+	}
+
+	public FieldValue<Boolean> getMbrue() {
+		return mbrue;
+	}
+
+	public void setMbrue(FieldValue<Boolean> mbrue) {
+		this.mbrue = mbrue;
 	}
 
 	public FieldValue<String> getStorageLocation() {
