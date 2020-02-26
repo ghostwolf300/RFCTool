@@ -24,10 +24,10 @@ public class PreviewDataTableModel extends AbstractTableModel {
 	}
 
 	public void setPreviewDataList(List<Row> previewDataList) {
-		for(Row r : previewDataList) {
-			System.out.println(r.getCell(0).getStringCellValue());
-		}
-		System.out.println("Model received: "+previewDataList.size());
+		//for(Row r : previewDataList) {
+		//	System.out.println(r.getCell(0).getStringCellValue());
+		//}
+		//System.out.println("Model received: "+previewDataList.size());
 		this.previewDataList = previewDataList;
 		this.fireTableStructureChanged();
 	}

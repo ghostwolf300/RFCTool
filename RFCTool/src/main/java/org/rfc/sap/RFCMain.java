@@ -10,6 +10,7 @@ import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.ReturnMessageDAO;
 import org.rfc.dao.excel.ExcelDAOFactory;
+import org.rfc.dao.text.TextFileDAOFactory;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material3;
@@ -43,8 +44,8 @@ public class RFCMain {
 		RFCMain main=new RFCMain();
 		//main.ExecuteTest();
 		//main.ExecuteThreadTest();
-		//main.daoTest();
-		main.reflectionTest();
+		main.daoTest();
+		//main.reflectionTest();
 		//main.fieldsTest();
 
 	}
@@ -78,94 +79,24 @@ public class RFCMain {
 	}
 	
 	public void daoTest() {
-		long startTime=System.currentTimeMillis();
-		boolean testRun=true;
-		//String dbPath="C:/Users/ville.susi/Documents/Digital Development/BAPIDB.accdb";
-		String dbPath="C:/Users/ville.susi/Documents/Digital Development/Test Data/AddPlantData.xlsx";
-		//DAOFactory daoFactory=new AccessDAOFactory(dbPath);
-		DAOFactory daoFactory=new ExcelDAOFactory(new File(dbPath));
+		
+		String dbPath="C:/Users/ville.susi/Documents/Digital Development/MD Side Tasks/Do Not Cost update/DoNotCostUpdate_All_Plants.txt";
+		
+		DAOFactory daoFactory=new TextFileDAOFactory(new File(dbPath));
 		MaterialDAO<Material> daoMaterial=daoFactory.getMaterialDAO();
-		ReturnMessageDAO<ReturnMessage> daoReturnMessage=daoFactory.getReturnMessageDAO();
-		//List<Material3> materials=daoMaterial.getPlantDataList();
-		List<Material> material3s=daoMaterial.getAddPlantDataList();
+		List<Material> materials=daoMaterial.getChangePlantDataList();
 		
-		for(Material m : material3s) { 
-			System.out.println(m.getMaterialId());
-			Set<String> plants=m.getPlantDataMap().keySet(); 
-			for(String plant : plants) {
-				PlantData pd=m.getPlantDataMap().get(plant);
-				System.out.println(pd.getPlant()+"\t"+pd.getPlannedDeliveryTime()); 
-			} 
-		}
-		 
+		System.out.println("Materials size: "+materials.size());
 		
-		List<List<Material>> runs=this.slice(material3s, 10000);
-		System.out.println(runs.size());
-		
-		SapSystemFactory factory=new SapSystemFactory();
-		SapSystem sap=null;
-		try {
-			sap = factory.getSapSystem("TETCLNT280");
-		} 
-		catch (JCoException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Material m=materials.get(0);
+		System.out.println(m.getMaterialId().getValue());
+		Map<String,PlantData> pdMap=m.getPlantDataMap();
+		Set<String> keySet=pdMap.keySet();
+		for(String plant : keySet) {
+			PlantData pd=pdMap.get(plant);
+			System.out.println(pd.getPlant().getValue()+"\t"+pd.isDoNotCost().getValue());
 		}
 		
-		List<Worker> workers=new ArrayList<Worker>();
-		List<Thread> threads=new ArrayList<Thread>();
-		AddPlantData func=null;
-		Thread t=null;
-		
-		for(List<Material> run : runs) {
-			System.out.println("Run count: "+run.size());
-			//func=new AddPlantData(-1,run,sap.getDestination());
-			func.setTestRun(testRun);
-			workers.add(func);
-			t=new Thread(func);
-			t.start();
-			threads.add(t);
-			try {
-				Thread.sleep(2000);
-			} 
-			catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		boolean finished=false;
-		while(finished==false){
-			finished=true;
-			for(Worker w : workers) {
-				if(w.getStatus()==StatusCode.RUNNING) {
-					System.out.println(w.getProgress());
-					finished=false;
-				}
-			}
-			try {
-				System.out.println("Sleeping 5s");
-				Thread.sleep(5000);
-			} 
-			catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		System.out.println("End results");
-		for(Worker w1 : workers) {
-			System.out.println(w1.getProgress()+"\tstatus: "+w1.getStatus()+"\tsuccess: "+w1.getSuccessCount()+"\terror: "+w1.getErrorCount());
-		}
-		
-		long endTime=System.currentTimeMillis();
-		long runTime=endTime-startTime;
-		double hours=(runTime/1000)/3600;
-		System.out.println("Run time (ms): "+runTime+"\tRun time (h): "+hours);
-		
-		for(ReturnMessage msg : AddPlantData.getReturnMessages()) {
-			System.out.println(msg.toString());
-		}
 		
 	}
 	

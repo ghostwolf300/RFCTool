@@ -143,21 +143,26 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 			message.setMessageVariable2((String) tRETURNMESSAGES.getValue("MESSAGE_V2"));
 			message.setMessageVariable3((String) tRETURNMESSAGES.getValue("MESSAGE_V3"));
 			message.setMessageVariable4((String) tRETURNMESSAGES.getValue("MESSAGE_V4"));
-			if(message.getNumber().equals("103") || message.getNumber().equals("801") || message.getNumber().equals("048") || message.getNumber().equals("810") || message.getType().equals("E")) {
-				if(message.getType().equals("S")) {
-					successCount++;
-				}
-				else if(message.getType().equals("W")) {
-					warningCount++;
-				}
-				else if(message.getType().equals("E")){
-					errorCount++;
-				}
+			
+			//only add errors or warnings to log; count all types
+			if(message.getType().equals("S")) {
+				successCount++;
 			}
-			messages.add(message);
+			else if(message.getType().equals("W")) {
+				warningCount++;
+				messages.add(message);
+			}
+			else if(message.getType().equals("E")){
+				errorCount++;
+				messages.add(message);
+			}
+			else {
+				errorCount++;
+				messages.add(message);
+			}
 		}
 		while(tRETURNMESSAGES.nextRow());
-
+		
 		allMessages.addAll(messages);
 		newMessages=messages;
 		return messages;

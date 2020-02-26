@@ -29,15 +29,18 @@ public class ChangePlantData extends SaveMaterialReplica {
 		
 		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true);
 		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true);
-		InputField<Integer> plannedDeliveryTime=new InputField<Integer>("PLND_DELRY",null,"PlannedDeliveryTime");
+		InputField<Boolean> doNotCost=new InputField<Boolean>("NO_COSTING",null,"DoNotCost");
+		//InputField<Integer> plannedDeliveryTime=new InputField<Integer>("PLND_DELRY",null,"PlannedDeliveryTime");
 		
 		materialId.setMappedColumn(0);
 		plant.setMappedColumn(1);
-		plannedDeliveryTime.setMappedColumn(3);
+		doNotCost.setMappedColumn(2);
+		//plannedDeliveryTime.setMappedColumn(3);
 		
 		map.put("MATERIAL",materialId);
 		map.put("PLANT",plant);
-		map.put("PLND_DELRY",plannedDeliveryTime);
+		map.put("NO_COSTING", doNotCost);
+		//map.put("PLND_DELRY",plannedDeliveryTime);
 		return Collections.unmodifiableMap(map);
 	}
 	
@@ -68,7 +71,7 @@ public class ChangePlantData extends SaveMaterialReplica {
 		tHEADDATA.setValue("FUNCTION","UPD");
 		tHEADDATA.setValue("MATERIAL",material.getMaterialId().getValue());
 		
-		Set<String> fieldNameSet=FIELD_MAP.keySet();
+		//Set<String> fieldNameSet=FIELD_MAP.keySet();
 		Set<String> plants=material.getPlantDataMap().keySet();
 		
 		for(String plant : plants) {
@@ -78,19 +81,19 @@ public class ChangePlantData extends SaveMaterialReplica {
 			tPLANTDATA.setValue("FUNCTION", "UPD");
 			tPLANTDATA.setValue("MATERIAL", material.getMaterialId().getValue());
 			tPLANTDATA.setValue("PLANT", plantData.getPlant().getValue());
+			tPLANTDATA.setValue("NO_COSTING", (plantData.isDoNotCost().getValue()==true ? "X" : " "));
 			
 			tPLANTDATAX.appendRow();
 			tPLANTDATAX.setValue("FUNCTION", "UPD");
 			tPLANTDATAX.setValue("MATERIAL", material.getMaterialId().getValue());
 			tPLANTDATAX.setValue("PLANT", plantData.getPlant().getValue());
+			tPLANTDATAX.setValue("NO_COSTING", "X");
 				
-			for(String fieldName : fieldNameSet) {
-				InputField<?> inputField=FIELD_MAP.get(fieldName);
-				FieldValue<?> fval=plantData.getFieldValue(inputField.getPropertyName());
-				tPLANTDATA.setValue(inputField.getRfcName(), fval.getValue());
-			}
-			
-			tPLANTDATAX.setValue("PLND_DELRY", "X");
+//			for(String fieldName : fieldNameSet) {
+//				InputField<?> inputField=FIELD_MAP.get(fieldName);
+//				FieldValue<?> fval=plantData.getFieldValue(inputField.getPropertyName());
+//				tPLANTDATA.setValue(inputField.getRfcName(), (fval.getValue()==true ? "X" : " "));
+//			}
 			
 		}
 		

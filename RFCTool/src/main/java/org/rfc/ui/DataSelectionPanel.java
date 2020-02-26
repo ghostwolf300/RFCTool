@@ -113,7 +113,7 @@ public class DataSelectionPanel extends JPanel implements IView,ActionListener {
 	public JButton getBtnNext() {
 		if (btnNext == null) {
 			btnNext = new JButton("Next");
-			btnNext.setEnabled(false);
+			btnNext.setEnabled(true);
 			btnNext.addActionListener(this);
 			btnNext.addActionListener(cardManager);
 		}

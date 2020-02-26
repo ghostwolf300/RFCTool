@@ -11,12 +11,14 @@ import org.apache.poi.ss.usermodel.Row;
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.excel.ExcelDAOFactory;
+import org.rfc.dao.text.TextFileDAOFactory;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
 import org.rfc.dto.Material3;
 import org.rfc.dto.UserFunction;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
+import org.rfc.function.AddAcctCostData;
 import org.rfc.function.AddPlantData;
 import org.rfc.function.ChangePlantData;
 import org.rfc.function.RunnableFunction;
@@ -84,6 +86,7 @@ public class RFCService {
 		List<Class<? extends RunnableFunction>> functionClasses=new ArrayList<Class<? extends RunnableFunction>>();
 		//functionClasses.add(AddPlantData.class);
 		functionClasses.add(ChangePlantData.class);
+		functionClasses.add(AddAcctCostData.class);
 		List<UserFunction<? extends RunnableFunction>> functions=new ArrayList<UserFunction<? extends RunnableFunction>>();
 		int counter=1;
 		for(Class<? extends RunnableFunction> fclass : functionClasses) {
@@ -101,18 +104,19 @@ public class RFCService {
 	}
 	
 	public void loadPreviewDataFile(File file) {
-		DAOFactory factory=new ExcelDAOFactory(file);
-		materialDao=factory.getMaterialDAO();
-		List<Row> previewDataList=materialDao.getPreviewDataList(50);
-		previewDataModel.setPreviewDataList(previewDataList);
-		Map<String,InputField<?>> fieldMap=functionModel.getSelectedFunction().getFieldMap();
-		previewDataModel.setFieldMap(fieldMap);
+//		DAOFactory factory=new ExcelDAOFactory(file);
+//		materialDao=factory.getMaterialDAO();
+//		List<Row> previewDataList=materialDao.getPreviewDataList(50);
+//		previewDataModel.setPreviewDataList(previewDataList);
+//		Map<String,InputField<?>> fieldMap=functionModel.getSelectedFunction().getFieldMap();
+//		previewDataModel.setFieldMap(fieldMap);
 	}
 	
 	public void loadInputDataFile(File file) {
 		List<Material> materials=null;
 		UserFunction<?> uf=functionModel.getSelectedFunction();
-		DAOFactory factory=new ExcelDAOFactory(file);
+		//DAOFactory factory=new ExcelDAOFactory(file);
+		DAOFactory factory=new TextFileDAOFactory(file);
 		materialDao=factory.getMaterialDAO();
 		try {
 			Method method=materialDao.getClass().getMethod("get"+uf.getName()+"List", null);
@@ -151,6 +155,7 @@ public class RFCService {
 		SapSystem sap=null;
 		try {
 			sap = factory.getSapSystem("TETCLNT280");
+			//sap = factory.getSapSystem("TEPCLNT280");
 		} 
 		catch (JCoException e) {
 			// TODO Auto-generated catch block

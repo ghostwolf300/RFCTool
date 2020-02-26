@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -55,6 +56,10 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} 
+		catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return previewDataList;
@@ -92,6 +97,10 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} 
+		catch (InvalidFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		finally {
 			try {
@@ -113,9 +122,20 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		FieldValue<String> plant=(FieldValue<String>)ChangePlantData.FIELD_MAP.get("PLANT").createFieldValue();
 		plant.setValue(row.getCell(1).getStringCellValue());
 		pd.setPlant(plant);
-		FieldValue<Integer> plannedDeliveryTime=(FieldValue<Integer>)ChangePlantData.FIELD_MAP.get("PLND_DELRY").createFieldValue();
-		plannedDeliveryTime.setValue((int) row.getCell(3).getNumericCellValue());
-		pd.setPlannedDeliveryTime(plannedDeliveryTime);
+		FieldValue<Boolean> doNotCost=(FieldValue<Boolean>)ChangePlantData.FIELD_MAP.get("NO_COSTING").createFieldValue();
+		if(row.getLastCellNum()>2) {
+			String val=row.getCell(2).getStringCellValue();
+			if(val==null) {
+				doNotCost.setValue(false);
+			}	
+			else {
+				doNotCost.setValue((val.equals("X") ? true : false));
+			}
+		}
+		else {
+			doNotCost.setValue(false);
+		}
+		pd.setDoNotCost(doNotCost);
 		
 		
 		return pd;
