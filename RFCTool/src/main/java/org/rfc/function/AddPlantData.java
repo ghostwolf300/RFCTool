@@ -10,9 +10,7 @@ import java.util.Set;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
-import org.rfc.dto.Material3;
 import org.rfc.dto.PlantData;
-import org.rfc.dto.PlantData3;
 
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
@@ -24,20 +22,8 @@ public class AddPlantData extends SaveMaterialReplica {
 	
 	public static final String FUNCTION_NAME="AddPlantData";
 	
-	public static final Map<String,InputField<?>> FIELD_MAP=initInputFieldMap();
-	
-	private static Map<String,InputField<?>> initInputFieldMap(){
-		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
-		
-		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true);
-		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true);
-		InputField<String> profitCenter=new InputField<String>("",null,"ProfitCenter",true);
-		
-		map.put("MATERIAL",materialId);
-		map.put("PLANT",plant);
-		
-		return Collections.unmodifiableMap(map);
-	}
+	public static final Map<String,InputField<?>> MATERIAL_FIELD_MAP=initMaterialFieldMap();
+	public static final Map<String,InputField<?>> PLANT_FIELD_MAP=initPlantFieldMap();
 	
 	public AddPlantData() {
 		super();
@@ -59,12 +45,34 @@ public class AddPlantData extends SaveMaterialReplica {
 		super(id,materials,destination,testRun);
 	}
 	
+	private static Map<String,InputField<?>> initMaterialFieldMap(){
+		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
+		
+		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true);
+		map.put("MATERIAL",materialId);
+		
+		return Collections.unmodifiableMap(map);
+	}
+	
+	private static final Map<String,InputField<?>> initPlantFieldMap(){
+		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
+		
+		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true);
+		map.put("PLANT", plant);
+		
+		InputField<String> profitCenter=new InputField<String>("PROFIT_CTR",null,"ProfitCenter",true);
+		map.put("PROFIT_CTR", profitCenter);
+		
+		return Collections.unmodifiableMap(map);
+	}
+	
+	
 	protected void executeFunction(Material material) throws JCoException {
 		Map<String,JCoStructure> structureMap=super.getMaterialPlantData(material.getMaterialId().getValue(), "0700");
 		copyPlantData(structureMap,material);
 		
 		tHEADDATA.appendRow();
-		tHEADDATA.setValue("FUNCTION","INS");
+		tHEADDATA.setValue("FUNCTION","UPD");
 		tHEADDATA.setValue("MATERIAL",material.getMaterialId().getValue());
 		
 		Set<String> plants=material.getPlantDataMap().keySet();
@@ -178,39 +186,8 @@ public class AddPlantData extends SaveMaterialReplica {
 		tVALUATIONDATAX.clear();
 		tRETURNMESSAGES.clear();
 		
-		processedCount++;
-		progressUpdated();
 	}
 	
-	private void copyPlantData(Map<String,JCoStructure> structureMap,Material material) {
-		JCoStructure sCLIENTDATA=structureMap.get("CLIENTDATA");
-		JCoStructure sPLANTDATA=structureMap.get("PLANTDATA");
-		JCoStructure sVALUATIONDATA=structureMap.get("VALUATIONDATA");
-		
-		FieldValue<String> industrySector=null;
-		material.setIndustrySector(sCLIENTDATA.getString("IND_SECTOR"));
-		material.setType(sCLIENTDATA.getString("MATL_TYPE"));
-		material.setGroup(sCLIENTDATA.getString("MATL_GROUP"));
-		material.setBaseUom(sCLIENTDATA.getString("BASE_UOM"));
-		
-		
-		Set<String> plants=material.getPlantDataMap().keySet();
-		for(String plant : plants) {
-			PlantData3 pd=material.getPlantDataMap().get(plant);
-			pd.setPurchasingGroup(sPLANTDATA.getString("PUR_GROUP"));
-			pd.setMrpController(sPLANTDATA.getString("MRP_CTRLER"));
-			
-			pd.setValuationClass(sVALUATIONDATA.getString("VAL_CLASS"));
-			pd.setPriceControl(sVALUATIONDATA.getString("PRICE_CTRL"));
-			pd.setMovingAveragePrice(sVALUATIONDATA.getDouble("MOVING_PR"));
-			pd.setStandardPrice(sVALUATIONDATA.getDouble("STD_PRICE"));
-			
-			pd.setDoNotCost((pd.getMaterial().getType().equals("ZT07") ? true : false));
-			
-		}
-		
-	}
-
 	@Override
 	public String getFunctionName() {
 		return FUNCTION_NAME;

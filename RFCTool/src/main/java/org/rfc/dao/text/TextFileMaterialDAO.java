@@ -8,6 +8,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.poi.ss.usermodel.Row;
 import org.rfc.dao.MaterialDAO;
@@ -16,6 +17,7 @@ import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 import org.rfc.function.AddAcctCostData;
+import org.rfc.function.AddPlantData;
 import org.rfc.function.ChangePlantData;
 
 public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Material> {
@@ -82,7 +84,7 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 					materials.add(m);
 					currentMaterialId=nextMaterialId;
 				}
-				pd=createPlantData(fieldValues,fieldMap);
+				pd=createPlantDataShort(fieldValues,fieldMap);
 				pd.setMaterial(m);
 				m.addPlantData(pd.getPlant().getValue(), pd);
 				rowCount++;
@@ -106,8 +108,46 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 
 	@Override
 	public List<Material> getAddPlantDataList() {
-		// TODO Auto-generated method stub
-		return null;
+		List<Material> materials=null;
+		String nextMaterialId=null;
+		String currentMaterialId=null;
+		String line="";
+		String[] fieldValues=null;
+		Material m=null;
+		PlantData pd=null;
+		Map<String,InputField<?>> materialFieldMap=AddPlantData.MATERIAL_FIELD_MAP;
+		Map<String,InputField<?>> plantFieldMap=AddPlantData.PLANT_FIELD_MAP;
+		
+		int rowCount=0;
+		try(BufferedReader reader=getReader()){
+			materials=new ArrayList<Material>();
+			while((line=reader.readLine())!=null) {
+				fieldValues=getFieldValues(line);
+				nextMaterialId=fieldValues[0];
+				if(currentMaterialId==null || !currentMaterialId.equals(nextMaterialId)) {
+					m=createMaterial(fieldValues,materialFieldMap);
+					materials.add(m);
+					currentMaterialId=nextMaterialId;
+				}
+				pd=createPlantDataLong(fieldValues,plantFieldMap);
+				pd.setMaterial(m);
+				m.addPlantData(pd.getPlant().getValue(), pd);
+				rowCount++;
+			}
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return materials;
 	}
 	
 	@Override
@@ -164,7 +204,7 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		return m;
 	}
 	
-	private PlantData createPlantData(String[] fields,Map<String,InputField<?>> fieldMap) {
+	private PlantData createPlantDataShort(String[] fields,Map<String,InputField<?>> fieldMap) {
 		PlantData pd=null;
 		if(fields!=null) {
 			pd=new PlantData();
@@ -177,6 +217,37 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 			doNotCost.setValue((fields[2].equals("X") ? true : false));
 			pd.setDoNotCost(doNotCost);
 			
+		}
+		return pd;
+	}
+	
+	private PlantData createPlantDataLong(String[] fields,Map<String,InputField<?>> fieldMap) {
+		PlantData pd=null;
+		if(fields!=null) {
+			pd=new PlantData();
+			Set<String> fieldNames=fieldMap.keySet();
+			for(String fieldName : fieldNames) {
+				InputField<?> f=fieldMap.get(fieldName);
+				FieldValue<?> fv=f.createFieldValue();
+				fv.setValue2(fields[f.getMappedColumn()]);
+				pd.setFieldValue(f.getPropertyName(), fv);
+			}
+		}
+		return pd;
+	}
+	
+	private PlantData createPlantDataExperimental(String[] fields,Map<String,InputField<?>> fieldMap) {
+		PlantData pd=null;
+		if(fields!=null) {
+			pd=new PlantData();
+			Set<String> fieldNames=fieldMap.keySet();
+			for(String fieldName : fieldNames) {
+				InputField<?> f=fieldMap.get(fieldName);
+				FieldValue<?> fv=f.createFieldValue();
+				
+				fv.setValue2(fields[f.getMappedColumn()]);
+				pd.setFieldValue(f.getPropertyName(), fv);
+			}
 		}
 		return pd;
 	}

@@ -9,9 +9,7 @@ import java.util.Set;
 
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
-import org.rfc.dto.Material3;
 import org.rfc.dto.Material;
-import org.rfc.dto.PlantData3;
 import org.rfc.dto.PlantData;
 
 import com.sap.conn.jco.JCoDestination;
@@ -71,7 +69,7 @@ public class ChangePlantData extends SaveMaterialReplica {
 		tHEADDATA.setValue("FUNCTION","UPD");
 		tHEADDATA.setValue("MATERIAL",material.getMaterialId().getValue());
 		
-		//Set<String> fieldNameSet=FIELD_MAP.keySet();
+		//Set<String> fieldNameSet=MATERIAL_FIELD_MAP.keySet();
 		Set<String> plants=material.getPlantDataMap().keySet();
 		
 		for(String plant : plants) {
@@ -90,7 +88,7 @@ public class ChangePlantData extends SaveMaterialReplica {
 			tPLANTDATAX.setValue("NO_COSTING", "X");
 				
 //			for(String fieldName : fieldNameSet) {
-//				InputField<?> inputField=FIELD_MAP.get(fieldName);
+//				InputField<?> inputField=MATERIAL_FIELD_MAP.get(fieldName);
 //				FieldValue<?> fval=plantData.getFieldValue(inputField.getPropertyName());
 //				tPLANTDATA.setValue(inputField.getRfcName(), (fval.getValue()==true ? "X" : " "));
 //			}

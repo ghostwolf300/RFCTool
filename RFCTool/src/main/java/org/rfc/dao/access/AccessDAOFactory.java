@@ -4,7 +4,6 @@ import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.ReturnMessageDAO;
 import org.rfc.dto.Material;
-import org.rfc.dto.Material3;
 import org.rfc.dto.ReturnMessage;
 
 public class AccessDAOFactory implements DAOFactory {
@@ -29,11 +28,11 @@ public class AccessDAOFactory implements DAOFactory {
 	}
 
 	public MaterialDAO<Material> getMaterialDAO() {
-		return new AccessMaterialDAO(dbPath);
+		return null;
 	}
 
 	public ReturnMessageDAO<ReturnMessage> getReturnMessageDAO() {
-		return new AccessReturnMessageDAO(dbPath);
+		return null;
 	}
 
 }

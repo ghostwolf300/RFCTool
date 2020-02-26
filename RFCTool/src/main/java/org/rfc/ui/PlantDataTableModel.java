@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-import org.rfc.dto.Material3;
-import org.rfc.dto.PlantData3;
 import org.rfc.dto.PlantData;
 
 public class PlantDataTableModel extends AbstractTableModel {

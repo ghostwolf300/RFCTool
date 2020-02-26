@@ -6,22 +6,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import java.lang.reflect.Type;
+
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
-import org.rfc.dao.ReturnMessageDAO;
-import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dao.text.TextFileDAOFactory;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
-import org.rfc.dto.Material3;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.Material;
-import org.rfc.dto.PlantData3;
 import org.rfc.dto.UserFunction;
 import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.Worker;
-import org.rfc.dto.Worker.StatusCode;
-import org.rfc.function.AddPlantData;
 import org.rfc.function.ChangePlantData;
 
 import com.sap.conn.jco.JCoContext;
@@ -44,9 +40,9 @@ public class RFCMain {
 		RFCMain main=new RFCMain();
 		//main.ExecuteTest();
 		//main.ExecuteThreadTest();
-		main.daoTest();
+		//main.daoTest();
 		//main.reflectionTest();
-		//main.fieldsTest();
+		main.fieldsTest();
 
 	}
 	
@@ -67,14 +63,10 @@ public class RFCMain {
 		InputField<String> fType=new InputField<String>("MATL_TYPE",false);
 		InputField<Double> fGroup=new InputField<Double>("GROUP_ID",false);
 		
-		Material m = new Material();
-		FieldValue<String> fval=new FieldValue<String>(fMaterialId,false);
-		fval.setValue("TESTI00001");
-	
-		m.setMaterialId(fval);
+		Type[] types=fMaterialId.getClass().getTypeParameters();
+		System.out.println("types: "+types.length+"\t"+types[0].getTypeName()+"\t"+types[0].getClass());
 		
 		
-		System.out.println(m.getMaterialId().getValue());
 		
 	}
 	

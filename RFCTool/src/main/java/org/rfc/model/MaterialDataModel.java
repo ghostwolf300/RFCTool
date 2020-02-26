@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.rfc.dto.Material;
-import org.rfc.dto.Material3;
-import org.rfc.dto.PlantData3;
 import org.rfc.dto.PlantData;
 
 public class MaterialDataModel extends AbstractModel {

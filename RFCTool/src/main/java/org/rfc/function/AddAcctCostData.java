@@ -10,9 +10,7 @@ import java.util.Set;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
-import org.rfc.dto.Material3;
 import org.rfc.dto.PlantData;
-import org.rfc.dto.PlantData3;
 
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
@@ -76,7 +74,7 @@ public class AddAcctCostData extends SaveMaterialReplica {
 	
 	protected void executeFunction(Material material) throws JCoException {
 		
-		Map<String,JCoStructure> structureMap=super.getMaterialPlantData(material.getMaterialId().getValue(), "0700");
+		Map<String,JCoStructure> structureMap=getMaterialPlantData(material.getMaterialId().getValue(), "0700");
 		copyPlantData(structureMap,material);
 		
 		tHEADDATA.appendRow();
@@ -143,81 +141,74 @@ public class AddAcctCostData extends SaveMaterialReplica {
 		tVALUATIONDATAX.clear();
 		tRETURNMESSAGES.clear();
 		
-		processedCount++;
-		progressUpdated();
 	}
 	
-	private void copyPlantData(Map<String,JCoStructure> structureMap,Material material) {
-		
-		JCoStructure sCLIENTDATA=structureMap.get("CLIENTDATA");
-		JCoStructure sPLANTDATA=structureMap.get("PLANTDATA");
-		JCoStructure sVALUATIONDATA=structureMap.get("VALUATIONDATA");
-		
-		FieldValue<String> industrySector=new FieldValue<String>();
-		industrySector.setValue(sCLIENTDATA.getString("IND_SECTOR"));
-		material.setIndustrySector(industrySector);
-		
-		FieldValue<String> type=new FieldValue<String>();
-		type.setValue(sCLIENTDATA.getString("MATL_TYPE"));
-		material.setType(type);
-		
-		FieldValue<String> group=new FieldValue<String>();
-		group.setValue(sCLIENTDATA.getString("MATL_GROUP"));
-		material.setGroup(group);
-		
-		FieldValue<String> baseUom=new FieldValue<String>();
-		baseUom.setValue(sCLIENTDATA.getString("BASE_UOM"));
-		material.setBaseUom(baseUom);
-		
-		
-		Set<String> plants=material.getPlantDataMap().keySet();
-		for(String plant : plants) {
-			PlantData pd=material.getPlantDataMap().get(plant);
-			
-			FieldValue<String> purchasingGroup=new FieldValue<String>();
-			purchasingGroup.setValue(sPLANTDATA.getString("PUR_GROUP"));
-			pd.setPurchasingGroup(purchasingGroup);
-			
-			FieldValue<String> mrpController=new FieldValue<String>();
-			mrpController.setValue(sPLANTDATA.getString("MRP_CTRLER"));
-			pd.setMrpController(mrpController);
-			
-			FieldValue<String> valuationClass=new FieldValue<String>();
-			valuationClass.setValue(sVALUATIONDATA.getString("VAL_CLASS"));
-			pd.setValuationClass(valuationClass);
-			
-			FieldValue<String> priceControl=new FieldValue<String>();
-			priceControl.setValue(sVALUATIONDATA.getString("PRICE_CTRL"));
-			pd.setPriceControl(priceControl);
-			
-			FieldValue<Double> movingPrice=new FieldValue<Double>();
-			movingPrice.setValue(sVALUATIONDATA.getDouble("MOVING_PR"));
-			pd.setMovingAveragePrice(movingPrice);
-			
-			FieldValue<Double> standardPrice=new FieldValue<Double>();
-			standardPrice.setValue(sVALUATIONDATA.getDouble("STD_PRICE"));
-			pd.setStandardPrice(standardPrice);
-			
-			FieldValue<Integer> priceUnit=new FieldValue<Integer>();
-			priceUnit.setValue(sVALUATIONDATA.getInt("PRICE_UNIT"));
-			pd.setPriceUnit(priceUnit);
-			
-			FieldValue<Boolean> qtyStructure=new FieldValue<Boolean>();
-			qtyStructure.setValue((sVALUATIONDATA.getString("QTY_STRUCT").equals("X") ? true : false));
-			pd.setCostWithQtyStructure(qtyStructure);
-			
-			FieldValue<Boolean> originMaterial=new FieldValue<Boolean>();
-			originMaterial.setValue((sVALUATIONDATA.getString("ORIG_MAT").equals("X") ? true : false));
-			pd.setMaterialRelatedOrigin(originMaterial);
-			
-			//FieldValue<Boolean> mbrue=new FieldValue<Boolean>();
-			//mbrue.setValue((sVALUATIONDATA.getString("PRVMBEWHX").equals("X") ? true : false));
-			//pd.setMbrue(mbrue);
-			
-			
-		}
-		
-	}
+//	private void copyPlantData(Map<String,JCoStructure> structureMap,Material material) {
+//		
+//		JCoStructure sCLIENTDATA=structureMap.get("CLIENTDATA");
+//		JCoStructure sPLANTDATA=structureMap.get("PLANTDATA");
+//		JCoStructure sVALUATIONDATA=structureMap.get("VALUATIONDATA");
+//		
+//		FieldValue<String> industrySector=new FieldValue<String>();
+//		industrySector.setValue(sCLIENTDATA.getString("IND_SECTOR"));
+//		material.setIndustrySector(industrySector);
+//		
+//		FieldValue<String> type=new FieldValue<String>();
+//		type.setValue(sCLIENTDATA.getString("MATL_TYPE"));
+//		material.setType(type);
+//		
+//		FieldValue<String> group=new FieldValue<String>();
+//		group.setValue(sCLIENTDATA.getString("MATL_GROUP"));
+//		material.setGroup(group);
+//		
+//		FieldValue<String> baseUom=new FieldValue<String>();
+//		baseUom.setValue(sCLIENTDATA.getString("BASE_UOM"));
+//		material.setBaseUom(baseUom);
+//		
+//		
+//		Set<String> plants=material.getPlantDataMap().keySet();
+//		for(String plant : plants) {
+//			PlantData pd=material.getPlantDataMap().get(plant);
+//			
+//			FieldValue<String> purchasingGroup=new FieldValue<String>();
+//			purchasingGroup.setValue(sPLANTDATA.getString("PUR_GROUP"));
+//			pd.setPurchasingGroup(purchasingGroup);
+//			
+//			FieldValue<String> mrpController=new FieldValue<String>();
+//			mrpController.setValue(sPLANTDATA.getString("MRP_CTRLER"));
+//			pd.setMrpController(mrpController);
+//			
+//			FieldValue<String> valuationClass=new FieldValue<String>();
+//			valuationClass.setValue(sVALUATIONDATA.getString("VAL_CLASS"));
+//			pd.setValuationClass(valuationClass);
+//			
+//			FieldValue<String> priceControl=new FieldValue<String>();
+//			priceControl.setValue(sVALUATIONDATA.getString("PRICE_CTRL"));
+//			pd.setPriceControl(priceControl);
+//			
+//			FieldValue<Double> movingPrice=new FieldValue<Double>();
+//			movingPrice.setValue(sVALUATIONDATA.getDouble("MOVING_PR"));
+//			pd.setMovingAveragePrice(movingPrice);
+//			
+//			FieldValue<Double> standardPrice=new FieldValue<Double>();
+//			standardPrice.setValue(sVALUATIONDATA.getDouble("STD_PRICE"));
+//			pd.setStandardPrice(standardPrice);
+//			
+//			FieldValue<Integer> priceUnit=new FieldValue<Integer>();
+//			priceUnit.setValue(sVALUATIONDATA.getInt("PRICE_UNIT"));
+//			pd.setPriceUnit(priceUnit);
+//			
+//			FieldValue<Boolean> qtyStructure=new FieldValue<Boolean>();
+//			qtyStructure.setValue((sVALUATIONDATA.getString("QTY_STRUCT").equals("X") ? true : false));
+//			pd.setCostWithQtyStructure(qtyStructure);
+//			
+//			FieldValue<Boolean> originMaterial=new FieldValue<Boolean>();
+//			originMaterial.setValue((sVALUATIONDATA.getString("ORIG_MAT").equals("X") ? true : false));
+//			pd.setMaterialRelatedOrigin(originMaterial);
+//			
+//		}
+//		
+//	}
 
 	@Override
 	public String getFunctionName() {

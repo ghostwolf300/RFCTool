@@ -15,8 +15,6 @@ import org.rfc.dao.MaterialDAO;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
-import org.rfc.dto.Material3;
-import org.rfc.dto.PlantData3;
 import org.rfc.dto.PreviewRow;
 import org.rfc.dto.PlantData;
 import org.rfc.function.ChangePlantData;
@@ -141,29 +139,8 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 		return pd;
 	}
 	
-	private PlantData3 createPlantDataLong(Row row,Material3 material3) {
-		PlantData3 pd=new PlantData3();
-		pd.setMaterial(material3);
-		pd.setPlant(row.getCell(1).getStringCellValue());
-		pd.setProfitCenter(row.getCell(2).getStringCellValue());
-		pd.setLoadingGroup("Z700");
-		pd.setGrProcessingTime(0);
-		pd.setMrpType("PD");
-		pd.setReorderPoint(0);
-		pd.setLotSizingProcedure("EX");
-		pd.setMinLotSize(0);
-		pd.setProcurementType("F");
-		pd.setSpecialProcurement("40");
-		pd.setIssueStorageLocation("0700");
-		pd.setStorageLocationForEP("0700");
-		pd.setPeriodIndicator("M");
-		pd.setAvailabilityCheck("ZT");
-		pd.setIndividualAndCollectiveReq("2");
-		pd.setPlannedDeliveryTime(2);
-		pd.setPriceUnit(1);
-		pd.setCostWithQtyStructure(true);
-		pd.setMaterialRelatedOrigin(true);
-		pd.setStorageLocation("0700");
+	private PlantData createPlantDataLong(Row row,Material material3) {
+		PlantData pd=new PlantData();
 		return pd;
 	}
 
@@ -206,6 +183,12 @@ public class ExcelMaterialDAO extends ExcelDAO implements MaterialDAO<Material> 
 //				e.printStackTrace();
 //			}
 //		}
+		return null;
+	}
+
+	@Override
+	public List<Material> getAddAcctCostDataList() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

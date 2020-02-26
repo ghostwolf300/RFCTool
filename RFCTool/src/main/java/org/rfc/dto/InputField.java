@@ -119,6 +119,12 @@ public class InputField<T> {
 	}
 	
 	
+	public FieldValue<T> createFieldValue(T value) {
+		FieldValue<T> fv=new FieldValue<T>(this);
+		fv.setValue(value);
+		return fv;
+	}
+	
 	public FieldValue<T> createFieldValue() {
 		return new FieldValue<T>(this);
 	}

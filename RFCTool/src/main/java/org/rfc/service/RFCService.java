@@ -14,7 +14,6 @@ import org.rfc.dao.excel.ExcelDAOFactory;
 import org.rfc.dao.text.TextFileDAOFactory;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
-import org.rfc.dto.Material3;
 import org.rfc.dto.UserFunction;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;

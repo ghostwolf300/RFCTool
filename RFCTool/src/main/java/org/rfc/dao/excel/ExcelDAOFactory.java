@@ -6,7 +6,6 @@ import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.ReturnMessageDAO;
 import org.rfc.dto.Material;
-import org.rfc.dto.Material3;
 import org.rfc.dto.ReturnMessage;
 
 public class ExcelDAOFactory implements DAOFactory {
