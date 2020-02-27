@@ -59,14 +59,18 @@ public class RFCMain {
 	}
 	
 	public void fieldsTest() {
-		InputField<String> fMaterialId=new InputField<String>("MATERIAL",true);
-		InputField<String> fType=new InputField<String>("MATL_TYPE",false);
-		InputField<Double> fGroup=new InputField<Double>("GROUP_ID",false);
+		InputField<String> fMaterialId=new InputField<String>("MATERIAL",true,String.class);
+		InputField<String> fType=new InputField<String>("MATL_TYPE",false,String.class);
+		InputField<Double> fGroup=new InputField<Double>("GROUP_ID",false,Double.class);
 		
-		Type[] types=fMaterialId.getClass().getTypeParameters();
-		System.out.println("types: "+types.length+"\t"+types[0].getTypeName()+"\t"+types[0].getClass());
+		List<InputField<?>> fields=new ArrayList<InputField<?>>();
+		fields.add(fMaterialId);
+		fields.add(fType);
+		fields.add(fGroup);
 		
-		
+		for(InputField<?> f : fields) {
+			System.out.println(f.getValueClass());
+		}
 		
 	}
 	
@@ -92,11 +96,11 @@ public class RFCMain {
 		
 	}
 	
-	private List<List<Material>> slice(List<Material> material3s, int maxRows){
+	private List<List<Material>> slice(List<Material> materials, int maxRows){
 		List<List<Material>> slicedList=new ArrayList<List<Material>>();
 		List<Material> slice=new ArrayList<Material>();
 		int counter=0;
-		for(Material m : material3s) {
+		for(Material m : materials) {
 			if(counter % maxRows==0 && counter>0) {
 				slicedList.add(slice);
 				slice=new ArrayList<Material>();

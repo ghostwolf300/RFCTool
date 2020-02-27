@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
+import org.rfc.dto.InputFieldManager;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 
@@ -22,8 +23,8 @@ public class AddPlantData extends SaveMaterialReplica {
 	
 	public static final String FUNCTION_NAME="AddPlantData";
 	
-	public static final Map<String,InputField<?>> MATERIAL_FIELD_MAP=initMaterialFieldMap();
-	public static final Map<String,InputField<?>> PLANT_FIELD_MAP=initPlantFieldMap();
+	public static final InputFieldManager<Material> MATERIAL_FIELDS=initMaterialFields();
+	public static final InputFieldManager<PlantData> PLANT_FIELDS=initPlantFields();
 	
 	public AddPlantData() {
 		super();
@@ -45,27 +46,24 @@ public class AddPlantData extends SaveMaterialReplica {
 		super(id,materials,destination,testRun);
 	}
 	
-	private static Map<String,InputField<?>> initMaterialFieldMap(){
-		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
-		
-		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true);
-		map.put("MATERIAL",materialId);
-		
-		return Collections.unmodifiableMap(map);
+	private static InputFieldManager<Material> initMaterialFields(){
+		InputFieldManager<Material> fields=new InputFieldManager<Material>(Material.class);
+		fields.addMappedField(InputFields.MATERIAL.name(), "MaterialId", String.class, 0);
+		return fields;
 	}
 	
-	private static final Map<String,InputField<?>> initPlantFieldMap(){
-		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
+	private static InputFieldManager<PlantData> initPlantFields(){
+		InputFieldManager<PlantData> fields=new InputFieldManager<PlantData>(PlantData.class);
 		
-		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true);
-		map.put("PLANT", plant);
+		fields.addMappedField(InputFields.PLANT.name(), "Plant", String.class, 1);
+		fields.addMappedField(InputFields.PROFIT_CTR.name(), "ProfitCenter",String.class,2);
 		
-		InputField<String> profitCenter=new InputField<String>("PROFIT_CTR",null,"ProfitCenter",true);
-		map.put("PROFIT_CTR", profitCenter);
-		
-		return Collections.unmodifiableMap(map);
+		fields.addDefaultedField(InputFields.PUR_GROUP.name(), "PurchasingGroup",String.class, null);
+		fields.addDefaultedField(InputFields.GR_PR_TIME.name(), "GrProcessingTime", Integer.class, null);
+		fields.addDefaultedField(InputFields.MRP_CTRLER.name(), "MrpType", String.class, null);
+		fields.addDefaultedField(InputFields.REORDER_PT.name(), "ReorderPoint", Double.class, null);
+		return fields;
 	}
-	
 	
 	protected void executeFunction(Material material) throws JCoException {
 		Map<String,JCoStructure> structureMap=super.getMaterialPlantData(material.getMaterialId().getValue(), "0700");

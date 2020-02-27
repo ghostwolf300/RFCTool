@@ -52,10 +52,6 @@ public class FieldValue<T> {
 		this.value=value;
 	}
 	
-	public void setValue2(String value) {
-		this.value=(T)value;
-	}
-	
 	public T getValue() {
 		return this.value;
 	}

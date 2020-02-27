@@ -10,48 +10,66 @@ public class InputField<T> {
 	private boolean enabled=true;
 	private boolean changeIndicatorRequired=false;
 	private int mappedColumn=-1;
+	private boolean defaulted=false;
+	private Object defaultValue=null;
+	private Class<T> valueClass=null;
+	private Class<?> dataObjectClass=null;
 	
-	public InputField(String rfcName) {
+	public InputField(String rfcName,Class<T> valueClass) {
 		super();
 		this.rfcName=rfcName;
+		this.valueClass=valueClass;
 	}
 	
-	public InputField(String rfcName, boolean mandatory) {
+	public InputField(String rfcName, boolean mandatory,Class<T> valueClass) {
 		super();
 		this.rfcName=rfcName;
 		this.mandatory=mandatory;
+		this.valueClass=valueClass;
 	}
 	
-	public InputField(String rfcName,String sapName,String propertyName) {
+	public InputField(String rfcName,String sapName,String propertyName,Class<T> valueClass) {
 		super();
 		this.rfcName=rfcName;
 		this.sapName=sapName;
 		this.propertyName=propertyName;
+		this.valueClass=valueClass;
 	}
 	
-	public InputField(String rfcName,String sapName,String propertyName,boolean mandatory) {
+	public InputField(String rfcName,String sapName,String propertyName,boolean mandatory,Class<T> valueClass) {
 		super();
 		this.rfcName=rfcName;
 		this.sapName=sapName;
 		this.propertyName=propertyName;
 		this.mandatory=mandatory;
+		this.valueClass=valueClass;
 	}
 	
-	public InputField(String rfcName,String sapName,String propertyName,String description) {
+	public InputField(String rfcName,String sapName,String propertyName,String description,Class<T> valueClass) {
 		super();
 		this.rfcName=rfcName;
 		this.sapName=sapName;
 		this.propertyName=propertyName;
 		this.description=description;
+		this.valueClass=valueClass;
 	}
 	
-	public InputField(String rfcName,String sapName,String propertyName,String description,boolean mandatory) {
+	public InputField(String rfcName,String sapName,String propertyName,String description,boolean mandatory,Class<T> valueClass) {
 		super();
 		this.rfcName=rfcName;
 		this.sapName=sapName;
 		this.propertyName=propertyName;
 		this.description=description;
 		this.mandatory=mandatory;
+		this.valueClass=valueClass;
+	}
+
+	public Class<T> getValueClass() {
+		return valueClass;
+	}
+
+	public void setValueClass(Class<T> valueClass) {
+		this.valueClass = valueClass;
 	}
 
 	public String getRfcName() {
@@ -119,6 +137,30 @@ public class InputField<T> {
 	}
 	
 	
+	public boolean isDefaulted() {
+		return defaulted;
+	}
+
+	public void setDefaulted(boolean defaulted) {
+		this.defaulted = defaulted;
+	}
+
+	public Object getDefaultValue() {
+		return defaultValue;
+	}
+
+	public void setDefaultValue(Object defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+
+	public Class<?> getDataObjectClass() {
+		return dataObjectClass;
+	}
+
+	public void setDataObjectClass(Class<?> dataObjectClass) {
+		this.dataObjectClass = dataObjectClass;
+	}
+
 	public FieldValue<T> createFieldValue(T value) {
 		FieldValue<T> fv=new FieldValue<T>(this);
 		fv.setValue(value);

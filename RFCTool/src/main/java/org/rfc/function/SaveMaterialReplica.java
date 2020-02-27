@@ -38,6 +38,43 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 	protected JCoTable tVALUATIONDATA=null;
 	protected JCoTable tVALUATIONDATAX=null;
 	protected JCoTable tRETURNMESSAGES=null;
+	
+	public static enum InputFields{
+		MATERIAL,
+		PLANT,
+		PROFIT_CTR,
+		SALES_VIEW,
+		PUR_GROUP,
+		GR_PR_TIME,
+		MRP_TYPE,
+		REORDER_PT,
+		MRP_CTRLER,
+		LOTSIZEKEY,
+		MINLOTSIZE,
+		PROC_TYPE,
+		SPPROCTYPE,
+		ISS_ST_LOC,
+		SLOC_EXPRC,
+		PLND_DELRY,
+		PERIOD_IND,
+		AVAILCHECK,
+		DEP_REQ_ID,
+		PURCH_VIEW,
+		MRP_VIEW,
+		NO_COSTING,
+		ACCOUNT_VIEW,
+		COST_VIEW,
+		STGE_LOC,
+		STORAGE_VIEW,
+		VAL_AREA,
+		PRICE_CTRL,
+		VAL_CLASS,
+		MOVING_PR,
+		STD_PRICE,
+		PRICE_UNIT,
+		QTY_STRUCT,
+		ORIG_MAT,
+	}
 
 	private static List<ReturnMessage> returnMessages=Collections.synchronizedList(new ArrayList<ReturnMessage>());
 	

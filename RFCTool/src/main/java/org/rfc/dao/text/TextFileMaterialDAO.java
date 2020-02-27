@@ -19,6 +19,7 @@ import org.rfc.dto.PlantData;
 import org.rfc.function.AddAcctCostData;
 import org.rfc.function.AddPlantData;
 import org.rfc.function.ChangePlantData;
+import org.rfc.function.SaveMaterialReplica;
 
 public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Material> {
 	
@@ -115,8 +116,8 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		String[] fieldValues=null;
 		Material m=null;
 		PlantData pd=null;
-		Map<String,InputField<?>> materialFieldMap=AddPlantData.MATERIAL_FIELD_MAP;
-		Map<String,InputField<?>> plantFieldMap=AddPlantData.PLANT_FIELD_MAP;
+		Map<String,InputField<?>> materialFieldMap=AddPlantData.MATERIAL_FIELDS.getInputFields();
+		Map<String,InputField<?>> plantFieldMap=AddPlantData.PLANT_FIELDS.getInputFields();
 		
 		int rowCount=0;
 		try(BufferedReader reader=getReader()){
@@ -129,7 +130,7 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 					materials.add(m);
 					currentMaterialId=nextMaterialId;
 				}
-				pd=createPlantDataLong(fieldValues,plantFieldMap);
+				pd=createPlantDataExperimental(fieldValues,plantFieldMap);
 				pd.setMaterial(m);
 				m.addPlantData(pd.getPlant().getValue(), pd);
 				rowCount++;
@@ -221,21 +222,6 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		return pd;
 	}
 	
-	private PlantData createPlantDataLong(String[] fields,Map<String,InputField<?>> fieldMap) {
-		PlantData pd=null;
-		if(fields!=null) {
-			pd=new PlantData();
-			Set<String> fieldNames=fieldMap.keySet();
-			for(String fieldName : fieldNames) {
-				InputField<?> f=fieldMap.get(fieldName);
-				FieldValue<?> fv=f.createFieldValue();
-				fv.setValue2(fields[f.getMappedColumn()]);
-				pd.setFieldValue(f.getPropertyName(), fv);
-			}
-		}
-		return pd;
-	}
-	
 	private PlantData createPlantDataExperimental(String[] fields,Map<String,InputField<?>> fieldMap) {
 		PlantData pd=null;
 		if(fields!=null) {
@@ -243,10 +229,28 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 			Set<String> fieldNames=fieldMap.keySet();
 			for(String fieldName : fieldNames) {
 				InputField<?> f=fieldMap.get(fieldName);
-				FieldValue<?> fv=f.createFieldValue();
+				if(f.getValueClass().equals(String.class)) {
+					FieldValue<String> fv=(FieldValue<String>)f.createFieldValue();
+					fv.setValue(fields[f.getMappedColumn()]);
+					pd.setFieldValue(f.getPropertyName(), fv);
+				}
+				else if(f.getValueClass().equals(Double.class)) {
+					FieldValue<Double> fv=(FieldValue<Double>)f.createFieldValue();
+					fv.setValue(Double.valueOf(fields[f.getMappedColumn()]));
+					pd.setFieldValue(f.getPropertyName(), fv);
+				}
+				else if(f.getValueClass().equals(Integer.class)) {
+					FieldValue<Integer> fv=(FieldValue<Integer>)f.createFieldValue();
+					fv.setValue(Integer.valueOf(fields[f.getMappedColumn()]));
+					pd.setFieldValue(f.getPropertyName(), fv);
+				}
+				else if(f.getValueClass().equals(Boolean.class)) {
+					FieldValue<Boolean> fv=(FieldValue<Boolean>)f.createFieldValue();
+					fv.setValue((fields[f.getMappedColumn()].equals("X") ? true : false));
+					pd.setFieldValue(f.getPropertyName(), fv);
+				}
 				
-				fv.setValue2(fields[f.getMappedColumn()]);
-				pd.setFieldValue(f.getPropertyName(), fv);
+				
 			}
 		}
 		return pd;

@@ -27,16 +27,16 @@ public class AddAcctCostData extends SaveMaterialReplica {
 	private static Map<String,InputField<?>> initInputFieldMap(){
 		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
 		
-		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true);
-		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true);
-		InputField<Boolean> doNotCost=new InputField<Boolean>("NO_COSTING",null,"DoNotCost");
-		InputField<String> priceControl=new InputField<String>("PRICE_CTRL",null,"PriceControl");
-		InputField<String> valuationClass=new InputField<String>("VAL_CLASS",null,"ValuationClass");
-		InputField<Double> movingAveragePrice=new InputField<Double>("MOVING_PR",null,"MovingAveragePrice");
-		InputField<Double> standardPrice=new InputField<Double>("STD_PRICE",null,"StandardPrice");
-		InputField<Integer> priceUnit=new InputField<Integer>("PRICE_UNIT",null,"PriceUnit");
-		InputField<Boolean> costWithQtyStructure=new InputField<Boolean>("QTY_STRUCT",null,"IsCostWithQtyStructure");
-		InputField<Boolean> materialRelatedOrigin=new InputField<Boolean>("ORIG_MAT",null,"IsMaterialRelatedOrigin");
+		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true,String.class);
+		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true,String.class);
+		InputField<Boolean> doNotCost=new InputField<Boolean>("NO_COSTING",null,"DoNotCost",Boolean.class);
+		InputField<String> priceControl=new InputField<String>("PRICE_CTRL",null,"PriceControl",String.class);
+		InputField<String> valuationClass=new InputField<String>("VAL_CLASS",null,"ValuationClass",String.class);
+		InputField<Double> movingAveragePrice=new InputField<Double>("MOVING_PR",null,"MovingAveragePrice",Double.class);
+		InputField<Double> standardPrice=new InputField<Double>("STD_PRICE",null,"StandardPrice",Double.class);
+		InputField<Integer> priceUnit=new InputField<Integer>("PRICE_UNIT",null,"PriceUnit",Integer.class);
+		InputField<Boolean> costWithQtyStructure=new InputField<Boolean>("QTY_STRUCT",null,"IsCostWithQtyStructure",Boolean.class);
+		InputField<Boolean> materialRelatedOrigin=new InputField<Boolean>("ORIG_MAT",null,"IsMaterialRelatedOrigin",Boolean.class);
 		
 		map.put(materialId.getRfcName(),materialId);
 		map.put(plant.getRfcName(),plant);
@@ -142,73 +142,6 @@ public class AddAcctCostData extends SaveMaterialReplica {
 		tRETURNMESSAGES.clear();
 		
 	}
-	
-//	private void copyPlantData(Map<String,JCoStructure> structureMap,Material material) {
-//		
-//		JCoStructure sCLIENTDATA=structureMap.get("CLIENTDATA");
-//		JCoStructure sPLANTDATA=structureMap.get("PLANTDATA");
-//		JCoStructure sVALUATIONDATA=structureMap.get("VALUATIONDATA");
-//		
-//		FieldValue<String> industrySector=new FieldValue<String>();
-//		industrySector.setValue(sCLIENTDATA.getString("IND_SECTOR"));
-//		material.setIndustrySector(industrySector);
-//		
-//		FieldValue<String> type=new FieldValue<String>();
-//		type.setValue(sCLIENTDATA.getString("MATL_TYPE"));
-//		material.setType(type);
-//		
-//		FieldValue<String> group=new FieldValue<String>();
-//		group.setValue(sCLIENTDATA.getString("MATL_GROUP"));
-//		material.setGroup(group);
-//		
-//		FieldValue<String> baseUom=new FieldValue<String>();
-//		baseUom.setValue(sCLIENTDATA.getString("BASE_UOM"));
-//		material.setBaseUom(baseUom);
-//		
-//		
-//		Set<String> plants=material.getPlantDataMap().keySet();
-//		for(String plant : plants) {
-//			PlantData pd=material.getPlantDataMap().get(plant);
-//			
-//			FieldValue<String> purchasingGroup=new FieldValue<String>();
-//			purchasingGroup.setValue(sPLANTDATA.getString("PUR_GROUP"));
-//			pd.setPurchasingGroup(purchasingGroup);
-//			
-//			FieldValue<String> mrpController=new FieldValue<String>();
-//			mrpController.setValue(sPLANTDATA.getString("MRP_CTRLER"));
-//			pd.setMrpController(mrpController);
-//			
-//			FieldValue<String> valuationClass=new FieldValue<String>();
-//			valuationClass.setValue(sVALUATIONDATA.getString("VAL_CLASS"));
-//			pd.setValuationClass(valuationClass);
-//			
-//			FieldValue<String> priceControl=new FieldValue<String>();
-//			priceControl.setValue(sVALUATIONDATA.getString("PRICE_CTRL"));
-//			pd.setPriceControl(priceControl);
-//			
-//			FieldValue<Double> movingPrice=new FieldValue<Double>();
-//			movingPrice.setValue(sVALUATIONDATA.getDouble("MOVING_PR"));
-//			pd.setMovingAveragePrice(movingPrice);
-//			
-//			FieldValue<Double> standardPrice=new FieldValue<Double>();
-//			standardPrice.setValue(sVALUATIONDATA.getDouble("STD_PRICE"));
-//			pd.setStandardPrice(standardPrice);
-//			
-//			FieldValue<Integer> priceUnit=new FieldValue<Integer>();
-//			priceUnit.setValue(sVALUATIONDATA.getInt("PRICE_UNIT"));
-//			pd.setPriceUnit(priceUnit);
-//			
-//			FieldValue<Boolean> qtyStructure=new FieldValue<Boolean>();
-//			qtyStructure.setValue((sVALUATIONDATA.getString("QTY_STRUCT").equals("X") ? true : false));
-//			pd.setCostWithQtyStructure(qtyStructure);
-//			
-//			FieldValue<Boolean> originMaterial=new FieldValue<Boolean>();
-//			originMaterial.setValue((sVALUATIONDATA.getString("ORIG_MAT").equals("X") ? true : false));
-//			pd.setMaterialRelatedOrigin(originMaterial);
-//			
-//		}
-//		
-//	}
 
 	@Override
 	public String getFunctionName() {

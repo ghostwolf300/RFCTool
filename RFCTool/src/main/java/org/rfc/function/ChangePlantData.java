@@ -25,9 +25,9 @@ public class ChangePlantData extends SaveMaterialReplica {
 	private static Map<String,InputField<?>> initInputFieldMap(){
 		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
 		
-		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true);
-		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true);
-		InputField<Boolean> doNotCost=new InputField<Boolean>("NO_COSTING",null,"DoNotCost");
+		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true,String.class);
+		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true,String.class);
+		InputField<Boolean> doNotCost=new InputField<Boolean>("NO_COSTING",null,"DoNotCost",Boolean.class);
 		//InputField<Integer> plannedDeliveryTime=new InputField<Integer>("PLND_DELRY",null,"PlannedDeliveryTime");
 		
 		materialId.setMappedColumn(0);
