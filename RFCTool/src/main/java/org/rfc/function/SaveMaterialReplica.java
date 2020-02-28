@@ -184,7 +184,7 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 			//only add errors or warnings to log; count all types
 			if(message.getType().equals("S")) {
 				successCount++;
-				//messages.add(message);
+				messages.add(message);
 			}
 			else if(message.getType().equals("W")) {
 				warningCount++;
@@ -267,9 +267,37 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 			purchasingGroup.setValue(sPLANTDATA.getString("PUR_GROUP"));
 			pd.setPurchasingGroup(purchasingGroup);
 			
+			FieldValue<Integer> grProcTime=new FieldValue<Integer>();
+			grProcTime.setValue(sPLANTDATA.getInt("GR_PR_TIME"));
+			pd.setGrProcessingTime(grProcTime);
+			
 			FieldValue<String> mrpController=new FieldValue<String>();
 			mrpController.setValue(sPLANTDATA.getString("MRP_CTRLER"));
 			pd.setMrpController(mrpController);
+			
+			FieldValue<String> lotSizeProc=new FieldValue<String>();
+			lotSizeProc.setValue(sPLANTDATA.getString("LOTSIZEKEY"));
+			pd.setLotSizingProcedure(lotSizeProc);
+			
+			FieldValue<Integer> minLotSize=new FieldValue<Integer>();
+			minLotSize.setValue(sPLANTDATA.getInt("MINLOTSIZE"));
+			pd.setMinLotSize(minLotSize);
+			
+			FieldValue<String> procType=new FieldValue<String>();
+			procType.setValue(sPLANTDATA.getString("PROC_TYPE"));
+			pd.setProcurementType(procType);
+			
+			FieldValue<String> periodIndicator=new FieldValue<String>();
+			periodIndicator.setValue(sPLANTDATA.getString("PERIOD_IND"));
+			pd.setPeriodIndicator(periodIndicator);
+			
+			FieldValue<String> availabilityCheck=new FieldValue<String>();
+			availabilityCheck.setValue(sPLANTDATA.getString("AVAILCHECK"));
+			pd.setAvailabilityCheck(availabilityCheck);
+			
+			FieldValue<String> depReqId=new FieldValue<String>();
+			depReqId.setValue(sPLANTDATA.getString("DEP_REQ_ID"));
+			pd.setIndividualAndCollectiveReq(depReqId);
 			
 			FieldValue<String> valuationClass=new FieldValue<String>();
 			valuationClass.setValue(sVALUATIONDATA.getString("VAL_CLASS"));

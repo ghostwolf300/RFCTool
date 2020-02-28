@@ -19,6 +19,7 @@ import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.AddAcctCostData;
 import org.rfc.function.AddPlantData;
+import org.rfc.function.AddPurchMRPData;
 import org.rfc.function.ChangePlantData;
 import org.rfc.function.RunnableFunction;
 import org.rfc.model.MaterialDataModel;
@@ -86,6 +87,7 @@ public class RFCService {
 		//functionClasses.add(AddPlantData.class);
 		functionClasses.add(ChangePlantData.class);
 		functionClasses.add(AddAcctCostData.class);
+		functionClasses.add(AddPurchMRPData.class);
 		List<UserFunction<? extends RunnableFunction>> functions=new ArrayList<UserFunction<? extends RunnableFunction>>();
 		int counter=1;
 		for(Class<? extends RunnableFunction> fclass : functionClasses) {
@@ -153,8 +155,8 @@ public class RFCService {
 		SapSystemFactory factory=new SapSystemFactory();
 		SapSystem sap=null;
 		try {
-			//sap = factory.getSapSystem("TETCLNT280");
-			sap = factory.getSapSystem("TEPCLNT280");
+			sap = factory.getSapSystem("TETCLNT280");
+			//sap = factory.getSapSystem("TEPCLNT280");
 		} 
 		catch (JCoException e) {
 			// TODO Auto-generated catch block

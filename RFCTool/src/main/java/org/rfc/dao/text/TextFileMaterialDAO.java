@@ -18,6 +18,7 @@ import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 import org.rfc.function.AddAcctCostData;
 import org.rfc.function.AddPlantData;
+import org.rfc.function.AddPurchMRPData;
 import org.rfc.function.ChangePlantData;
 import org.rfc.function.SaveMaterialReplica;
 
@@ -131,6 +132,49 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 					currentMaterialId=nextMaterialId;
 				}
 				pd=createPlantDataExperimental(fieldValues,plantFieldMap);
+				pd.setMaterial(m);
+				m.addPlantData(pd.getPlant().getValue(), pd);
+				rowCount++;
+			}
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return materials;
+	}
+	
+	@Override
+	public List<Material> getAddPurchMRPDataList() {
+		List<Material> materials=null;
+		String nextMaterialId=null;
+		String currentMaterialId=null;
+		String line="";
+		String[] fieldValues=null;
+		Material m=null;
+		PlantData pd=null;
+		Map<String,InputField<?>> fieldMap=AddPurchMRPData.FIELD_MAP;
+		
+		int rowCount=0;
+		try(BufferedReader reader=getReader()){
+			materials=new ArrayList<Material>();
+			while((line=reader.readLine())!=null) {
+				fieldValues=getFieldValues(line);
+				nextMaterialId=fieldValues[0];
+				if(currentMaterialId==null || !currentMaterialId.equals(nextMaterialId)) {
+					m=createMaterial(fieldValues,fieldMap);
+					materials.add(m);
+					currentMaterialId=nextMaterialId;
+				}
+				pd=createPurchMRPData(fieldValues,fieldMap);
 				pd.setMaterial(m);
 				m.addPlantData(pd.getPlant().getValue(), pd);
 				rowCount++;
@@ -272,6 +316,21 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		}
 		return pd;
 	}
+	
+	private PlantData createPurchMRPData(String[] fields,Map<String,InputField<?>> fieldMap) {
+		PlantData pd=null;
+		if(fields!=null) {
+			pd=new PlantData();
+			
+			FieldValue<String> plant=(FieldValue<String>) fieldMap.get("PLANT").createFieldValue();
+			plant.setValue(fields[1]);
+			pd.setPlant(plant);
+			
+		}
+		return pd;
+	}
+
+	
 
 	
 

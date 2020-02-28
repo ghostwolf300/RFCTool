@@ -9,5 +9,6 @@ public interface MaterialDAO<Material> {
 	public List<Row> getPreviewDataList(int maxRows);
 	public List<Material> getChangePlantDataList();
 	public List<Material> getAddPlantDataList();
+	public List<Material> getAddPurchMRPDataList();
 	public List<Material> getAddAcctCostDataList();
 }
