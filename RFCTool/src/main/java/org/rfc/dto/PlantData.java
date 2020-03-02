@@ -8,6 +8,8 @@ public class PlantData extends DataObject {
 	//General Plant
 	private FieldValue<String> profitCenter=null;
 	private FieldValue<String> loadingGroup=null;
+	private FieldValue<String> originCountry=null;
+	private FieldValue<String> commodityCode=null;
 	//Purchasing & MRP
 	private FieldValue<String> purchasingGroup=null;
 	private FieldValue<Integer> grProcessingTime=null;
@@ -80,6 +82,22 @@ public class PlantData extends DataObject {
 
 	public void setLoadingGroup(FieldValue<String> loadingGroup) {
 		this.loadingGroup = loadingGroup;
+	}
+
+	public FieldValue<String> getOriginCountry() {
+		return originCountry;
+	}
+
+	public void setOriginCountry(FieldValue<String> originCountry) {
+		this.originCountry = originCountry;
+	}
+
+	public FieldValue<String> getCommodityCode() {
+		return commodityCode;
+	}
+
+	public void setCommodityCode(FieldValue<String> commodityCode) {
+		this.commodityCode = commodityCode;
 	}
 
 	public FieldValue<String> getPurchasingGroup() {

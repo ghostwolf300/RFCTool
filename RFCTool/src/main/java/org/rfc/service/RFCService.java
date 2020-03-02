@@ -84,7 +84,7 @@ public class RFCService {
 	
 	public void loadFunctions() {
 		List<Class<? extends RunnableFunction>> functionClasses=new ArrayList<Class<? extends RunnableFunction>>();
-		//functionClasses.add(AddPlantData.class);
+		functionClasses.add(AddPlantData.class);
 		functionClasses.add(ChangePlantData.class);
 		functionClasses.add(AddAcctCostData.class);
 		functionClasses.add(AddPurchMRPData.class);
@@ -165,7 +165,6 @@ public class RFCService {
 		
 		int counter=1;
 		for(List<Material> workerList : workerLists) {
-			//Worker worker=new ChangePlantData(counter,workerList,sap.getDestination(),testRun);
 			Worker worker=function.createWorker(counter,workerList,sap.getDestination(),testRun);
 			workers.add(worker);
 			counter++;

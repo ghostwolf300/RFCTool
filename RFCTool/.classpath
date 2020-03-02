@@ -34,7 +34,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/ville.susi/Documents/Digital Development/SAP Jco/sapjco3/sapjco3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/ville.susi/OneDrive - Wihuri/Tiedostot/Digital Development/SAP Jco/sapjco3/sapjco3.jar"/>
 	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

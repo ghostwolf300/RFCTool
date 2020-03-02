@@ -117,8 +117,7 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		String[] fieldValues=null;
 		Material m=null;
 		PlantData pd=null;
-		Map<String,InputField<?>> materialFieldMap=AddPlantData.MATERIAL_FIELDS.getInputFields();
-		Map<String,InputField<?>> plantFieldMap=AddPlantData.PLANT_FIELDS.getInputFields();
+		Map<String,InputField<?>> fields=AddPlantData.FIELD_MAP;
 		
 		int rowCount=0;
 		try(BufferedReader reader=getReader()){
@@ -127,11 +126,11 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 				fieldValues=getFieldValues(line);
 				nextMaterialId=fieldValues[0];
 				if(currentMaterialId==null || !currentMaterialId.equals(nextMaterialId)) {
-					m=createMaterial(fieldValues,materialFieldMap);
+					m=createMaterial(fieldValues,fields);
 					materials.add(m);
 					currentMaterialId=nextMaterialId;
 				}
-				pd=createPlantDataExperimental(fieldValues,plantFieldMap);
+				pd=createPlantDataExperimental(fieldValues,fields);
 				pd.setMaterial(m);
 				m.addPlantData(pd.getPlant().getValue(), pd);
 				rowCount++;
@@ -270,32 +269,15 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		PlantData pd=null;
 		if(fields!=null) {
 			pd=new PlantData();
-			Set<String> fieldNames=fieldMap.keySet();
-			for(String fieldName : fieldNames) {
-				InputField<?> f=fieldMap.get(fieldName);
-				if(f.getValueClass().equals(String.class)) {
-					FieldValue<String> fv=(FieldValue<String>)f.createFieldValue();
-					fv.setValue(fields[f.getMappedColumn()]);
-					pd.setFieldValue(f.getPropertyName(), fv);
-				}
-				else if(f.getValueClass().equals(Double.class)) {
-					FieldValue<Double> fv=(FieldValue<Double>)f.createFieldValue();
-					fv.setValue(Double.valueOf(fields[f.getMappedColumn()]));
-					pd.setFieldValue(f.getPropertyName(), fv);
-				}
-				else if(f.getValueClass().equals(Integer.class)) {
-					FieldValue<Integer> fv=(FieldValue<Integer>)f.createFieldValue();
-					fv.setValue(Integer.valueOf(fields[f.getMappedColumn()]));
-					pd.setFieldValue(f.getPropertyName(), fv);
-				}
-				else if(f.getValueClass().equals(Boolean.class)) {
-					FieldValue<Boolean> fv=(FieldValue<Boolean>)f.createFieldValue();
-					fv.setValue((fields[f.getMappedColumn()].equals("X") ? true : false));
-					pd.setFieldValue(f.getPropertyName(), fv);
-				}
-				
-				
-			}
+			
+			FieldValue<String> plant=(FieldValue<String>) fieldMap.get("PLANT").createFieldValue();
+			plant.setValue(fields[1]);
+			pd.setPlant(plant);
+			
+			FieldValue<String> profitCenter=(FieldValue<String>) fieldMap.get("PROFIT_CTR").createFieldValue();
+			profitCenter.setValue(fields[2]);
+			pd.setProfitCenter(profitCenter);
+			
 		}
 		return pd;
 	}

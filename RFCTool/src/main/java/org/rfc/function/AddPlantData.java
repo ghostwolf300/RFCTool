@@ -23,8 +23,7 @@ public class AddPlantData extends SaveMaterialReplica {
 	
 	public static final String FUNCTION_NAME="AddPlantData";
 	
-	public static final InputFieldManager<Material> MATERIAL_FIELDS=initMaterialFields();
-	public static final InputFieldManager<PlantData> PLANT_FIELDS=initPlantFields();
+	public static final Map<String,InputField<?>> FIELD_MAP=initFieldMap();
 	
 	public AddPlantData() {
 		super();
@@ -46,32 +45,84 @@ public class AddPlantData extends SaveMaterialReplica {
 		super(id,materials,destination,testRun);
 	}
 	
-	private static InputFieldManager<Material> initMaterialFields(){
-		InputFieldManager<Material> fields=new InputFieldManager<Material>(Material.class);
-		fields.addMappedField(InputFields.MATERIAL.name(), "MaterialId", String.class, 0);
-		return fields;
-	}
-	
-	private static InputFieldManager<PlantData> initPlantFields(){
-		InputFieldManager<PlantData> fields=new InputFieldManager<PlantData>(PlantData.class);
+	private static Map<String,InputField<?>> initFieldMap(){
+		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
 		
-		fields.addMappedField(InputFields.PLANT.name(), "Plant", String.class, 1);
-		fields.addMappedField(InputFields.PROFIT_CTR.name(), "ProfitCenter",String.class,2);
+		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true,String.class);
+		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true,String.class);
+		InputField<String> profitCenter=new InputField<String>("PROFIT_CTR",null,"ProfitCenter",true,String.class);
 		
-		fields.addDefaultedField(InputFields.PUR_GROUP.name(), "PurchasingGroup",String.class, null);
-		fields.addDefaultedField(InputFields.GR_PR_TIME.name(), "GrProcessingTime", Integer.class, null);
-		fields.addDefaultedField(InputFields.MRP_CTRLER.name(), "MrpType", String.class, null);
-		fields.addDefaultedField(InputFields.REORDER_PT.name(), "ReorderPoint", Double.class, null);
-		return fields;
+		InputField<String> purchGroup=new InputField<String>("PURCH_GROUP",null,"PurchasingGroup",false,String.class);
+		InputField<Integer> grProcTime=new InputField<Integer>("GR_PR_TIME",null,"GrProcessingTime",false,Integer.class);
+		InputField<String> mrpType=new InputField<String>("MRP_TYPE",null,"MrpType",false,String.class);
+		InputField<Integer> reorderPoint=new InputField<Integer>("REORDER_PT",null,"ReorderPoint",false,Integer.class);
+		InputField<String> mrpController=new InputField<String>("MRP_CTRLER",null,"MrpController",false,String.class);
+		InputField<String> lotSizeKey=new InputField<String>("LOTSIZEKEY",null,"LotSizeKey",false,String.class);
+		InputField<Integer> minLotSize=new InputField<Integer>("MINLOTSIZE",null,"MinLotSize",false,Integer.class);
+		InputField<String> lotSizeProc=new InputField<String>("LOTSIZEKEY",null,"LotSizingProcedure",false,String.class);
+		InputField<String> procType=new InputField<String>("PROC_TYPE",null,"ProcurementType",false,String.class);
+		InputField<String> specialProc=new InputField<String>("SPPROCTYPE",null,"SpecialProcurement",false,String.class);
+		InputField<String> issueStorageLoc=new InputField<String>("ISS_ST_LOC",null,"IssueStorageLocation",false,String.class);
+		InputField<String> storageLocEP=new InputField<String>("SLOC_EXPRC",null,"StorageLocationForEP",false,String.class);
+		InputField<Integer> planDelTime=new InputField<Integer>("PLND_DELRY",null,"PlannedDeliveryTime",false,Integer.class);
+		InputField<String> periodIndicator=new InputField<String>("PERIOD_IND",null,"PeriodIndicator",false,String.class);
+		InputField<String> availabilityCheck=new InputField<String>("AVAILCHECK",null,"AvailabilityCheck",false,String.class);
+		InputField<String> depReqId=new InputField<String>("DEP_REQ_ID",null,"IndividualAndCollectiveReq",false,String.class);
+		
+		InputField<Boolean> doNotCost=new InputField<Boolean>("NO_COSTING",null,"DoNotCost",Boolean.class);
+		InputField<String> priceControl=new InputField<String>("PRICE_CTRL",null,"PriceControl",String.class);
+		InputField<String> valuationClass=new InputField<String>("VAL_CLASS",null,"ValuationClass",String.class);
+		InputField<Double> movingAveragePrice=new InputField<Double>("MOVING_PR",null,"MovingAveragePrice",Double.class);
+		InputField<Double> standardPrice=new InputField<Double>("STD_PRICE",null,"StandardPrice",Double.class);
+		InputField<Integer> priceUnit=new InputField<Integer>("PRICE_UNIT",null,"PriceUnit",Integer.class);
+		InputField<Boolean> costWithQtyStructure=new InputField<Boolean>("QTY_STRUCT",null,"IsCostWithQtyStructure",Boolean.class);
+		InputField<Boolean> materialRelatedOrigin=new InputField<Boolean>("ORIG_MAT",null,"IsMaterialRelatedOrigin",Boolean.class);
+		
+		map.put(materialId.getRfcName(),materialId);
+		map.put(plant.getRfcName(),plant);
+		map.put(profitCenter.getRfcName(), profitCenter);
+		map.put(purchGroup.getRfcName(), purchGroup);
+		map.put(grProcTime.getRfcName(), grProcTime);
+		map.put(mrpType.getRfcName(), mrpType);
+		map.put(reorderPoint.getRfcName(), reorderPoint);
+		map.put(mrpController.getRfcName(), mrpController);
+		map.put(lotSizeKey.getRfcName(), lotSizeKey);
+		map.put(minLotSize.getRfcName(), minLotSize);
+		map.put(lotSizeProc.getRfcName(), lotSizeProc);
+		map.put(procType.getRfcName(), procType);
+		map.put(specialProc.getRfcName(), specialProc);
+		map.put(issueStorageLoc.getRfcName(), issueStorageLoc);
+		map.put(storageLocEP.getRfcName(), storageLocEP);
+		map.put(planDelTime.getRfcName(), planDelTime);
+		map.put(periodIndicator.getRfcName(), periodIndicator);
+		map.put(availabilityCheck.getRfcName(), availabilityCheck);
+		map.put(depReqId.getRfcName(), depReqId);
+		
+		map.put(doNotCost.getRfcName(), doNotCost);
+		map.put(priceControl.getRfcName(), priceControl);
+		map.put(valuationClass.getRfcName(), valuationClass);
+		map.put(movingAveragePrice.getRfcName(), movingAveragePrice);
+		map.put(standardPrice.getRfcName(), standardPrice);
+		map.put(priceUnit.getRfcName(),priceUnit);
+		map.put(costWithQtyStructure.getRfcName(), costWithQtyStructure);
+		map.put(materialRelatedOrigin.getRfcName(), materialRelatedOrigin);
+		
+		return Collections.unmodifiableMap(map);
 	}
 	
 	protected void executeFunction(Material material) throws JCoException {
+		
 		Map<String,JCoStructure> structureMap=super.getMaterialPlantData(material.getMaterialId().getValue(), "0700");
 		copyPlantData(structureMap,material);
 		
 		tHEADDATA.appendRow();
 		tHEADDATA.setValue("FUNCTION","UPD");
 		tHEADDATA.setValue("MATERIAL",material.getMaterialId().getValue());
+		tHEADDATA.setValue("SALES_VIEW","X");
+		tHEADDATA.setValue("PURCHASE_VIEW","X");
+		tHEADDATA.setValue("MRP_VIEW","X");
+		tHEADDATA.setValue("ACCOUNT_VIEW", "X");
+		tHEADDATA.setValue("COST_VIEW", "X");
 		
 		Set<String> plants=material.getPlantDataMap().keySet();
 		
@@ -80,38 +131,43 @@ public class AddPlantData extends SaveMaterialReplica {
 			tPLANTDATA.appendRow();
 			tPLANTDATA.setValue("FUNCTION", "INS");
 			tPLANTDATA.setValue("MATERIAL", material.getMaterialId().getValue());
-			//---Plant
 			tPLANTDATA.setValue("PLANT", pd.getPlant().getValue());
-			tPLANTDATA.setValue("PROFIT_CTR",pd.getProfitCenter().getValue());
-			tPLANTDATA.setValue("SALES_VIEW", "X");
+			tPLANTDATA.setValue("PROFIT_CTR", pd.getProfitCenter().getValue());
+			tPLANTDATA.setValue("LOADINGGRP", pd.getLoadingGroup().getValue());
+			tPLANTDATA.setValue("COUNTRYORI",pd.getOriginCountry().getValue());
+			tPLANTDATA.setValue("COMM_CODE", pd.getCommodityCode().getValue());
+			
 			//---Purchasting & MRP
-			tPLANTDATA.setValue("PUR_GROUP", pd.getPurchasingGroup().getValue());
+			tPLANTDATA.setValue("PUR_GROUP",pd.getPurchasingGroup().getValue());
 			tPLANTDATA.setValue("GR_PR_TIME",pd.getGrProcessingTime().getValue());
-			tPLANTDATA.setValue("MRP_TYPE",pd.getMrpType().getValue());
-			tPLANTDATA.setValue("REORDER_PT",pd.getReorderPoint().getValue());
+			tPLANTDATA.setValue("MRP_TYPE","PD");
+			tPLANTDATA.setValue("REORDER_PT",0);
 			tPLANTDATA.setValue("MRP_CTRLER", pd.getMrpController().getValue());
 			tPLANTDATA.setValue("LOTSIZEKEY",pd.getLotSizingProcedure().getValue());
 			tPLANTDATA.setValue("MINLOTSIZE", pd.getMinLotSize().getValue());
 			tPLANTDATA.setValue("PROC_TYPE", pd.getProcurementType().getValue());
-			tPLANTDATA.setValue("SPPROCTYPE", pd.getSpecialProcurement().getValue());
-			tPLANTDATA.setValue("ISS_ST_LOC", pd.getIssueStorageLocation().getValue());
-			tPLANTDATA.setValue("SLOC_EXPRC", pd.getStorageLocationForEP().getValue());
-			tPLANTDATA.setValue("PLND_DELRY", pd.getPlannedDeliveryTime().getValue());
+			tPLANTDATA.setValue("SPPROCTYPE", "40");
+			tPLANTDATA.setValue("ISS_ST_LOC", "0700");
+			tPLANTDATA.setValue("SLOC_EXPRC", "0700");
+			tPLANTDATA.setValue("PLND_DELRY", 2);
 			tPLANTDATA.setValue("PERIOD_IND", pd.getPeriodIndicator().getValue());
 			tPLANTDATA.setValue("AVAILCHECK", pd.getAvailabilityCheck().getValue());
 			tPLANTDATA.setValue("DEP_REQ_ID", pd.getIndividualAndCollectiveReq().getValue());
+			tPLANTDATA.setValue("NO_COSTING", "X");
+			tPLANTDATA.setValue("SALES_VIEW","X");
+			tPLANTDATA.setValue("MRP_VIEW","X");
 			tPLANTDATA.setValue("PURCH_VIEW","X");
-			tPLANTDATA.setValue("MRP_VIEW", "X");
-			//---Accounting & Costing
-			tPLANTDATA.setValue("NO_COSTING", (pd.isDoNotCost().getValue()==true ? "X" : " "));
 			tPLANTDATA.setValue("ACCOUNT_VIEW","X");
 			tPLANTDATA.setValue("COST_VIEW","X");
-
+			
 			tPLANTDATAX.appendRow();
 			tPLANTDATAX.setValue("FUNCTION", "INS");
 			tPLANTDATAX.setValue("MATERIAL", pd.getMaterialId().getValue());
 			tPLANTDATAX.setValue("PLANT", pd.getPlant().getValue());
-			tPLANTDATAX.setValue("PROFIT_CTR","X");
+			tPLANTDATAX.setValue("PROFIT_CTR", "X");
+			tPLANTDATAX.setValue("LOADINGGRP", "X");
+			tPLANTDATAX.setValue("COUNTRYORI","X");
+			tPLANTDATAX.setValue("COMM_CODE", "X");
 			tPLANTDATAX.setValue("PUR_GROUP", "X");
 			tPLANTDATAX.setValue("GR_PR_TIME","X");
 			tPLANTDATAX.setValue("MRP_TYPE","X");
@@ -134,7 +190,7 @@ public class AddPlantData extends SaveMaterialReplica {
 			tSTORAGELOCATIONDATA.setValue("FUNCTION","INS");
 			tSTORAGELOCATIONDATA.setValue("MATERIAL", material.getMaterialId().getValue());
 			tSTORAGELOCATIONDATA.setValue("PLANT",pd.getPlant().getValue());
-			tSTORAGELOCATIONDATA.setValue("STGE_LOC", pd.getStorageLocation().getValue());
+			tSTORAGELOCATIONDATA.setValue("STGE_LOC", "0700");
 			tSTORAGELOCATIONDATA.setValue("MRP_VIEW","X");
 			tSTORAGELOCATIONDATA.setValue("STORAGE_VIEW","X");
 			
@@ -142,7 +198,7 @@ public class AddPlantData extends SaveMaterialReplica {
 			tSTORAGELOCATIONDATAX.setValue("FUNCTION","INS");
 			tSTORAGELOCATIONDATAX.setValue("MATERIAL", material.getMaterialId().getValue());
 			tSTORAGELOCATIONDATAX.setValue("PLANT",pd.getPlant().getValue());
-			tSTORAGELOCATIONDATAX.setValue("STGE_LOC", pd.getStorageLocation().getValue());
+			tSTORAGELOCATIONDATAX.setValue("STGE_LOC", "0700");
 			
 			//---Accounting & Costing
 			tVALUATIONDATA.appendRow();
@@ -189,6 +245,10 @@ public class AddPlantData extends SaveMaterialReplica {
 	@Override
 	public String getFunctionName() {
 		return FUNCTION_NAME;
+	}
+	
+	public static Map<String, InputField<?>> getFieldMap() {
+		return FIELD_MAP;
 	}
 
 

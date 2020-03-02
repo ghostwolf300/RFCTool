@@ -184,7 +184,7 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 			//only add errors or warnings to log; count all types
 			if(message.getType().equals("S")) {
 				successCount++;
-				//messages.add(message);
+				messages.add(message);
 			}
 			else if(message.getType().equals("W")) {
 				warningCount++;
@@ -262,6 +262,18 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		Set<String> plants=material.getPlantDataMap().keySet();
 		for(String plant : plants) {
 			PlantData pd=material.getPlantDataMap().get(plant);
+			
+			FieldValue<String> loadingGroup=new FieldValue<String>();
+			loadingGroup.setValue(sPLANTDATA.getString("LOADINGGRP"));
+			pd.setLoadingGroup(loadingGroup);
+			
+			FieldValue<String> originCountry=new FieldValue<String>();
+			originCountry.setValue(sPLANTDATA.getString("COUNTRYORI"));
+			pd.setOriginCountry(originCountry);
+			
+			FieldValue<String> commodityCode=new FieldValue<String>();
+			commodityCode.setValue(sPLANTDATA.getString("COMM_CODE"));
+			pd.setCommodityCode(commodityCode);
 			
 			FieldValue<String> purchasingGroup=new FieldValue<String>();
 			purchasingGroup.setValue(sPLANTDATA.getString("PUR_GROUP"));
