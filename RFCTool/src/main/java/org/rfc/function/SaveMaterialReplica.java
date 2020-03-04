@@ -12,6 +12,7 @@ import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.ReturnMessage;
+import org.rfc.dto.ValuationData;
 
 import com.sap.conn.jco.JCoContext;
 import com.sap.conn.jco.JCoDestination;
@@ -131,7 +132,7 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		JCoContext.begin(destination);
 		functionMap.get(F_MATERIAL_SAVE).execute(destination);
 		
-		List<ReturnMessage> functionMessages=createReturnMessages(tRETURNMESSAGES,material.getMaterialId().getValue());
+		List<ReturnMessage> functionMessages=createReturnMessages(tRETURNMESSAGES,material.getMaterialId());
 		if(functionMessages!=null) {
 			material.setMessages(functionMessages);
 			synchronized(returnMessages) {
@@ -242,105 +243,44 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		JCoStructure sPLANTDATA=structureMap.get("PLANTDATA");
 		JCoStructure sVALUATIONDATA=structureMap.get("VALUATIONDATA");
 		
-		FieldValue<String> industrySector=new FieldValue<String>();
-		industrySector.setValue(sCLIENTDATA.getString("IND_SECTOR"));
-		material.setIndustrySector(industrySector);
+		material.setIndustrySector(sCLIENTDATA.getString("IND_SECTOR"));
+		material.setType(sCLIENTDATA.getString("MATL_TYPE"));
+		material.setGroup(sCLIENTDATA.getString("MATL_GROUP"));
+		material.setBaseUom(sCLIENTDATA.getString("BASE_UOM"));
 		
-		FieldValue<String> type=new FieldValue<String>();
-		type.setValue(sCLIENTDATA.getString("MATL_TYPE"));
-		material.setType(type);
-		
-		FieldValue<String> group=new FieldValue<String>();
-		group.setValue(sCLIENTDATA.getString("MATL_GROUP"));
-		material.setGroup(group);
-		
-		FieldValue<String> baseUom=new FieldValue<String>();
-		baseUom.setValue(sCLIENTDATA.getString("BASE_UOM"));
-		material.setBaseUom(baseUom);
-		
-		
-		Set<String> plants=material.getPlantDataMap().keySet();
-		for(String plant : plants) {
-			PlantData pd=material.getPlantDataMap().get(plant);
-			
-			FieldValue<String> loadingGroup=new FieldValue<String>();
-			loadingGroup.setValue(sPLANTDATA.getString("LOADINGGRP"));
-			pd.setLoadingGroup(loadingGroup);
-			
-			FieldValue<String> originCountry=new FieldValue<String>();
-			originCountry.setValue(sPLANTDATA.getString("COUNTRYORI"));
-			pd.setOriginCountry(originCountry);
-			
-			FieldValue<String> commodityCode=new FieldValue<String>();
-			commodityCode.setValue(sPLANTDATA.getString("COMM_CODE"));
-			pd.setCommodityCode(commodityCode);
-			
-			FieldValue<String> purchasingGroup=new FieldValue<String>();
-			purchasingGroup.setValue(sPLANTDATA.getString("PUR_GROUP"));
-			pd.setPurchasingGroup(purchasingGroup);
-			
-			FieldValue<Integer> grProcTime=new FieldValue<Integer>();
-			grProcTime.setValue(sPLANTDATA.getInt("GR_PR_TIME"));
-			pd.setGrProcessingTime(grProcTime);
-			
-			FieldValue<String> mrpController=new FieldValue<String>();
-			mrpController.setValue(sPLANTDATA.getString("MRP_CTRLER"));
-			pd.setMrpController(mrpController);
-			
-			FieldValue<String> lotSizeProc=new FieldValue<String>();
-			lotSizeProc.setValue(sPLANTDATA.getString("LOTSIZEKEY"));
-			pd.setLotSizingProcedure(lotSizeProc);
-			
-			FieldValue<Integer> minLotSize=new FieldValue<Integer>();
-			minLotSize.setValue(sPLANTDATA.getInt("MINLOTSIZE"));
-			pd.setMinLotSize(minLotSize);
-			
-			FieldValue<String> procType=new FieldValue<String>();
-			procType.setValue(sPLANTDATA.getString("PROC_TYPE"));
-			pd.setProcurementType(procType);
-			
-			FieldValue<String> periodIndicator=new FieldValue<String>();
-			periodIndicator.setValue(sPLANTDATA.getString("PERIOD_IND"));
-			pd.setPeriodIndicator(periodIndicator);
-			
-			FieldValue<String> availabilityCheck=new FieldValue<String>();
-			availabilityCheck.setValue(sPLANTDATA.getString("AVAILCHECK"));
-			pd.setAvailabilityCheck(availabilityCheck);
-			
-			FieldValue<String> depReqId=new FieldValue<String>();
-			depReqId.setValue(sPLANTDATA.getString("DEP_REQ_ID"));
-			pd.setIndividualAndCollectiveReq(depReqId);
-			
-			FieldValue<String> valuationClass=new FieldValue<String>();
-			valuationClass.setValue(sVALUATIONDATA.getString("VAL_CLASS"));
-			pd.setValuationClass(valuationClass);
-			
-			FieldValue<String> priceControl=new FieldValue<String>();
-			priceControl.setValue(sVALUATIONDATA.getString("PRICE_CTRL"));
-			pd.setPriceControl(priceControl);
-			
-			FieldValue<Double> movingPrice=new FieldValue<Double>();
-			movingPrice.setValue(sVALUATIONDATA.getDouble("MOVING_PR"));
-			pd.setMovingAveragePrice(movingPrice);
-			
-			FieldValue<Double> standardPrice=new FieldValue<Double>();
-			standardPrice.setValue(sVALUATIONDATA.getDouble("STD_PRICE"));
-			pd.setStandardPrice(standardPrice);
-			
-			FieldValue<Integer> priceUnit=new FieldValue<Integer>();
-			priceUnit.setValue(sVALUATIONDATA.getInt("PRICE_UNIT"));
-			pd.setPriceUnit(priceUnit);
-			
-			FieldValue<Boolean> qtyStructure=new FieldValue<Boolean>();
-			qtyStructure.setValue((sVALUATIONDATA.getString("QTY_STRUCT").equals("X") ? true : false));
-			pd.setCostWithQtyStructure(qtyStructure);
-			
-			FieldValue<Boolean> originMaterial=new FieldValue<Boolean>();
-			originMaterial.setValue((sVALUATIONDATA.getString("ORIG_MAT").equals("X") ? true : false));
-			pd.setMaterialRelatedOrigin(originMaterial);
-			
-			
+		if(material.getPlantDataMap()!=null) {
+			Set<String> plants=material.getPlantDataMap().keySet();
+			for(String plant : plants) {
+				PlantData pd=material.getPlantDataMap().get(plant);
+				pd.setLoadingGroup(sPLANTDATA.getString("LOADINGGRP"));
+				pd.setOriginCountry(sPLANTDATA.getString("COUNTRYORI"));
+				pd.setCommodityCode(sPLANTDATA.getString("COMM_CODE"));
+				pd.setPurchasingGroup(sPLANTDATA.getString("PUR_GROUP"));
+				pd.setGrProcessingTime(sPLANTDATA.getInt("GR_PR_TIME"));
+				pd.setMrpController(sPLANTDATA.getString("MRP_CTRLER"));
+				pd.setLotSizingProcedure(sPLANTDATA.getString("LOTSIZEKEY"));
+				pd.setMinLotSize(sPLANTDATA.getInt("MINLOTSIZE"));
+				pd.setProcurementType(sPLANTDATA.getString("PROC_TYPE"));
+				pd.setPeriodIndicator(sPLANTDATA.getString("PERIOD_IND"));
+				pd.setAvailabilityCheck(sPLANTDATA.getString("AVAILCHECK"));
+				pd.setIndividualAndCollectiveReq(sPLANTDATA.getString("DEP_REQ_ID"));
+			}
 		}
+		
+		if(material.getValuationDataMap()!=null) {
+			Set<String> valAreas=material.getValuationDataMap().keySet();
+			for(String valArea : valAreas) {
+				ValuationData vd=material.getValuationDataMap().get(valArea);
+				vd.setValuationClass(sVALUATIONDATA.getString("VAL_CLASS"));
+				vd.setPriceControl(sVALUATIONDATA.getString("PRICE_CTRL"));
+				vd.setMovingAveragePrice(sVALUATIONDATA.getDouble("MOVING_PR"));
+				vd.setStandardPrice(sVALUATIONDATA.getDouble("STD_PRICE"));
+				vd.setPriceUnit(sVALUATIONDATA.getInt("PRICE_UNIT"));
+				vd.setCostWithQtyStructure((sVALUATIONDATA.getString("QTY_STRUCT").equals("X") ? true : false));
+				vd.setMaterialRelatedOrigin((sVALUATIONDATA.getString("ORIG_MAT").equals("X") ? true : false));
+			}
+		}
+		
 	}
 	
 

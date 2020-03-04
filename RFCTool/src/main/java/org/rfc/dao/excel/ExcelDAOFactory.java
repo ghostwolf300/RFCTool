@@ -44,7 +44,7 @@ public class ExcelDAOFactory implements DAOFactory {
 	}
 
 	public MaterialDAO<Material> getMaterialDAO() {
-		return new ExcelMaterialDAO(dbFile);
+		return null;
 	}
 
 	public ReturnMessageDAO<ReturnMessage> getReturnMessageDAO() {

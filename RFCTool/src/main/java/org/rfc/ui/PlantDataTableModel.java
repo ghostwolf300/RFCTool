@@ -49,21 +49,21 @@ public class PlantDataTableModel extends AbstractTableModel {
 			PlantData plantData=plantDataList.get(rowIndex);
 			switch(columnIndex) {
 				case COL_MATERIAL :  
-					return plantData.getMaterial().getMaterialId().getValue();
+					return plantData.getMaterial().getMaterialId();
 				case COL_TYPE :
 					return plantData.getMaterial().getType();
 				case COL_PLANT:
-					return plantData.getPlant().getValue();
+					return plantData.getPlant();
 				case COL_PURCH_GROUP :
 					return plantData.getPurchasingGroup();
 				case COL_PRICE_CTRL :
-					return plantData.getPriceControl();
+					return null;
 				case COL_MOV_AVG_PRICE :
-					return plantData.getMovingAveragePrice();
+					return null;
 				case COL_STD_PRICE :
-					return plantData.getStandardPrice();
+					return null;
 				case COL_PLAN_DEL_TIME:
-					return plantData.getPlannedDeliveryTime().getValue();
+					return plantData.getPlannedDeliveryTime();
 				default :
 					return null;
 			}

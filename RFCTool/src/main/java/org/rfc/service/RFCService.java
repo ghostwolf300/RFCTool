@@ -18,6 +18,7 @@ import org.rfc.dto.UserFunction;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.AddAcctCostData;
+import org.rfc.function.AddMRPData;
 import org.rfc.function.AddPlantData;
 import org.rfc.function.AddPurchMRPData;
 import org.rfc.function.ChangePlantData;
@@ -88,6 +89,7 @@ public class RFCService {
 		functionClasses.add(ChangePlantData.class);
 		functionClasses.add(AddAcctCostData.class);
 		functionClasses.add(AddPurchMRPData.class);
+		functionClasses.add(AddMRPData.class);
 		List<UserFunction<? extends RunnableFunction>> functions=new ArrayList<UserFunction<? extends RunnableFunction>>();
 		int counter=1;
 		for(Class<? extends RunnableFunction> fclass : functionClasses) {
@@ -120,8 +122,13 @@ public class RFCService {
 		DAOFactory factory=new TextFileDAOFactory(file);
 		materialDao=factory.getMaterialDAO();
 		try {
-			Method method=materialDao.getClass().getMethod("get"+uf.getName()+"List", null);
-			materials=(List<Material>) method.invoke(materialDao, null);
+			if(uf.getName().equals("AddMRPData")) {
+				materials=materialDao.getAddPlantDataList();
+			}
+			else {
+				Method method=materialDao.getClass().getMethod("get"+uf.getName()+"List", null);
+				materials=(List<Material>) method.invoke(materialDao, null);
+			}
 		} 
 		catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
@@ -155,8 +162,8 @@ public class RFCService {
 		SapSystemFactory factory=new SapSystemFactory();
 		SapSystem sap=null;
 		try {
-			//sap = factory.getSapSystem("TETCLNT280");
-			sap = factory.getSapSystem("TEPCLNT280");
+			sap = factory.getSapSystem("TETCLNT280");
+			//sap = factory.getSapSystem("TEPCLNT280");
 		} 
 		catch (JCoException e) {
 			// TODO Auto-generated catch block

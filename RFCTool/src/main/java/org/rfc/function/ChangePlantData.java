@@ -20,29 +20,6 @@ public class ChangePlantData extends SaveMaterialReplica {
 	
 	public static final String FUNCTION_NAME="ChangePlantData";
 	
-	public static final Map<String,InputField<?>> FIELD_MAP=initInputFieldMap();
-	
-	private static Map<String,InputField<?>> initInputFieldMap(){
-		Map<String,InputField<?>> map=new HashMap<String,InputField<?>>();
-		
-		InputField<String> materialId=new InputField<String>("MATERIAL",null,"MaterialId",true,String.class);
-		InputField<String> plant=new InputField<String>("PLANT",null,"Plant",true,String.class);
-		InputField<Boolean> doNotCost=new InputField<Boolean>("NO_COSTING",null,"DoNotCost",Boolean.class);
-		//InputField<Integer> plannedDeliveryTime=new InputField<Integer>("PLND_DELRY",null,"PlannedDeliveryTime");
-		
-		materialId.setMappedColumn(0);
-		plant.setMappedColumn(1);
-		doNotCost.setMappedColumn(2);
-		//plannedDeliveryTime.setMappedColumn(3);
-		
-		map.put("MATERIAL",materialId);
-		map.put("PLANT",plant);
-		map.put("NO_COSTING", doNotCost);
-		//map.put("PLND_DELRY",plannedDeliveryTime);
-		return Collections.unmodifiableMap(map);
-	}
-	
-	
 	public ChangePlantData() {
 		super();
 	}
@@ -67,9 +44,8 @@ public class ChangePlantData extends SaveMaterialReplica {
 		
 		tHEADDATA.appendRow();
 		tHEADDATA.setValue("FUNCTION","UPD");
-		tHEADDATA.setValue("MATERIAL",material.getMaterialId().getValue());
+		tHEADDATA.setValue("MATERIAL",material.getMaterialId());
 		
-		//Set<String> fieldNameSet=MATERIAL_FIELD_MAP.keySet();
 		Set<String> plants=material.getPlantDataMap().keySet();
 		
 		for(String plant : plants) {
@@ -77,21 +53,15 @@ public class ChangePlantData extends SaveMaterialReplica {
 			
 			tPLANTDATA.appendRow();
 			tPLANTDATA.setValue("FUNCTION", "UPD");
-			tPLANTDATA.setValue("MATERIAL", material.getMaterialId().getValue());
-			tPLANTDATA.setValue("PLANT", plantData.getPlant().getValue());
-			tPLANTDATA.setValue("NO_COSTING", (plantData.isDoNotCost().getValue()==true ? "X" : " "));
+			tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
+			tPLANTDATA.setValue("PLANT", plantData.getPlant());
+			tPLANTDATA.setValue("NO_COSTING", (plantData.isDoNotCost()==true ? "X" : " "));
 			
 			tPLANTDATAX.appendRow();
 			tPLANTDATAX.setValue("FUNCTION", "UPD");
-			tPLANTDATAX.setValue("MATERIAL", material.getMaterialId().getValue());
-			tPLANTDATAX.setValue("PLANT", plantData.getPlant().getValue());
+			tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
+			tPLANTDATAX.setValue("PLANT", plantData.getPlant());
 			tPLANTDATAX.setValue("NO_COSTING", "X");
-				
-//			for(String fieldName : fieldNameSet) {
-//				InputField<?> inputField=MATERIAL_FIELD_MAP.get(fieldName);
-//				FieldValue<?> fval=plantData.getFieldValue(inputField.getPropertyName());
-//				tPLANTDATA.setValue(inputField.getRfcName(), (fval.getValue()==true ? "X" : " "));
-//			}
 			
 		}
 		
@@ -107,11 +77,6 @@ public class ChangePlantData extends SaveMaterialReplica {
 	@Override
 	public String getFunctionName() {
 		return FUNCTION_NAME;
-	}
-
-
-	public static Map<String, InputField<?>> getFieldMap() {
-		return FIELD_MAP;
 	}
 
 	

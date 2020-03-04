@@ -16,6 +16,7 @@ import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
+import org.rfc.dto.ValuationData;
 import org.rfc.function.AddAcctCostData;
 import org.rfc.function.AddPlantData;
 import org.rfc.function.AddPurchMRPData;
@@ -73,7 +74,6 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		String[] fieldValues=null;
 		Material m=null;
 		PlantData pd=null;
-		Map<String,InputField<?>> fieldMap=ChangePlantData.FIELD_MAP;
 		
 		int rowCount=0;
 		try(BufferedReader reader=getReader()){
@@ -82,13 +82,13 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 				fieldValues=getFieldValues(line);
 				nextMaterialId=fieldValues[0];
 				if(currentMaterialId==null || !currentMaterialId.equals(nextMaterialId)) {
-					m=createMaterial(fieldValues,fieldMap);
+					m=createMaterial(fieldValues);
 					materials.add(m);
 					currentMaterialId=nextMaterialId;
 				}
-				pd=createPlantDataShort(fieldValues,fieldMap);
+				pd=createPlantDataShort(fieldValues);
 				pd.setMaterial(m);
-				m.addPlantData(pd.getPlant().getValue(), pd);
+				m.addPlantData(pd.getPlant(), pd);
 				rowCount++;
 			}
 		} 
@@ -117,7 +117,6 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		String[] fieldValues=null;
 		Material m=null;
 		PlantData pd=null;
-		Map<String,InputField<?>> fields=AddPlantData.FIELD_MAP;
 		
 		int rowCount=0;
 		try(BufferedReader reader=getReader()){
@@ -126,13 +125,13 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 				fieldValues=getFieldValues(line);
 				nextMaterialId=fieldValues[0];
 				if(currentMaterialId==null || !currentMaterialId.equals(nextMaterialId)) {
-					m=createMaterial(fieldValues,fields);
+					m=createMaterial(fieldValues);
 					materials.add(m);
 					currentMaterialId=nextMaterialId;
 				}
-				pd=createPlantDataExperimental(fieldValues,fields);
+				pd=createPlantDataExperimental(fieldValues);
 				pd.setMaterial(m);
-				m.addPlantData(pd.getPlant().getValue(), pd);
+				m.addPlantData(pd.getPlant(), pd);
 				rowCount++;
 			}
 		} 
@@ -160,7 +159,6 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		String[] fieldValues=null;
 		Material m=null;
 		PlantData pd=null;
-		Map<String,InputField<?>> fieldMap=AddPurchMRPData.FIELD_MAP;
 		
 		int rowCount=0;
 		try(BufferedReader reader=getReader()){
@@ -169,13 +167,13 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 				fieldValues=getFieldValues(line);
 				nextMaterialId=fieldValues[0];
 				if(currentMaterialId==null || !currentMaterialId.equals(nextMaterialId)) {
-					m=createMaterial(fieldValues,fieldMap);
+					m=createMaterial(fieldValues);
 					materials.add(m);
 					currentMaterialId=nextMaterialId;
 				}
-				pd=createPurchMRPData(fieldValues,fieldMap);
+				pd=createPurchMRPData(fieldValues);
 				pd.setMaterial(m);
-				m.addPlantData(pd.getPlant().getValue(), pd);
+				m.addPlantData(pd.getPlant(), pd);
 				rowCount++;
 			}
 		} 
@@ -203,7 +201,7 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		String[] fieldValues=null;
 		Material m=null;
 		PlantData pd=null;
-		Map<String,InputField<?>> fieldMap=AddAcctCostData.FIELD_MAP;
+		ValuationData vd=null;
 		
 		int rowCount=0;
 		try(BufferedReader reader=getReader()){
@@ -212,13 +210,16 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 				fieldValues=getFieldValues(line);
 				nextMaterialId=fieldValues[0];
 				if(currentMaterialId==null || !currentMaterialId.equals(nextMaterialId)) {
-					m=createMaterial(fieldValues,fieldMap);
+					m=createMaterial(fieldValues);
 					materials.add(m);
 					currentMaterialId=nextMaterialId;
 				}
-				pd=createAcctCostData(fieldValues,fieldMap);
+				pd=createAcctCostData(fieldValues);
 				pd.setMaterial(m);
-				m.addPlantData(pd.getPlant().getValue(), pd);
+				m.addPlantData(pd.getPlant(), pd);
+				vd=new ValuationData();
+				vd.setValuationArea(pd.getPlant());
+				m.addValuationData(vd.getValuationArea(), vd);
 				rowCount++;
 			}
 		} 
@@ -237,77 +238,50 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		return materials;
 	}
 	
-	private Material createMaterial(String[] fields,Map<String,InputField<?>> fieldMap) {
+	private Material createMaterial(String[] fields) {
 		Material m=null;
 		if(fields!=null) {
 			m=new Material();
-			FieldValue<String> materialId=(FieldValue<String>) fieldMap.get("MATERIAL").createFieldValue();
-			materialId.setValue(fields[0]);
-			m.setMaterialId(materialId);
+			m.setMaterialId(fields[0]);
 		}
 		return m;
 	}
 	
-	private PlantData createPlantDataShort(String[] fields,Map<String,InputField<?>> fieldMap) {
+	private PlantData createPlantDataShort(String[] fields) {
 		PlantData pd=null;
 		if(fields!=null) {
 			pd=new PlantData();
-			
-			FieldValue<String> plant=(FieldValue<String>) fieldMap.get("PLANT").createFieldValue();
-			plant.setValue(fields[1]);
-			pd.setPlant(plant);
-			
-			FieldValue<Boolean> doNotCost=(FieldValue<Boolean>) fieldMap.get("NO_COSTING").createFieldValue();
-			doNotCost.setValue((fields[2].equals("X") ? true : false));
-			pd.setDoNotCost(doNotCost);
+			pd.setPlant(fields[1]);
+			pd.setDoNotCost((fields[2].equals("X") ? true : false));
+		}
+		return pd;
+	}
+	
+	private PlantData createPlantDataExperimental(String[] fields) {
+		PlantData pd=null;
+		if(fields!=null) {
+			pd=new PlantData();
+			pd.setPlant(fields[1]);
+			pd.setProfitCenter(fields[2]);
+		}
+		return pd;
+	}
+	
+	private PlantData createAcctCostData(String[] fields) {
+		PlantData pd=null;
+		if(fields!=null) {
+			pd=new PlantData();
+			pd.setPlant(fields[1]);
 			
 		}
 		return pd;
 	}
 	
-	private PlantData createPlantDataExperimental(String[] fields,Map<String,InputField<?>> fieldMap) {
+	private PlantData createPurchMRPData(String[] fields) {
 		PlantData pd=null;
 		if(fields!=null) {
 			pd=new PlantData();
-			
-			FieldValue<String> plant=(FieldValue<String>) fieldMap.get("PLANT").createFieldValue();
-			plant.setValue(fields[1]);
-			pd.setPlant(plant);
-			
-			FieldValue<String> profitCenter=(FieldValue<String>) fieldMap.get("PROFIT_CTR").createFieldValue();
-			profitCenter.setValue(fields[2]);
-			pd.setProfitCenter(profitCenter);
-			
-		}
-		return pd;
-	}
-	
-	private PlantData createAcctCostData(String[] fields,Map<String,InputField<?>> fieldMap) {
-		PlantData pd=null;
-		if(fields!=null) {
-			pd=new PlantData();
-			
-			FieldValue<String> plant=(FieldValue<String>) fieldMap.get("PLANT").createFieldValue();
-			plant.setValue(fields[1]);
-			pd.setPlant(plant);
-			
-//			FieldValue<Boolean> doNotCost=(FieldValue<Boolean>) fieldMap.get("NO_COSTING").createFieldValue();
-//			doNotCost.setValue((fields[2].equals("X") ? true : false));
-//			pd.setDoNotCost(doNotCost);
-			
-		}
-		return pd;
-	}
-	
-	private PlantData createPurchMRPData(String[] fields,Map<String,InputField<?>> fieldMap) {
-		PlantData pd=null;
-		if(fields!=null) {
-			pd=new PlantData();
-			
-			FieldValue<String> plant=(FieldValue<String>) fieldMap.get("PLANT").createFieldValue();
-			plant.setValue(fields[1]);
-			pd.setPlant(plant);
-			
+			pd.setPlant(fields[1]);
 		}
 		return pd;
 	}

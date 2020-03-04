@@ -1,43 +1,35 @@
 package org.rfc.dto;
 
-public class PlantData extends DataObject {
+public class PlantData extends AbstractDataObject {
 	
 	private Material material=null;
-	private FieldValue<String> materialId=null;
-	private FieldValue<String> plant=null;
+	private String materialId=null;
+	private String plant=null;
 	//General Plant
-	private FieldValue<String> profitCenter=null;
-	private FieldValue<String> loadingGroup=null;
-	private FieldValue<String> originCountry=null;
-	private FieldValue<String> commodityCode=null;
+	private String profitCenter=null;
+	private String loadingGroup=null;
+	private String originCountry=null;
+	private String commodityCode=null;
 	//Purchasing & MRP
-	private FieldValue<String> purchasingGroup=null;
-	private FieldValue<Integer> grProcessingTime=null;
-	private FieldValue<String> mrpType=null;
-	private FieldValue<Integer> reorderPoint=null;
-	private FieldValue<String> mrpController=null;
-	private FieldValue<String> lotSizingProcedure=null;
-	private FieldValue<Integer> minLotSize=null;
-	private FieldValue<String> procurementType=null;
-	private FieldValue<String> specialProcurement=null;
-	private FieldValue<String> issueStorageLocation=null;
-	private FieldValue<String> storageLocationForEP=null;
-	private FieldValue<Integer> plannedDeliveryTime=null;
-	private FieldValue<String> periodIndicator=null;
-	private FieldValue<String> availabilityCheck=null;
-	private FieldValue<String> individualAndCollectiveReq=null;
-	//Accounting & Costing
-	private FieldValue<String> priceControl=null;
-	private FieldValue<String> valuationClass=null;
-	private FieldValue<Double> movingAveragePrice=null;
-	private FieldValue<Double> standardPrice=null;
-	private FieldValue<Integer> priceUnit=null;
-	private FieldValue<Boolean> doNotCost=null;
-	private FieldValue<Boolean> costWithQtyStructure=null;
-	private FieldValue<Boolean> materialRelatedOrigin=null;
-	private FieldValue<Boolean> mbrue=null;
-	//Storage Location
-	private FieldValue<String> storageLocation=null;
+	private String purchasingGroup=null;
+	private int grProcessingTime;
+	private String mrpType=null;
+	private int reorderPoint;
+	private String mrpController=null;
+	private String lotSizingProcedure=null;
+	private int minLotSize;
+	private String procurementType=null;
+	private String specialProcurement=null;
+	private String issueStorageLocation=null;
+	private String storageLocationForEP=null;
+	private int plannedDeliveryTime;
+	private String periodIndicator=null;
+	private String availabilityCheck=null;
+	private String individualAndCollectiveReq=null;
+	//finance related
+	private boolean doNotCost=false;
+	//storage location
+	private String storageLocation=null;
 	
 	public PlantData() {
 		super();
@@ -49,255 +41,192 @@ public class PlantData extends DataObject {
 
 	public void setMaterial(Material material) {
 		this.material = material;
-		this.materialId =material.getMaterialId();
 	}
 
-	public FieldValue<String> getMaterialId() {
+	public String getMaterialId() {
 		return materialId;
 	}
 
-	public void setMaterialId(FieldValue<String> materialId) {
+	public void setMaterialId(String materialId) {
 		this.materialId = materialId;
 	}
 
-	public FieldValue<String> getPlant() {
+	public String getPlant() {
 		return plant;
 	}
 
-	public void setPlant(FieldValue<String> plant) {
+	public void setPlant(String plant) {
 		this.plant = plant;
 	}
 
-	public FieldValue<String> getProfitCenter() {
+	public String getProfitCenter() {
 		return profitCenter;
 	}
 
-	public void setProfitCenter(FieldValue<String> profitCenter) {
+	public void setProfitCenter(String profitCenter) {
 		this.profitCenter = profitCenter;
 	}
 
-	public FieldValue<String> getLoadingGroup() {
+	public String getLoadingGroup() {
 		return loadingGroup;
 	}
 
-	public void setLoadingGroup(FieldValue<String> loadingGroup) {
+	public void setLoadingGroup(String loadingGroup) {
 		this.loadingGroup = loadingGroup;
 	}
 
-	public FieldValue<String> getOriginCountry() {
+	public String getOriginCountry() {
 		return originCountry;
 	}
 
-	public void setOriginCountry(FieldValue<String> originCountry) {
+	public void setOriginCountry(String originCountry) {
 		this.originCountry = originCountry;
 	}
 
-	public FieldValue<String> getCommodityCode() {
+	public String getCommodityCode() {
 		return commodityCode;
 	}
 
-	public void setCommodityCode(FieldValue<String> commodityCode) {
+	public void setCommodityCode(String commodityCode) {
 		this.commodityCode = commodityCode;
 	}
 
-	public FieldValue<String> getPurchasingGroup() {
+	public String getPurchasingGroup() {
 		return purchasingGroup;
 	}
 
-	public void setPurchasingGroup(FieldValue<String> purchasingGroup) {
+	public void setPurchasingGroup(String purchasingGroup) {
 		this.purchasingGroup = purchasingGroup;
 	}
 
-	public FieldValue<Integer> getGrProcessingTime() {
+	public int getGrProcessingTime() {
 		return grProcessingTime;
 	}
 
-	public void setGrProcessingTime(FieldValue<Integer> grProcessingTime) {
+	public void setGrProcessingTime(int grProcessingTime) {
 		this.grProcessingTime = grProcessingTime;
 	}
 
-	public FieldValue<String> getMrpType() {
+	public String getMrpType() {
 		return mrpType;
 	}
 
-	public void setMrpType(FieldValue<String> mrpType) {
+	public void setMrpType(String mrpType) {
 		this.mrpType = mrpType;
 	}
 
-	public FieldValue<Integer> getReorderPoint() {
+	public int getReorderPoint() {
 		return reorderPoint;
 	}
 
-	public void setReorderPoint(FieldValue<Integer> reorderPoint) {
+	public void setReorderPoint(int reorderPoint) {
 		this.reorderPoint = reorderPoint;
 	}
 
-	public FieldValue<String> getMrpController() {
+	public String getMrpController() {
 		return mrpController;
 	}
 
-	public void setMrpController(FieldValue<String> mrpController) {
+	public void setMrpController(String mrpController) {
 		this.mrpController = mrpController;
 	}
 
-	public FieldValue<String> getLotSizingProcedure() {
+	public String getLotSizingProcedure() {
 		return lotSizingProcedure;
 	}
 
-	public void setLotSizingProcedure(FieldValue<String> lotSizingProcedure) {
+	public void setLotSizingProcedure(String lotSizingProcedure) {
 		this.lotSizingProcedure = lotSizingProcedure;
 	}
 
-	public FieldValue<Integer> getMinLotSize() {
+	public int getMinLotSize() {
 		return minLotSize;
 	}
 
-	public void setMinLotSize(FieldValue<Integer> minLotSize) {
+	public void setMinLotSize(int minLotSize) {
 		this.minLotSize = minLotSize;
 	}
 
-	public FieldValue<String> getProcurementType() {
+	public String getProcurementType() {
 		return procurementType;
 	}
 
-	public void setProcurementType(FieldValue<String> procurementType) {
+	public void setProcurementType(String procurementType) {
 		this.procurementType = procurementType;
 	}
 
-	public FieldValue<String> getIssueStorageLocation() {
-		return issueStorageLocation;
-	}
-
-	public void setIssueStorageLocation(FieldValue<String> issueStorageLocation) {
-		this.issueStorageLocation = issueStorageLocation;
-	}
-
-	public FieldValue<String> getStorageLocationForEP() {
-		return storageLocationForEP;
-	}
-
-	public void setStorageLocationForEP(FieldValue<String> storageLocationForEP) {
-		this.storageLocationForEP = storageLocationForEP;
-	}
-
-	public FieldValue<String> getPeriodIndicator() {
-		return periodIndicator;
-	}
-
-	public void setPeriodIndicator(FieldValue<String> periodIndicator) {
-		this.periodIndicator = periodIndicator;
-	}
-
-	public FieldValue<String> getAvailabilityCheck() {
-		return availabilityCheck;
-	}
-
-	public void setAvailabilityCheck(FieldValue<String> availabilityCheck) {
-		this.availabilityCheck = availabilityCheck;
-	}
-
-	public FieldValue<String> getIndividualAndCollectiveReq() {
-		return individualAndCollectiveReq;
-	}
-
-	public void setIndividualAndCollectiveReq(FieldValue<String> individualAndCollectiveReq) {
-		this.individualAndCollectiveReq = individualAndCollectiveReq;
-	}
-
-	public FieldValue<Integer> getPlannedDeliveryTime() {
-		return plannedDeliveryTime;
-	}
-
-	public void setPlannedDeliveryTime(FieldValue<Integer> plannedDeliveryTime) {
-		this.plannedDeliveryTime = plannedDeliveryTime;
-	}
-
-	public FieldValue<String> getSpecialProcurement() {
+	public String getSpecialProcurement() {
 		return specialProcurement;
 	}
 
-	public void setSpecialProcurement(FieldValue<String> specialProcurement) {
+	public void setSpecialProcurement(String specialProcurement) {
 		this.specialProcurement = specialProcurement;
 	}
 
-	public FieldValue<String> getPriceControl() {
-		return priceControl;
+	public String getIssueStorageLocation() {
+		return issueStorageLocation;
 	}
 
-	public void setPriceControl(FieldValue<String> priceControlIndicator) {
-		this.priceControl = priceControlIndicator;
+	public void setIssueStorageLocation(String issueStorageLocation) {
+		this.issueStorageLocation = issueStorageLocation;
 	}
 
-	public FieldValue<String> getValuationClass() {
-		return valuationClass;
+	public String getStorageLocationForEP() {
+		return storageLocationForEP;
 	}
 
-	public void setValuationClass(FieldValue<String> valuationClass) {
-		this.valuationClass = valuationClass;
+	public void setStorageLocationForEP(String storageLocationForEP) {
+		this.storageLocationForEP = storageLocationForEP;
 	}
 
-	public FieldValue<Double> getMovingAveragePrice() {
-		return movingAveragePrice;
+	public int getPlannedDeliveryTime() {
+		return plannedDeliveryTime;
 	}
 
-	public void setMovingAveragePrice(FieldValue<Double> movingAveragePrice) {
-		this.movingAveragePrice = movingAveragePrice;
+	public void setPlannedDeliveryTime(int plannedDeliveryTime) {
+		this.plannedDeliveryTime = plannedDeliveryTime;
 	}
 
-	public FieldValue<Double> getStandardPrice() {
-		return standardPrice;
+	public String getPeriodIndicator() {
+		return periodIndicator;
 	}
 
-	public void setStandardPrice(FieldValue<Double> standardPrice) {
-		this.standardPrice = standardPrice;
+	public void setPeriodIndicator(String periodIndicator) {
+		this.periodIndicator = periodIndicator;
 	}
 
-	public FieldValue<Integer> getPriceUnit() {
-		return priceUnit;
+	public String getAvailabilityCheck() {
+		return availabilityCheck;
 	}
 
-	public void setPriceUnit(FieldValue<Integer> priceUnit) {
-		this.priceUnit = priceUnit;
+	public void setAvailabilityCheck(String availabilityCheck) {
+		this.availabilityCheck = availabilityCheck;
 	}
 
-	public FieldValue<Boolean> isDoNotCost() {
+	public String getIndividualAndCollectiveReq() {
+		return individualAndCollectiveReq;
+	}
+
+	public void setIndividualAndCollectiveReq(String individualAndCollectiveReq) {
+		this.individualAndCollectiveReq = individualAndCollectiveReq;
+	}
+
+	public boolean isDoNotCost() {
 		return doNotCost;
 	}
 
-	public void setDoNotCost(FieldValue<Boolean> doNotCost) {
+	public void setDoNotCost(boolean doNotCost) {
 		this.doNotCost = doNotCost;
 	}
 
-	public FieldValue<Boolean> isCostWithQtyStructure() {
-		return costWithQtyStructure;
-	}
-
-	public void setCostWithQtyStructure(FieldValue<Boolean> costWithQtyStructure) {
-		this.costWithQtyStructure = costWithQtyStructure;
-	}
-
-	public FieldValue<Boolean> isMaterialRelatedOrigin() {
-		return materialRelatedOrigin;
-	}
-
-	public void setMaterialRelatedOrigin(FieldValue<Boolean> materialRelatedOrigin) {
-		this.materialRelatedOrigin = materialRelatedOrigin;
-	}
-
-	public FieldValue<Boolean> getMbrue() {
-		return mbrue;
-	}
-
-	public void setMbrue(FieldValue<Boolean> mbrue) {
-		this.mbrue = mbrue;
-	}
-
-	public FieldValue<String> getStorageLocation() {
+	public String getStorageLocation() {
 		return storageLocation;
 	}
 
-	public void setStorageLocation(FieldValue<String> storageLocation) {
+	public void setStorageLocation(String storageLocation) {
 		this.storageLocation = storageLocation;
 	}
+
+	
 	
 }

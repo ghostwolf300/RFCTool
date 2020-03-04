@@ -85,12 +85,12 @@ public class RFCMain {
 		System.out.println("Materials size: "+materials.size());
 		
 		Material m=materials.get(0);
-		System.out.println(m.getMaterialId().getValue());
+		System.out.println(m.getMaterialId());
 		Map<String,PlantData> pdMap=m.getPlantDataMap();
 		Set<String> keySet=pdMap.keySet();
 		for(String plant : keySet) {
 			PlantData pd=pdMap.get(plant);
-			System.out.println(pd.getPlant().getValue()+"\t"+pd.isDoNotCost().getValue());
+			System.out.println(pd.getPlant()+"\t"+pd.isDoNotCost());
 		}
 		
 		

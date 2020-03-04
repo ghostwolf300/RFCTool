@@ -11,7 +11,6 @@ import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
 import org.rfc.dto.PlantData;
-import org.rfc.dto.ValuationData;
 
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
@@ -19,34 +18,34 @@ import com.sap.conn.jco.JCoStructure;
 import com.sap.conn.jco.JCoTable;
 
 
-public class AddPurchMRPData extends SaveMaterialReplica {
+public class AddMRPData extends SaveMaterialReplica {
 	
-	public static final String FUNCTION_NAME="AddPurchMRPData";
+	public static final String FUNCTION_NAME="AddMRPData";
 	
-	public AddPurchMRPData() {
+	public AddMRPData() {
 		super();
 	}
 	
-	public AddPurchMRPData(int id) {
+	public AddMRPData(int id) {
 		super(id);
 	}
 	
-	public AddPurchMRPData(int id,JCoDestination destination) {
+	public AddMRPData(int id,JCoDestination destination) {
 		super(id,destination);
 	}
 	
-	public AddPurchMRPData(int id,List<Material> materials,JCoDestination destination) {
+	public AddMRPData(int id,List<Material> materials,JCoDestination destination) {
 		super(id,materials,destination);
 	}
 	
-	public AddPurchMRPData(int id,List<Material> materials,JCoDestination destination,boolean testRun) {
+	public AddMRPData(int id,List<Material> materials,JCoDestination destination,boolean testRun) {
 		super(id,materials,destination,testRun);
 	}
 	
 	protected void executeFunction(Material material) throws JCoException {
 		
-		Map<String,JCoStructure> structureMap=getMaterialPlantData(material.getMaterialId(), "0700");
-		copyPlantData(structureMap,material);
+		//Map<String,JCoStructure> structureMap=getMaterialPlantData(material.getMaterialId().getValue(), "0700");
+		//copyPlantData(structureMap,material);
 		
 		tHEADDATA.appendRow();
 		tHEADDATA.setValue("FUNCTION","UPD");
@@ -66,21 +65,21 @@ public class AddPurchMRPData extends SaveMaterialReplica {
 			tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
 			tPLANTDATA.setValue("PLANT", pd.getPlant());
 			
-			tPLANTDATA.setValue("PUR_GROUP",pd.getPurchasingGroup());
-			tPLANTDATA.setValue("GR_PR_TIME",pd.getGrProcessingTime());
+			tPLANTDATA.setValue("PUR_GROUP","T09");
+			tPLANTDATA.setValue("GR_PR_TIME",2);
 			tPLANTDATA.setValue("MRP_TYPE","PD");
 			tPLANTDATA.setValue("REORDER_PT",0);
-			tPLANTDATA.setValue("MRP_CTRLER", pd.getMrpController());
-			tPLANTDATA.setValue("LOTSIZEKEY",pd.getLotSizingProcedure());
-			tPLANTDATA.setValue("MINLOTSIZE", pd.getMinLotSize());
-			tPLANTDATA.setValue("PROC_TYPE", pd.getProcurementType());
-			tPLANTDATA.setValue("SPPROCTYPE", "40");
-			tPLANTDATA.setValue("ISS_ST_LOC", "0700");
-			tPLANTDATA.setValue("SLOC_EXPRC", "0700");
-			tPLANTDATA.setValue("PLND_DELRY", 2);
-			tPLANTDATA.setValue("PERIOD_IND", pd.getPeriodIndicator());
-			tPLANTDATA.setValue("AVAILCHECK", pd.getAvailabilityCheck());
-			tPLANTDATA.setValue("DEP_REQ_ID", pd.getIndividualAndCollectiveReq());
+			tPLANTDATA.setValue("MRP_CTRLER", "T09");
+			tPLANTDATA.setValue("LOTSIZEKEY","EX");
+			tPLANTDATA.setValue("MINLOTSIZE", 0);
+			tPLANTDATA.setValue("PROC_TYPE", "F");
+			//tPLANTDATA.setValue("SPPROCTYPE", "40");
+			tPLANTDATA.setValue("ISS_ST_LOC", "0701");
+			tPLANTDATA.setValue("SLOC_EXPRC", "0701");
+			tPLANTDATA.setValue("PLND_DELRY", 7);
+			tPLANTDATA.setValue("PERIOD_IND", "M");
+			tPLANTDATA.setValue("AVAILCHECK", "ZT");
+			tPLANTDATA.setValue("DEP_REQ_ID", "2");
 			
 			tPLANTDATA.setValue("SALES_VIEW","X");
 			tPLANTDATA.setValue("MRP_VIEW","X");
@@ -99,7 +98,7 @@ public class AddPurchMRPData extends SaveMaterialReplica {
 			tPLANTDATAX.setValue("LOTSIZEKEY","X");
 			tPLANTDATAX.setValue("MINLOTSIZE", "X");
 			tPLANTDATAX.setValue("PROC_TYPE", "X");
-			tPLANTDATAX.setValue("SPPROCTYPE", "X");
+			//tPLANTDATAX.setValue("SPPROCTYPE", "X");
 			tPLANTDATAX.setValue("ISS_ST_LOC", "X");
 			tPLANTDATAX.setValue("SLOC_EXPRC", "X");
 			tPLANTDATAX.setValue("PLND_DELRY", "X");
@@ -111,8 +110,8 @@ public class AddPurchMRPData extends SaveMaterialReplica {
 			tSTORAGELOCATIONDATA.appendRow();
 			tSTORAGELOCATIONDATA.setValue("FUNCTION","INS");
 			tSTORAGELOCATIONDATA.setValue("MATERIAL", material.getMaterialId());
-			tSTORAGELOCATIONDATA.setValue("PLANT",pd.getPlant());
-			tSTORAGELOCATIONDATA.setValue("STGE_LOC", "0700");
+			tSTORAGELOCATIONDATA.setValue("PLANT","0700");
+			tSTORAGELOCATIONDATA.setValue("STGE_LOC", "0701");
 			
 			tSTORAGELOCATIONDATA.setValue("MRP_VIEW","X");
 			tSTORAGELOCATIONDATA.setValue("STORAGE_VIEW","X");
@@ -120,8 +119,8 @@ public class AddPurchMRPData extends SaveMaterialReplica {
 			tSTORAGELOCATIONDATAX.appendRow();
 			tSTORAGELOCATIONDATAX.setValue("FUNCTION","INS");
 			tSTORAGELOCATIONDATAX.setValue("MATERIAL", material.getMaterialId());
-			tSTORAGELOCATIONDATAX.setValue("PLANT",pd.getPlant());
-			tSTORAGELOCATIONDATAX.setValue("STGE_LOC", "0700");
+			tSTORAGELOCATIONDATAX.setValue("PLANT","0700");
+			tSTORAGELOCATIONDATAX.setValue("STGE_LOC", "0701");
 			
 			
 		}
