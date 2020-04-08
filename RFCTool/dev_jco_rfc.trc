@@ -1498,3 +1498,23 @@ COUNTER     10
 	error group: 102
 	key: RFC_ERROR_COMMUNICATION
 
+
+**** Error file opened at 20200407 010004 Eastern European Summer Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error: [12]  >Tue Apr 07 01:00:04,844<    RfcException raised by system [TET|wsapvm117|00]:
+	message: connection closed without message (CM_NO_DATA_RECEIVED)
+	return code: RFC_CLOSED (6)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error: [21]  >Tue Apr 07 01:10:31,975<    RfcException raised by system [TET|wsapvm117|00]:
+	message: connection closed without message (CM_NO_DATA_RECEIVED)
+	return code: RFC_CLOSED (6)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error: [20]  >Tue Apr 07 01:22:03,785<    RfcException raised by system [TET|wsapvm117|00]:
+	message: connection closed without message (CM_NO_DATA_RECEIVED)
+	return code: RFC_CLOSED (6)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+

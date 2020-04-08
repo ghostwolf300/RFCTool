@@ -26,6 +26,7 @@ import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
 import com.sap.conn.jco.JCoFunctionTemplate;
 import com.sap.conn.jco.JCoRepository;
+import com.sap.conn.jco.JCoStructure;
 import com.sap.conn.jco.JCoTable;
 
 public class RFCMain {
@@ -38,11 +39,11 @@ public class RFCMain {
 	
 	public static void main(String[] args) {
 		RFCMain main=new RFCMain();
-		//main.ExecuteTest();
+		main.ExecuteTest();
 		//main.ExecuteThreadTest();
 		//main.daoTest();
 		//main.reflectionTest();
-		main.fieldsTest();
+		//main.fieldsTest();
 
 	}
 	
@@ -167,16 +168,9 @@ public class RFCMain {
 		JCoDestination destination=null;
 		JCoFunctionTemplate template=null;
 		JCoFunction function=null;
+		JCoFunction commitFunction;
 		JCoRepository repository=null;
-		
-		JCoTable tHEADDATA=null;
-		JCoTable tPLANTDATA=null;
-		JCoTable tPLANTDATAX=null;
-		JCoTable tRETURNMESSAGES=null;
-		
-		String material="LIN1154322835";
-		String plant="0703";
-		int plannedDeliveryTime=2;
+		JCoTable tRETURN=null;
 		
 		try {
 			sap=factory.getSapSystem("TETCLNT280");
@@ -194,48 +188,27 @@ public class RFCMain {
 			JCoContext.begin(destination);
 			
 			repository=destination.getRepository();
-			template=repository.getFunctionTemplate("BAPI_MATERIAL_SAVEREPLICA");
+			template=repository.getFunctionTemplate("BAPI_OBJCL_CREATE");
 			function=template.getFunction();
+			template=repository.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
+			commitFunction=template.getFunction();
 			
-			function.getImportParameterList().setValue("NOAPPLLOG", "X");
-			function.getImportParameterList().setValue("NOCHANGEDOC", "X");
-			function.getImportParameterList().setValue("TESTRUN", " ");
-			function.getImportParameterList().setValue("INPFLDCHECK", " ");
+			String material="JDW0050025204";
 			
-			
-			tHEADDATA=function.getTableParameterList().getTable("HEADDATA");
-			tPLANTDATA=function.getTableParameterList().getTable("PLANTDATA");
-			tPLANTDATAX=function.getTableParameterList().getTable("PLANTDATAX");
-			tRETURNMESSAGES=function.getTableParameterList().getTable("RETURNMESSAGES");
-			
-			tHEADDATA.appendRow();
-			tHEADDATA.setValue("F_MATERIAL_SAVE","UPD");
-			tHEADDATA.setValue("MATERIAL",material);
-			
-			tPLANTDATA.appendRow();
-			tPLANTDATA.setValue("F_MATERIAL_SAVE", "UPD");
-			tPLANTDATA.setValue("MATERIAL", material);
-			tPLANTDATA.setValue("PLANT", plant);
-			tPLANTDATA.setValue("PLND_DELRY", plannedDeliveryTime);
-			
-			tPLANTDATAX.appendRow();
-			tPLANTDATAX.setValue("F_MATERIAL_SAVE", "UPD");
-			tPLANTDATAX.setValue("MATERIAL", material);
-			tPLANTDATAX.setValue("PLANT", plant);
-			tPLANTDATAX.setValue("PLND_DELRY", "X");
+			function.getImportParameterList().setValue("OBJECTKEYNEW", material);
+			function.getImportParameterList().setValue("OBJECTTABLENEW","MARA");
+			function.getImportParameterList().setValue("CLASSNUMNEW", "ECOMMERCE");
+			function.getImportParameterList().setValue("CLASSTYPENEW", "001");
+			tRETURN=function.getTableParameterList().getTable("RETURN");
 			
 			function.execute(destination);
+			commitFunction.execute(destination);
 			
-			while(tRETURNMESSAGES.nextRow()) {
-				System.out.println(tRETURNMESSAGES.getValue("NUMBER"));
-				System.out.println(tRETURNMESSAGES.getValue("TYPE"));
-				System.out.println(tRETURNMESSAGES.getValue("MESSAGE"));
-				System.out.println(tRETURNMESSAGES.getValue("ROW"));
-				System.out.println(tRETURNMESSAGES.getValue("MESSAGE_V1"));
-				System.out.println(tRETURNMESSAGES.getValue("MESSAGE_V2"));
-				System.out.println(tRETURNMESSAGES.getValue("MESSAGE_V3"));
-				System.out.println(tRETURNMESSAGES.getValue("MESSAGE_V4"));
+			do {
+				System.out.println(tRETURN.getValue("TYPE")+" "+tRETURN.getValue("ID")+" "+tRETURN.getValue("NUMBER")+" "+tRETURN.getValue("MESSAGE"));
 			}
+			while(tRETURN.nextRow());
+			
 			
 		} 
 		catch (JCoException e) {

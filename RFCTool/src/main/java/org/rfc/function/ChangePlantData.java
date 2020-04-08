@@ -55,13 +55,14 @@ public class ChangePlantData extends SaveMaterialReplica {
 			tPLANTDATA.setValue("FUNCTION", "UPD");
 			tPLANTDATA.setValue("MATERIAL", material.getMaterialId());
 			tPLANTDATA.setValue("PLANT", plantData.getPlant());
-			tPLANTDATA.setValue("NO_COSTING", (plantData.isDoNotCost()==true ? "X" : " "));
+			tPLANTDATA.setValue("LOADINGGRP", "Z700");
+			tPLANTDATA.setValue("SALES_VIEW", "X");
 			
 			tPLANTDATAX.appendRow();
 			tPLANTDATAX.setValue("FUNCTION", "UPD");
 			tPLANTDATAX.setValue("MATERIAL", material.getMaterialId());
 			tPLANTDATAX.setValue("PLANT", plantData.getPlant());
-			tPLANTDATAX.setValue("NO_COSTING", "X");
+			tPLANTDATAX.setValue("LOADINGGRP", "X");
 			
 		}
 		

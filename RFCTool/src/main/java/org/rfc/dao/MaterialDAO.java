@@ -11,4 +11,6 @@ public interface MaterialDAO<Material> {
 	public List<Material> getAddPlantDataList();
 	public List<Material> getAddPurchMRPDataList();
 	public List<Material> getAddAcctCostDataList();
+	public List<Material> getCreateJDMaterialList();
+	public List<Material> getAddClassificationDataList();
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="csvLog.fileName">rfclog</Property>
+        <Property name="file-header">MATERIAL;RUN_STATUS;TESTRUN;TIMESTAMP</Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="csvFile" 
+                     fileName="${csvLog.fileName}.csv"
+                     filePattern="${csvLog.filename}-%d{MM-dd-yyyy}-%i.csv" >
+            <CsvParameterLayout delimiter=";" header="${file-header}\n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+                <SizeBasedTriggeringPolicy size="10 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="200" />
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Root level="debug" additivity="false">
+            <AppenderRef ref="csvFile" level="debug"/>
+        </Root>
+    </Loggers>
+</Configuration>

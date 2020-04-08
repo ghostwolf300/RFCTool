@@ -1,5 +1,7 @@
 package org.rfc.function;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Material;
@@ -32,12 +36,25 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 	protected JCoFunction funcGetPlantData=null;
 	
 	protected JCoTable tHEADDATA=null;
+	protected JCoTable tMATERIALDESCRIPTION=null;
+	protected JCoTable tCLIENTDATA=null;
+	protected JCoTable tCLIENTDATAX=null;
+	protected JCoTable tUNITSOFMEASURE=null;
+	protected JCoTable tUNITSOFMEASUREX=null;
+	protected JCoTable tSALESDATA=null;
+	protected JCoTable tSALESDATAX=null;
+	protected JCoTable tTAXCLASSIFICATIONS=null;
 	protected JCoTable tPLANTDATA=null;
 	protected JCoTable tPLANTDATAX=null;
 	protected JCoTable tSTORAGELOCATIONDATA=null;
 	protected JCoTable tSTORAGELOCATIONDATAX=null;
 	protected JCoTable tVALUATIONDATA=null;
 	protected JCoTable tVALUATIONDATAX=null;
+	protected JCoTable tFORECASTPARAMETERS=null;
+	protected JCoTable tFORECASTPARAMETERSX=null;
+	protected JCoTable tFORECASTVALUES=null;
+	protected JCoTable tEXTENSIONIN=null;
+	protected JCoTable tEXTENSIONINX=null;
 	protected JCoTable tRETURNMESSAGES=null;
 	
 	public static enum InputFields{
@@ -79,6 +96,10 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 
 	private static List<ReturnMessage> returnMessages=Collections.synchronizedList(new ArrayList<ReturnMessage>());
 	
+	public static final Logger logger=LogManager.getLogger(SaveMaterialReplica.class);
+	
+	private static final SimpleDateFormat TS_FORMAT=new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+	
 	public SaveMaterialReplica() {
 		super();
 	}
@@ -118,12 +139,24 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		function.getImportParameterList().setValue("INPFLDCHECK", " ");
 		
 		tHEADDATA=function.getTableParameterList().getTable("HEADDATA");
+		tCLIENTDATA=function.getTableParameterList().getTable("CLIENTDATA");
+		tCLIENTDATAX=function.getTableParameterList().getTable("CLIENTDATAX");
+		tMATERIALDESCRIPTION=function.getTableParameterList().getTable("MATERIALDESCRIPTION");
+		tUNITSOFMEASURE=function.getTableParameterList().getTable("UNITSOFMEASURE");
+		tUNITSOFMEASUREX=function.getTableParameterList().getTable("UNITSOFMEASUREX");
+		tSALESDATA=function.getTableParameterList().getTable("SALESDATA");
+		tSALESDATAX=function.getTableParameterList().getTable("SALESDATAX");
+		tTAXCLASSIFICATIONS=function.getTableParameterList().getTable("TAXCLASSIFICATIONS");
 		tPLANTDATA=function.getTableParameterList().getTable("PLANTDATA");
 		tPLANTDATAX=function.getTableParameterList().getTable("PLANTDATAX");
 		tSTORAGELOCATIONDATA=function.getTableParameterList().getTable("STORAGELOCATIONDATA");
 		tSTORAGELOCATIONDATAX=function.getTableParameterList().getTable("STORAGELOCATIONDATAX");
 		tVALUATIONDATA=function.getTableParameterList().getTable("VALUATIONDATA");
 		tVALUATIONDATAX=function.getTableParameterList().getTable("VALUATIONDATAX");
+		tFORECASTPARAMETERS=function.getTableParameterList().getTable("FORECASTPARAMETERS");
+		tFORECASTPARAMETERSX=function.getTableParameterList().getTable("FORECASTPARAMETERSX");
+		tEXTENSIONIN=function.getTableParameterList().getTable("EXTENSIONIN");
+		tEXTENSIONINX=function.getTableParameterList().getTable("EXTENSIONINX");
 		tRETURNMESSAGES=function.getTableParameterList().getTable("RETURNMESSAGES");
 		
 	}
@@ -168,6 +201,9 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 	private List<ReturnMessage> createReturnMessages(JCoTable tRETURNMESSAGES,String material){
 		List<ReturnMessage> messages=new ArrayList<ReturnMessage>();
 		ReturnMessage message=null;
+		boolean success=false;
+		boolean warning=false;
+		boolean error=false;
 		
 		do {
 			message=new ReturnMessage();
@@ -184,23 +220,38 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 			
 			//only add errors or warnings to log; count all types
 			if(message.getType().equals("S")) {
-				successCount++;
-				messages.add(message);
+				success=true;
+				//messages.add(message);
 			}
 			else if(message.getType().equals("W")) {
-				warningCount++;
+				warning=true;
 				messages.add(message);
 			}
 			else if(message.getType().equals("E")){
-				errorCount++;
+				error=true;
 				messages.add(message);
 			}
 			else {
-				errorCount++;
+				error=true;
 				messages.add(message);
 			}
 		}
 		while(tRETURNMESSAGES.nextRow());
+		
+		Timestamp ts=new Timestamp(System.currentTimeMillis());
+		String tsTxt=TS_FORMAT.format(ts);
+		if(success) {
+			successCount++;
+			logger.info("ignore",material,"SUCCESS",testRun,tsTxt);
+		}
+		else if(warning){
+			warningCount++;
+			logger.warn("ignore",material,"WARNING",testRun,tsTxt);
+		}
+		else if(error) {
+			errorCount++;
+			logger.error("ignore",material,"ERROR",testRun,tsTxt);
+		}
 		
 		allMessages.addAll(messages);
 		newMessages=messages;

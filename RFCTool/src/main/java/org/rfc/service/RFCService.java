@@ -18,10 +18,12 @@ import org.rfc.dto.UserFunction;
 import org.rfc.dto.Worker;
 import org.rfc.dto.Worker.StatusCode;
 import org.rfc.function.AddAcctCostData;
+import org.rfc.function.AddClassificationData;
 import org.rfc.function.AddMRPData;
 import org.rfc.function.AddPlantData;
 import org.rfc.function.AddPurchMRPData;
 import org.rfc.function.ChangePlantData;
+import org.rfc.function.CreateJDMaterial;
 import org.rfc.function.RunnableFunction;
 import org.rfc.model.MaterialDataModel;
 import org.rfc.model.PreviewDataModel;
@@ -85,6 +87,8 @@ public class RFCService {
 	
 	public void loadFunctions() {
 		List<Class<? extends RunnableFunction>> functionClasses=new ArrayList<Class<? extends RunnableFunction>>();
+		functionClasses.add(CreateJDMaterial.class);
+		functionClasses.add(AddClassificationData.class);
 		functionClasses.add(AddPlantData.class);
 		functionClasses.add(ChangePlantData.class);
 		functionClasses.add(AddAcctCostData.class);

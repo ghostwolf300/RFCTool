@@ -37,15 +37,15 @@ public class UserFunction<T extends RunnableFunction> {
 	private void initialize() {
 		try {
 			Method m=null;
-			m=functionClass.getDeclaredMethod("getFieldMap", null);
-			fieldMap=(Map<String, InputField<?>>) m.invoke(null);
+			//m=functionClass.getDeclaredMethod("getFieldMap", null);
+			//fieldMap=(Map<String, InputField<?>>) m.invoke(null);
 			Field f=functionClass.getDeclaredField("FUNCTION_NAME");
 			name=(String)f.get(null);
 		} 
-		catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		/*
+		 * catch (NoSuchMethodException e) { // TODO Auto-generated catch block
+		 * e.printStackTrace(); }
+		 */
 		catch (SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,10 +58,10 @@ public class UserFunction<T extends RunnableFunction> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-		catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+//		catch (InvocationTargetException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
 		catch (NoSuchFieldException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -5,8 +5,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +27,8 @@ import org.rfc.function.ChangePlantData;
 import org.rfc.function.SaveMaterialReplica;
 
 public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Material> {
+	
+	private final NumberFormat format=NumberFormat.getInstance(Locale.FRANCE);
 	
 	public TextFileMaterialDAO() {
 		super();
@@ -238,6 +243,70 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		return materials;
 	}
 	
+	@Override
+	public List<Material> getAddClassificationDataList() {
+		List<Material> materials=null;
+		String line="";
+		String[] fieldValues=null;
+		Material m=null;
+		
+		int rowCount=0;
+		try(BufferedReader reader=getReader()){
+			materials=new ArrayList<Material>();
+			while((line=reader.readLine())!=null) {
+				fieldValues=getFieldValues(line);
+				m=createJDMaterial(fieldValues);
+				materials.add(m);
+				rowCount++;
+			}
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return materials;
+	}
+	
+	@Override
+	public List<Material> getCreateJDMaterialList() {
+		List<Material> materials=null;
+		String line="";
+		String[] fieldValues=null;
+		Material m=null;
+		
+		int rowCount=0;
+		try(BufferedReader reader=getReader()){
+			materials=new ArrayList<Material>();
+			while((line=reader.readLine())!=null) {
+				fieldValues=getFieldValues(line);
+				m=createMaterial(fieldValues);
+				materials.add(m);
+				rowCount++;
+			}
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return materials;
+	}
+	
 	private Material createMaterial(String[] fields) {
 		Material m=null;
 		if(fields!=null) {
@@ -247,12 +316,39 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 		return m;
 	}
 	
+	private Material createJDMaterial(String[] fields) {
+		Material m=null;
+		if(fields!=null) {
+			m=new Material();
+			m.setMaterialId(fields[0]);
+			m.setOldMaterialNumber(fields[1]);
+			m.setType(fields[2]);
+			m.setDescription(fields[3]);
+			m.setGroup(fields[4]);
+			m.setBaseUom(fields[5]);
+			try {
+				m.setGrossWeight(format.parse(fields[6]).doubleValue());
+				m.setNetWeight(format.parse(fields[6]).doubleValue());
+				m.setLength(format.parse(fields[7]).doubleValue());
+				m.setWidth(format.parse(fields[8]).doubleValue());
+				m.setHeight(format.parse(fields[9]).doubleValue());
+			} 
+			catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			m.setCnCode(fields[10]);
+			
+		}
+		return m;
+	}
+	
 	private PlantData createPlantDataShort(String[] fields) {
 		PlantData pd=null;
 		if(fields!=null) {
 			pd=new PlantData();
 			pd.setPlant(fields[1]);
-			pd.setDoNotCost((fields[2].equals("X") ? true : false));
+			//pd.setDoNotCost((fields[2].equals("X") ? true : false));
 		}
 		return pd;
 	}
@@ -287,7 +383,6 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 	}
 
 	
-
 	
 
 }
