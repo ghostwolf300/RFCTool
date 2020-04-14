@@ -22,7 +22,6 @@ import com.sap.conn.jco.JCoContext;
 import com.sap.conn.jco.JCoDestination;
 import com.sap.conn.jco.JCoException;
 import com.sap.conn.jco.JCoFunction;
-import com.sap.conn.jco.JCoFunctionTemplate;
 import com.sap.conn.jco.JCoStructure;
 import com.sap.conn.jco.JCoTable;
 
@@ -240,15 +239,19 @@ public abstract class SaveMaterialReplica extends RunnableFunction {
 		
 		Timestamp ts=new Timestamp(System.currentTimeMillis());
 		String tsTxt=TS_FORMAT.format(ts);
-		if(success) {
+		if(success==true && error==false && warning==false) {
 			successCount++;
 			logger.info("ignore",material,"SUCCESS",testRun,tsTxt);
+		}
+		else if(error) {
+			errorCount++;
+			logger.error("ignore",material,"ERROR",testRun,tsTxt);
 		}
 		else if(warning){
 			warningCount++;
 			logger.warn("ignore",material,"WARNING",testRun,tsTxt);
 		}
-		else if(error) {
+		else {
 			errorCount++;
 			logger.error("ignore",material,"ERROR",testRun,tsTxt);
 		}

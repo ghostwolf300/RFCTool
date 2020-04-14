@@ -166,8 +166,8 @@ public class RFCService {
 		SapSystemFactory factory=new SapSystemFactory();
 		SapSystem sap=null;
 		try {
-			sap = factory.getSapSystem("TETCLNT280");
-			//sap = factory.getSapSystem("TEPCLNT280");
+			//sap = factory.getSapSystem("TETCLNT280");
+			sap = factory.getSapSystem("TEPCLNT280");
 		} 
 		catch (JCoException e) {
 			// TODO Auto-generated catch block

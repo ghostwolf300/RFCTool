@@ -255,7 +255,7 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 			materials=new ArrayList<Material>();
 			while((line=reader.readLine())!=null) {
 				fieldValues=getFieldValues(line);
-				m=createJDMaterial(fieldValues);
+				m=createMaterial(fieldValues);
 				materials.add(m);
 				rowCount++;
 			}
@@ -287,7 +287,7 @@ public class TextFileMaterialDAO extends TextFileDAO implements MaterialDAO<Mate
 			materials=new ArrayList<Material>();
 			while((line=reader.readLine())!=null) {
 				fieldValues=getFieldValues(line);
-				m=createMaterial(fieldValues);
+				m=createJDMaterial(fieldValues);
 				materials.add(m);
 				rowCount++;
 			}

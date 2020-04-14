@@ -180,8 +180,9 @@ public abstract class RunnableFunction implements Runnable,Worker {
 			
 			endTimeMs=System.currentTimeMillis();
 			runTimeMs=endTimeMs-startTimeMs;
-			
-			status=StatusCode.FINISHED;
+			if(status!=StatusCode.ERROR) {
+				status=StatusCode.FINISHED;
+			}
 			this.statusChanged();
 		}
 	}

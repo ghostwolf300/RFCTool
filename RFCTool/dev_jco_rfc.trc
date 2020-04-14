@@ -1518,3 +1518,913 @@ Error: [20]  >Tue Apr 07 01:22:03,785<    RfcException raised by system [TET|wsa
 	error group: 102
 	key: RFC_ERROR_COMMUNICATION
 
+
+**** Error file opened at 20200409 133431 Eastern European Summer Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Thu Apr 09 13:34:31,171<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24309597
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:31 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62413
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [11]  >Thu Apr 09 13:34:31,233<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24309597
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:31 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62413
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:34:32,194<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24284123
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:32 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62409
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [9]  >Thu Apr 09 13:34:32,194<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24284123
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:32 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62409
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:34:32,494<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24161567
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:32 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62395
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [2]  >Thu Apr 09 13:34:32,494<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24161567
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:32 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62395
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:34:33,536<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24213495
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:33 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62397
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [3]  >Thu Apr 09 13:34:33,536<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24213495
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:33 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62397
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:34:47,193<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24232434
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:47 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62403
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [6]  >Thu Apr 09 13:34:47,193<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24232434
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:47 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62403
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:34:53,834<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24333001
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:53 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62424
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [13]  >Thu Apr 09 13:34:53,834<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24333001
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:53 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62424
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:34:59,412<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24240913
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:59 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62405
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [7]  >Thu Apr 09 13:34:59,412<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24240913
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:34:59 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62405
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:35:01,853<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24219844
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:35:01 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62399
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [4]  >Thu Apr 09 13:35:01,853<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24219844
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:35:01 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62399
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:35:09,535<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24318149
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:35:09 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62418
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [12]  >Thu Apr 09 13:35:09,535<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24318149
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:35:09 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62418
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:35:11,008<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24224229
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:35:11 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62401
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [5]  >Thu Apr 09 13:35:11,008<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24224229
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:35:11 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62401
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:35:12,897<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24341318
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:35:12 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62428
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [14]  >Thu Apr 09 13:35:12,897<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24341318
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:35:12 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62428
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:36:01,832<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24294144
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:36:01 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62411
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [10]  >Thu Apr 09 13:36:01,832<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24294144
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:36:01 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62411
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Thu Apr 09 13:36:18,984<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 24254239
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:36:18 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62407
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+<RfcGetException
+
+
+Error: [8]  >Thu Apr 09 13:36:18,984<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 24254239
+
+LOCATION    CPIC (TCP/IP) on local host with Unicode
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Thu Apr 09 13:36:18 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        5088
+DETAIL      NiIRead: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:fd7c:1f8f:d450:df4b:62407
+SYSTEM CALL recv
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     6
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+
+**** Error file opened at 20200414 075451 Eastern European Summer Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Tue Apr 14 07:54:51,125<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 64504296
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51779
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     5
+
+<RfcGetException
+
+
+Error: [7]  >Tue Apr 14 07:54:51,135<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 64504296
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51779
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     5
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Tue Apr 14 07:54:51,138<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 64486059
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51766
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     10
+
+<RfcGetException
+
+
+Error: [2]  >Tue Apr 14 07:54:51,139<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 64486059
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51766
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     10
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Tue Apr 14 07:54:51,140<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 64496728
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51770
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     15
+
+<RfcGetException
+
+
+Error: [4]  >Tue Apr 14 07:54:51,140<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 64496728
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51770
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     15
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Tue Apr 14 07:54:51,141<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 64502348
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51777
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     20
+
+<RfcGetException
+
+
+Error: [6]  >Tue Apr 14 07:54:51,141<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 64502348
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51777
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     20
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Tue Apr 14 07:54:51,142<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 64505712
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51780
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     25
+
+<RfcGetException
+
+
+Error: [8]  >Tue Apr 14 07:54:51,142<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 64505712
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51780
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     25
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Tue Apr 14 07:54:51,143<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 64493938
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51769
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     30
+
+<RfcGetException
+
+
+Error: [3]  >Tue Apr 14 07:54:51,144<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 64493938
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51769
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     30
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Tue Apr 14 07:54:51,145<    >RfcGetException (rc=3) message: CPIC-CALL: CMRCV on convId: 64500011
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51774
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     35
+
+<RfcGetException
+
+
+Error: [5]  >Tue Apr 14 07:54:51,145<    RfcException raised by system [TEP|wsapvm119|00]:
+	message: CPIC-CALL: CMRCV on convId: 64500011
+
+ERROR       connection to partner 'fd5f:551e:31f6:7777::a06:7e.3299'
+            broken
+TIME        Tue Apr 14 07:54:51 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -6
+MODULE      nixxi.cpp
+LINE        4605
+DETAIL      NiIWrite: P=fd5f:551e:31f6:7777::a06:7e.3299;
+            L=2002:c2c5:3222:1000:4568:1da2:3110:d35a:51774
+SYSTEM CALL WSASend
+ERRNO       10054
+ERRNO TEXT  WSAECONNRESET: Connection reset by peer
+COUNTER     35
+
+	return code: RFC_SYS_EXCEPTION (3)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
