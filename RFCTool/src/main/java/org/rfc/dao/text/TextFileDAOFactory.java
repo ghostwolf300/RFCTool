@@ -4,8 +4,10 @@ import java.io.File;
 
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
+import org.rfc.dao.PODAO;
 import org.rfc.dao.ReturnMessageDAO;
 import org.rfc.dto.Material;
+import org.rfc.dto.PurchaseOrder;
 import org.rfc.dto.ReturnMessage;
 
 public class TextFileDAOFactory implements DAOFactory {
@@ -72,6 +74,11 @@ public class TextFileDAOFactory implements DAOFactory {
 	public ReturnMessageDAO<ReturnMessage> getReturnMessageDAO() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public PODAO<PurchaseOrder> getPODAO() {
+		return new TextFilePurchaseOrderDAO(dbFile,';',"utf-8");
 	}
 
 }

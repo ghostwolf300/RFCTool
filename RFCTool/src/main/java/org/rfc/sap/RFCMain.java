@@ -7,14 +7,18 @@ import java.util.Map;
 import java.util.Set;
 
 import java.lang.reflect.Type;
+import java.sql.Date;
 
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.MaterialDAO;
+import org.rfc.dao.PODAO;
 import org.rfc.dao.text.TextFileDAOFactory;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.PlantData;
+import org.rfc.dto.PurchaseOrder;
 import org.rfc.dto.Material;
+import org.rfc.dto.POItem;
 import org.rfc.dto.UserFunction;
 import org.rfc.dto.ReturnMessage;
 import org.rfc.dto.Worker;
@@ -39,7 +43,8 @@ public class RFCMain {
 	
 	public static void main(String[] args) {
 		RFCMain main=new RFCMain();
-		main.ExecuteTest();
+		main.fetchPOData();
+		//main.ExecuteTest();
 		//main.ExecuteThreadTest();
 		//main.daoTest();
 		//main.reflectionTest();
@@ -225,8 +230,125 @@ public class RFCMain {
 			}
 		}
 		
+	}
+	
+	private void fetchPOData() {
+		SapSystemFactory factory=new SapSystemFactory();
+		SapSystem sap=null;
+		JCoDestination destination=null;
+		JCoFunctionTemplate template=null;
+		JCoFunction function=null;
+		JCoRepository repository=null;
+		JCoStructure sPO_HEADER=null;
+		JCoTable tPO_ITEMS=null;
 		
+		List<String> poNumbers=getPONumbers("C:/Database/po_list.csv");
+		List<PurchaseOrder> poList=new ArrayList<PurchaseOrder>();
 		
+		try {
+			sap=factory.getSapSystem("TEPCLNT280");
+			System.out.println("Ping succesful: "+sap.ping());
+			
+			destination=sap.getDestination();
+			
+			JCoContext.begin(destination);
+			
+			repository=destination.getRepository();
+			template=repository.getFunctionTemplate("BAPI_PO_GETDETAIL");
+			function=template.getFunction();
+			
+			//String poNumber="4500021264";
+			for(String poNumber : poNumbers) {
+				function.getImportParameterList().setValue("PURCHASEORDER", poNumber);
+				function.getImportParameterList().setValue("ITEMS","X");
+				
+				sPO_HEADER=function.getExportParameterList().getStructure("PO_HEADER");
+				tPO_ITEMS=function.getTableParameterList().getTable("PO_ITEMS");
+				
+				function.execute(destination);
+				
+				PurchaseOrder po=createPO(sPO_HEADER);
+				po.setItems(createPOItemList(tPO_ITEMS));
+				
+				poList.add(po);
+				
+//				System.out.println("PO number: "+po.getPoNumber()+"\tItems: "+po.getItems().size());
+//				for(POItem item : po.getItems()) {
+//					System.out.println("Item: "+item.getItemNumber());
+//				}
+			}
+			
+			
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				JCoContext.end(destination);
+			} 
+			catch (JCoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private List<String> getPONumbers(String filePath){
+		List<String> poNumbers=new ArrayList<String>();
+		DAOFactory factory=new TextFileDAOFactory(new File(filePath));
+		PODAO<PurchaseOrder> dao=factory.getPODAO();
+		List<PurchaseOrder> poList=dao.getPONumbers();
+		for(PurchaseOrder po : poList) {
+			poNumbers.add(po.getPoNumber());
+		}
+		return poNumbers;
+	}
+	
+	private void savePOList(List<PurchaseOrder> poList, String filePath) {
+		
+	}
+	
+	private PurchaseOrder createPO(JCoStructure hdrStruct) {
+		PurchaseOrder po=new PurchaseOrder();
+		po.setPoNumber(hdrStruct.getString("PO_NUMBER"));
+		po.setCreatedOn(new Date(hdrStruct.getDate("CREATED_ON").getTime()));
+		po.setCreatedBy(hdrStruct.getString("CREATED_BY"));
+		po.setDocumentType(hdrStruct.getString("DOC_TYPE"));
+		po.setItemInterval(hdrStruct.getLong("ITEM_INTVL"));
+		po.setLastItem(hdrStruct.getLong("LAST_ITEM"));
+		po.setVendor(hdrStruct.getString("VENDOR"));
+		po.setPaymentTerm(hdrStruct.getString("PMNTTRMS"));
+		po.setPurchOrg(hdrStruct.getString("PURCH_ORG"));
+		po.setPurchGroup(hdrStruct.getString("PUR_GROUP"));
+		po.setCurrency(hdrStruct.getString("CURRENCY"));
+		po.setDocumentDate(new Date(hdrStruct.getDate("DOC_DATE").getTime()));
+		return po;
+	}
+	
+	private List<POItem> createPOItemList(JCoTable itemTable){
+		POItem poItem=null;
+		List<POItem> poItems=new ArrayList<POItem>();
+		do {
+			poItem=new POItem();
+			poItem.setPoNumber(itemTable.getString("PO_NUMBER"));
+			poItem.setItemNumber(itemTable.getInt("PO_ITEM"));
+			poItem.setDeleteIndicator(itemTable.getString("DELETE_IND"));
+			poItem.setChangedOn(new Date(itemTable.getDate("CHANGED_ON").getTime()));
+			poItem.setShortText(itemTable.getString("SHORT_TEXT"));
+			poItem.setMaterial(itemTable.getString("MATERIAL"));
+			poItem.setPurchMaterial(itemTable.getString("PUR_MAT"));
+			poItem.setInfoRecord(itemTable.getString("INFO_REC"));
+			poItem.setVendorMaterial(itemTable.getString("VEND_MAT"));
+			poItem.setQuantity(itemTable.getDouble("QUANTITY"));
+			poItem.setUnit(itemTable.getString("UNIT"));
+			poItem.setOrderPriceUnit(itemTable.getString("ORDERPR_UN"));
+			poItem.setNetPrice(itemTable.getDouble("NET_PRICE"));
+			poItems.add(poItem);
+		}
+		while(itemTable.nextRow());
+		return poItems;
 	}
 
 }

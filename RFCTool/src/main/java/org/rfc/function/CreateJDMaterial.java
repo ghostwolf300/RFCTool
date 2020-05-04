@@ -224,7 +224,7 @@ public class CreateJDMaterial extends SaveMaterialReplica {
 		tCLIENTDATA.setValue("OLD_MAT_NO", m.getOldMaterialNumber());
 		tCLIENTDATA.setValue("BASE_UOM", "ST");
 		tCLIENTDATA.setValue("ITEM_CAT", "NORM");
-		tCLIENTDATA.setValue("PUR_STATUS", "01"); //01=design, 03=tuotanto
+		tCLIENTDATA.setValue("PUR_STATUS", "03"); //01=design, 03=tuotanto
 		tCLIENTDATA.setValue("NET_WEIGHT", m.getNetWeight());
 		tCLIENTDATA.setValue("UNIT_OF_WT", "KG");
 		tCLIENTDATA.setValue("STOR_CONDS", "71");
