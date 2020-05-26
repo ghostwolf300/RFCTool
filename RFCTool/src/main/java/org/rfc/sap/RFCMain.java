@@ -43,7 +43,9 @@ public class RFCMain {
 	
 	public static void main(String[] args) {
 		RFCMain main=new RFCMain();
-		main.fetchPOData();
+		main.changePOItem();
+		//main.changeIncomingInvoice();
+		//main.fetchPOData();
 		//main.ExecuteTest();
 		//main.ExecuteThreadTest();
 		//main.daoTest();
@@ -242,7 +244,9 @@ public class RFCMain {
 		JCoStructure sPO_HEADER=null;
 		JCoTable tPO_ITEMS=null;
 		
-		List<String> poNumbers=getPONumbers("C:/Database/po_list.csv");
+		//List<String> poNumbers=getPONumbers("C:/Database/Ostolaskusuma/inv_po_list.csv");
+		List<String> poNumbers=getPONumbers("C:/Database/Ostolaskusuma/jd_po_list.csv");
+		List<String> invalidPONumbers=new ArrayList<String>();
 		List<PurchaseOrder> poList=new ArrayList<PurchaseOrder>();
 		
 		try {
@@ -265,12 +269,18 @@ public class RFCMain {
 				sPO_HEADER=function.getExportParameterList().getStructure("PO_HEADER");
 				tPO_ITEMS=function.getTableParameterList().getTable("PO_ITEMS");
 				
+				System.out.println("PO: "+poNumber);
+				
 				function.execute(destination);
 				
 				PurchaseOrder po=createPO(sPO_HEADER);
-				po.setItems(createPOItemList(tPO_ITEMS));
-				
-				poList.add(po);
+				if(po!=null) {
+					po.setItems(createPOItemList(tPO_ITEMS));
+					poList.add(po);
+				}
+				else {
+					invalidPONumbers.add(poNumber);
+				}
 				
 //				System.out.println("PO number: "+po.getPoNumber()+"\tItems: "+po.getItems().size());
 //				for(POItem item : po.getItems()) {
@@ -293,6 +303,20 @@ public class RFCMain {
 				e.printStackTrace();
 			}
 		}
+		
+		savePOList(poList,"C:/Database/Ostolaskusuma/inv_po_out.csv");
+		
+		List<POItem> poItemList=new ArrayList<POItem>();
+		for(PurchaseOrder po : poList) {
+			poItemList.addAll(po.getItems());
+		}
+		
+		savePOItemList(poItemList,"C:/Database/Ostolaskusuma/inv_po_item_out.csv");
+		
+		System.out.println("Invalid PO number:");
+		for(String poNumber : invalidPONumbers) {
+			System.out.println(poNumber);
+		}
 	}
 	
 	private List<String> getPONumbers(String filePath){
@@ -306,49 +330,248 @@ public class RFCMain {
 		return poNumbers;
 	}
 	
+	private List<PurchaseOrder> getPOsIncludeItems(String filePath){
+		DAOFactory factory=new TextFileDAOFactory(new File(filePath));
+		PODAO<PurchaseOrder> dao=factory.getPODAO();
+		List<PurchaseOrder> poList=dao.getPOsIncludeItems();
+		return poList;
+	}
+	
 	private void savePOList(List<PurchaseOrder> poList, String filePath) {
-		
+		DAOFactory factory=new TextFileDAOFactory(new File(filePath));
+		PODAO<PurchaseOrder> dao=factory.getPODAO();
+		dao.savePOs(poList);
+	}
+	
+	private void savePOItemList(List<POItem> poItemList,String filePath) {
+		DAOFactory factory=new TextFileDAOFactory(new File(filePath));
+		PODAO<PurchaseOrder> dao=factory.getPODAO();
+		dao.savePOItems(poItemList);
 	}
 	
 	private PurchaseOrder createPO(JCoStructure hdrStruct) {
-		PurchaseOrder po=new PurchaseOrder();
-		po.setPoNumber(hdrStruct.getString("PO_NUMBER"));
-		po.setCreatedOn(new Date(hdrStruct.getDate("CREATED_ON").getTime()));
-		po.setCreatedBy(hdrStruct.getString("CREATED_BY"));
-		po.setDocumentType(hdrStruct.getString("DOC_TYPE"));
-		po.setItemInterval(hdrStruct.getLong("ITEM_INTVL"));
-		po.setLastItem(hdrStruct.getLong("LAST_ITEM"));
-		po.setVendor(hdrStruct.getString("VENDOR"));
-		po.setPaymentTerm(hdrStruct.getString("PMNTTRMS"));
-		po.setPurchOrg(hdrStruct.getString("PURCH_ORG"));
-		po.setPurchGroup(hdrStruct.getString("PUR_GROUP"));
-		po.setCurrency(hdrStruct.getString("CURRENCY"));
-		po.setDocumentDate(new Date(hdrStruct.getDate("DOC_DATE").getTime()));
+		
+		PurchaseOrder po=null;
+		String poNumber=null;
+		poNumber=hdrStruct.getString("PO_NUMBER");
+		
+		if(!poNumber.isEmpty()) {
+			po=new PurchaseOrder();
+			po.setPoNumber(poNumber);
+			po.setCreatedOn(new Date(hdrStruct.getDate("CREATED_ON").getTime()));
+			po.setCreatedBy(hdrStruct.getString("CREATED_BY"));
+			po.setDocumentType(hdrStruct.getString("DOC_TYPE"));
+			po.setItemInterval(hdrStruct.getLong("ITEM_INTVL"));
+			po.setLastItem(hdrStruct.getLong("LAST_ITEM"));
+			po.setVendor(hdrStruct.getString("VENDOR"));
+			po.setPaymentTerm(hdrStruct.getString("PMNTTRMS"));
+			po.setPurchOrg(hdrStruct.getString("PURCH_ORG"));
+			po.setPurchGroup(hdrStruct.getString("PUR_GROUP"));
+			po.setCurrency(hdrStruct.getString("CURRENCY"));
+			po.setDocumentDate(new Date(hdrStruct.getDate("DOC_DATE").getTime()));
+		}
 		return po;
 	}
 	
 	private List<POItem> createPOItemList(JCoTable itemTable){
 		POItem poItem=null;
 		List<POItem> poItems=new ArrayList<POItem>();
-		do {
-			poItem=new POItem();
-			poItem.setPoNumber(itemTable.getString("PO_NUMBER"));
-			poItem.setItemNumber(itemTable.getInt("PO_ITEM"));
-			poItem.setDeleteIndicator(itemTable.getString("DELETE_IND"));
-			poItem.setChangedOn(new Date(itemTable.getDate("CHANGED_ON").getTime()));
-			poItem.setShortText(itemTable.getString("SHORT_TEXT"));
-			poItem.setMaterial(itemTable.getString("MATERIAL"));
-			poItem.setPurchMaterial(itemTable.getString("PUR_MAT"));
-			poItem.setInfoRecord(itemTable.getString("INFO_REC"));
-			poItem.setVendorMaterial(itemTable.getString("VEND_MAT"));
-			poItem.setQuantity(itemTable.getDouble("QUANTITY"));
-			poItem.setUnit(itemTable.getString("UNIT"));
-			poItem.setOrderPriceUnit(itemTable.getString("ORDERPR_UN"));
-			poItem.setNetPrice(itemTable.getDouble("NET_PRICE"));
-			poItems.add(poItem);
+		if(itemTable.getNumRows()>0) {
+			do {
+				poItem=new POItem();
+				poItem.setPoNumber(itemTable.getString("PO_NUMBER"));
+				poItem.setItemNumber(itemTable.getInt("PO_ITEM"));
+				poItem.setDeleteIndicator(itemTable.getString("DELETE_IND"));
+				try {
+					poItem.setChangedOn(new Date(itemTable.getDate("CHANGED_ON").getTime()));
+				}
+				catch(NullPointerException npe) {
+					System.out.println("PO: "+poItem.getPoNumber()+" CHANGED_ON date is null");
+				}
+				poItem.setShortText(itemTable.getString("SHORT_TEXT"));
+				poItem.setMaterial(itemTable.getString("MATERIAL"));
+				poItem.setPurchMaterial(itemTable.getString("PUR_MAT"));
+				poItem.setInfoRecord(itemTable.getString("INFO_REC"));
+				poItem.setVendorMaterial(itemTable.getString("VEND_MAT"));
+				poItem.setQuantity(itemTable.getDouble("QUANTITY"));
+				poItem.setUnit(itemTable.getString("UNIT"));
+				poItem.setOrderPriceUnit(itemTable.getString("ORDERPR_UN"));
+				poItem.setNetPrice(itemTable.getDouble("NET_PRICE"));
+				poItem.setTaxCode(itemTable.getString("TAX_CODE"));
+				poItem.setCustomer(itemTable.getString("CUSTOMER"));
+				poItems.add(poItem);
+			}
+			while(itemTable.nextRow());
 		}
-		while(itemTable.nextRow());
 		return poItems;
+	}
+	
+	private void changeIncomingInvoice() {
+		
+		SapSystemFactory factory=new SapSystemFactory();
+		SapSystem sap=null;
+		JCoDestination destination=null;
+		JCoFunctionTemplate template=null;
+		JCoFunction function=null;
+		JCoFunction commitFunction=null;
+		JCoRepository repository=null;
+		
+		String docNum="5100018779";
+		String fiscalYear="2020";
+		String po="TEST890";
+		
+		JCoStructure sHEADERDATA_CHANGE=null;
+		JCoStructure sHEADERDATA_CHANGEX=null;
+		JCoTable tRETURN=null;
+		
+		try {
+			sap=factory.getSapSystem("TETCLNT280");
+			System.out.println("Ping succesful: "+sap.ping());
+			
+			destination=sap.getDestination();
+			
+			JCoContext.begin(destination);
+			
+			repository=destination.getRepository();
+			template=repository.getFunctionTemplate("BAPI_INCOMINGINVOICE_CHANGE");
+			function=template.getFunction();
+			template=repository.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
+			commitFunction=template.getFunction();
+			
+			sHEADERDATA_CHANGE=function.getImportParameterList().getStructure("HEADERDATA_CHANGE");
+			sHEADERDATA_CHANGEX=function.getImportParameterList().getStructure("HEADERDATA_CHANGEX");
+			tRETURN=function.getTableParameterList().getTable("RETURN");
+			
+			function.getImportParameterList().setValue("INVOICEDOCNUMBER", docNum);
+			function.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
+			
+			sHEADERDATA_CHANGE.setValue("ITEM_TEXT", po);
+			sHEADERDATA_CHANGEX.setValue("ITEM_TEXT", "X");
+			
+			function.execute(destination);
+			commitFunction.execute(destination);
+			
+			if(!tRETURN.isEmpty()) {
+				do {
+					System.out.println(tRETURN.getValue("TYPE")+" "+tRETURN.getValue("ID")+" "+tRETURN.getValue("NUMBER")+" "+tRETURN.getValue("MESSAGE"));
+				}
+				while(tRETURN.nextRow());
+			}
+			else {
+				System.out.println("Invoice "+docNum+" : PO "+po);
+			}
+			
+			
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				JCoContext.end(destination);
+			} 
+			catch (JCoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	private void changePOItem() {
+		SapSystemFactory factory=new SapSystemFactory();
+		SapSystem sap=null;
+		JCoDestination destination=null;
+		JCoFunctionTemplate template=null;
+		JCoFunction function=null;
+		JCoFunction commitFunction=null;
+		JCoRepository repository=null;
+		
+		boolean testRun=false;
+		
+		long progressCount=0;
+		
+		List<PurchaseOrder> poList=getPOsIncludeItems("C:/Database/Ostolaskusuma/jd_po_items_186005798.csv");
+		
+		JCoTable tPOITEM=null;
+		JCoTable tPOITEMX=null;
+		JCoTable tRETURN=null;
+		
+		try {
+			sap=factory.getSapSystem("TEPCLNT280");
+			System.out.println("Ping succesful: "+sap.ping());
+			
+			destination=sap.getDestination();
+			
+			JCoContext.begin(destination);
+			
+			repository=destination.getRepository();
+			template=repository.getFunctionTemplate("BAPI_PO_CHANGE");
+			function=template.getFunction();
+			template=repository.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
+			commitFunction=template.getFunction();
+			
+			tPOITEM=function.getTableParameterList().getTable("POITEM");
+			tPOITEMX=function.getTableParameterList().getTable("POITEMX");
+			tRETURN=function.getTableParameterList().getTable("RETURN");
+			
+			function.getImportParameterList().setValue("TESTRUN", (testRun==true ? "X" : ""));
+			
+			for(PurchaseOrder po : poList) {
+				function.getImportParameterList().setValue("PURCHASEORDER", po.getPoNumber());
+				for(POItem item : po.getItems()) {
+					tPOITEM.appendRow();
+					tPOITEM.setValue("PO_ITEM", item.getItemNumber());
+					tPOITEM.setValue("TAX_CODE", "S1");
+					
+					tPOITEMX.appendRow();
+					tPOITEMX.setValue("PO_ITEM", item.getItemNumber());
+					tPOITEMX.setValue("TAX_CODE", "X");
+					
+					//System.out.println(item.getPoNumber()+"\t"+item.getItemNumber());
+				}
+				
+				function.execute(destination);
+				commitFunction.execute(destination);
+				
+				if(!tRETURN.isEmpty()) {
+					do {
+						if(tRETURN.getValue("TYPE").equals("E")) {
+							System.out.println(po.getPoNumber()+" "+tRETURN.getValue("TYPE")+" "+tRETURN.getValue("ID")+" "+tRETURN.getValue("NUMBER")+" "+tRETURN.getValue("MESSAGE"));
+						}
+					}
+					while(tRETURN.nextRow());
+				}
+				else {
+					System.out.println("No messages PO:\t"+po.getPoNumber());
+				}
+				
+				tPOITEM.clear();
+				tPOITEMX.clear();
+				
+				progressCount++;
+				
+				if(progressCount % 100 == 0) {
+					System.out.println("Progress: "+progressCount+" / " +poList.size());
+				}
+				
+			}
+			
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				JCoContext.end(destination);
+			} 
+			catch (JCoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

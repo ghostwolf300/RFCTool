@@ -1,6 +1,7 @@
 package org.rfc.dto;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PurchaseOrder {
@@ -129,6 +130,13 @@ public class PurchaseOrder {
 
 	public void setItems(List<POItem> items) {
 		this.items = items;
+	}
+	
+	public void addItem(POItem item) {
+		if(items==null) {
+			items=new ArrayList<POItem>();
+		}
+		items.add(item);
 	}
 	
 }

@@ -16,6 +16,8 @@ public class POItem {
 	private String unit;
 	private String orderPriceUnit;
 	private double netPrice;
+	private String taxCode;
+	private String customer;
 	
 	public POItem() {
 		
@@ -123,6 +125,22 @@ public class POItem {
 
 	public void setNetPrice(double netPrice) {
 		this.netPrice = netPrice;
+	}
+
+	public String getTaxCode() {
+		return taxCode;
+	}
+
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
+	}
+
+	public String getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(String customer) {
+		this.customer = customer;
 	}
 	
 	
