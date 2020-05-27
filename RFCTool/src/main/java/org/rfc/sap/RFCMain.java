@@ -492,7 +492,7 @@ public class RFCMain {
 		
 		long progressCount=0;
 		
-		List<PurchaseOrder> poList=getPOsIncludeItems("C:/Database/Ostolaskusuma/jd_po_items_186005798.csv");
+		List<PurchaseOrder> poList=getPOsIncludeItems("C:/Database/Ostolaskusuma/jd_po_items_186005798_2.csv");
 		
 		JCoTable tPOITEM=null;
 		JCoTable tPOITEMX=null;
@@ -552,7 +552,7 @@ public class RFCMain {
 				
 				progressCount++;
 				
-				if(progressCount % 100 == 0) {
+				if(progressCount % 10 == 0) {
 					System.out.println("Progress: "+progressCount+" / " +poList.size());
 				}
 				
