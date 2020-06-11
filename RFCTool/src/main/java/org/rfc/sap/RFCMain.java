@@ -10,11 +10,13 @@ import java.lang.reflect.Type;
 import java.sql.Date;
 
 import org.rfc.dao.DAOFactory;
+import org.rfc.dao.InvoiceDAO;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.PODAO;
 import org.rfc.dao.text.TextFileDAOFactory;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
+import org.rfc.dto.Invoice;
 import org.rfc.dto.InvoiceItem;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.PurchaseOrder;
@@ -51,7 +53,6 @@ public class RFCMain {
 		//main.ExecuteThreadTest();
 		//main.daoTest();
 		//main.reflectionTest();
-		//main.fieldsTest();
 
 	}
 	
@@ -67,41 +68,21 @@ public class RFCMain {
 		
 	}
 	
-	public void fieldsTest() {
-		InputField<String> fMaterialId=new InputField<String>("MATERIAL",true,String.class);
-		InputField<String> fType=new InputField<String>("MATL_TYPE",false,String.class);
-		InputField<Double> fGroup=new InputField<Double>("GROUP_ID",false,Double.class);
-		
-		List<InputField<?>> fields=new ArrayList<InputField<?>>();
-		fields.add(fMaterialId);
-		fields.add(fType);
-		fields.add(fGroup);
-		
-		for(InputField<?> f : fields) {
-			System.out.println(f.getValueClass());
-		}
-		
-	}
-	
 	public void daoTest() {
 		
-		String dbPath="C:/Users/ville.susi/Documents/Digital Development/MD Side Tasks/Do Not Cost update/DoNotCostUpdate_All_Plants.txt";
+		String dbPath="C:/Users/ville.susi/OneDrive - Wihuri/Tiedostot/Digital Development/Projects/Ostolaskusuma/BAPI/PO_ITEMS.csv";
 		
 		DAOFactory daoFactory=new TextFileDAOFactory(new File(dbPath));
-		MaterialDAO<Material> daoMaterial=daoFactory.getMaterialDAO();
-		List<Material> materials=daoMaterial.getChangePlantDataList();
+		InvoiceDAO<Invoice> dao=daoFactory.getInvoiceDAO();
+		List<Invoice> invoices=dao.getInvoices();
 		
-		System.out.println("Materials size: "+materials.size());
+		System.out.println("Invoices size: "+invoices.size());
 		
-		Material m=materials.get(0);
-		System.out.println(m.getMaterialId());
-		Map<String,PlantData> pdMap=m.getPlantDataMap();
-		Set<String> keySet=pdMap.keySet();
-		for(String plant : keySet) {
-			PlantData pd=pdMap.get(plant);
-			System.out.println(pd.getPlant()+"\t"+pd.isDoNotCost());
+		for(Invoice invoice : invoices) {
+			for(InvoiceItem item : invoice.getItems()) {
+				System.out.println(item.toString());
+			}
 		}
-		
 		
 	}
 	
@@ -416,14 +397,14 @@ public class RFCMain {
 		JCoFunction function=null;
 		JCoFunction commitFunction=null;
 		JCoRepository repository=null;
-		
-		String docNum="5100018750";
 		String fiscalYear="2020";
-		String itemText="Invoice Items Test";
-		Date postingDate=new Date(System.currentTimeMillis()); //for this test only!!
 		
-		List<InvoiceItem> items=getTestInvoiceItems();
+		//String itemText="Invoice Items Test";
+		//String itemText="Added w BAPI funcion";
+		//Date postingDate=new Date(System.currentTimeMillis()); //for this test only!!
 		
+		String dbPath="C:/Users/ville.susi/OneDrive - Wihuri/Tiedostot/Digital Development/Projects/Ostolaskusuma/BAPI/PO_ITEMS.csv";
+		List<Invoice> invoices=getInvoicesWithItems(dbPath);
 		
 		JCoStructure sHEADERDATA_CHANGE=null;
 		JCoStructure sHEADERDATA_CHANGEX=null;
@@ -432,63 +413,76 @@ public class RFCMain {
 		JCoTable tITEMDATA=null;
 		
 		try {
-			sap=factory.getSapSystem("TETCLNT280");
+			
+			//pointing to test
+			//sap=factory.getSapSystem("TETCLNT280");
+			//pointing to production!
+			sap=factory.getSapSystem("TEPCLNT280");
 			System.out.println("Ping succesful: "+sap.ping());
-			
+
 			destination=sap.getDestination();
-			
+
 			JCoContext.begin(destination);
-			
+
 			repository=destination.getRepository();
 			template=repository.getFunctionTemplate("BAPI_INCOMINGINVOICE_CHANGE");
 			function=template.getFunction();
 			template=repository.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
 			commitFunction=template.getFunction();
-			
+
 			sHEADERDATA_CHANGE=function.getImportParameterList().getStructure("HEADERDATA_CHANGE");
 			sHEADERDATA_CHANGEX=function.getImportParameterList().getStructure("HEADERDATA_CHANGEX");
 			sTABLE_CHANGE=function.getImportParameterList().getStructure("TABLE_CHANGE");
 			tITEMDATA=function.getTableParameterList().getTable("ITEMDATA");
 			tRETURN=function.getTableParameterList().getTable("RETURN");
-			
-			function.getImportParameterList().setValue("INVOICEDOCNUMBER", docNum);
-			function.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
-			
-			sHEADERDATA_CHANGE.setValue("ITEM_TEXT", itemText);
-			sHEADERDATA_CHANGE.setValue("PSTNG_DATE", postingDate);
-			sHEADERDATA_CHANGEX.setValue("ITEM_TEXT", "X");
-			sHEADERDATA_CHANGEX.setValue("PSTNG_DATE", "X");
-			sTABLE_CHANGE.setValue("ITEMDATA", "X");
-			
-			for(InvoiceItem item : items) {
-				tITEMDATA.appendRow();
-				tITEMDATA.setValue("INVOICE_DOC_ITEM", item.getInvItemNumber());
-				tITEMDATA.setValue("ITEM_AMOUNT", item.getInvItemAmount());
-				tITEMDATA.setValue("QUANTITY", item.getInvItemQty());
-				tITEMDATA.setValue("PO_NUMBER", item.getPoNumber());
-				tITEMDATA.setValue("PO_ITEM", item.getPoItemNumber());
-				tITEMDATA.setValue("PO_UNIT", item.getPoUnit());
-				//If Gr based invoice=invoice linked to PO with delivery. Must have goods receipt!
-				if(item.isGrBased()) {
-					tITEMDATA.setValue("REF_DOC", item.getGoodsReceipt());
-					tITEMDATA.setValue("REF_DOC_YEAR", "2020");
-					tITEMDATA.setValue("REF_DOC_IT", item.getRefItem());
+				
+			for(Invoice invoice : invoices) {
+				//-------------TEST---------------------
+				invoice.setUnplannedDeliveryCost(265.01);
+				//--------------------------------------
+				function.getImportParameterList().setValue("INVOICEDOCNUMBER", invoice.getInvoiceDoc());
+				function.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
+				
+				sHEADERDATA_CHANGE.setValue("DEL_COSTS", invoice.getUnplannedDeliveryCost());
+				sHEADERDATA_CHANGEX.setValue("DEL_COSTS", "X");
+				
+				sTABLE_CHANGE.setValue("ITEMDATA", "X");
+				
+				List<InvoiceItem> items=invoice.getItems();
+				
+				for(InvoiceItem item : items) {
+					tITEMDATA.appendRow();
+					tITEMDATA.setValue("INVOICE_DOC_ITEM", item.getInvItemNumber());
+					tITEMDATA.setValue("ITEM_AMOUNT", item.getInvItemAmount());
+					tITEMDATA.setValue("QUANTITY", item.getInvItemQty());
+					tITEMDATA.setValue("PO_NUMBER", item.getPoNumber());
+					tITEMDATA.setValue("PO_ITEM", item.getPoItemNumber());
+					tITEMDATA.setValue("PO_UNIT", item.getPoUnit());
+					//If Gr based invoice=invoice linked to PO with delivery. Must have goods receipt!
+					if(item.isGrBased()) {
+						tITEMDATA.setValue("REF_DOC", item.getGoodsReceipt());
+						tITEMDATA.setValue("REF_DOC_YEAR", "2020");
+						tITEMDATA.setValue("REF_DOC_IT", item.getRefItem());
+					}
 				}
-			}
-			
-			function.execute(destination);
-			commitFunction.execute(destination);
-			
-			if(!tRETURN.isEmpty()) {
-				do {
-					System.out.println(tRETURN.getValue("TYPE")+" "+tRETURN.getValue("ID")+" "+tRETURN.getValue("NUMBER")+" "+tRETURN.getValue("MESSAGE"));
+				
+				function.execute(destination);
+				commitFunction.execute(destination);
+				
+				if(!tRETURN.isEmpty()) {
+					do {
+						System.out.println(tRETURN.getValue("TYPE")+" "+tRETURN.getValue("ID")+" "+tRETURN.getValue("NUMBER")+" "+tRETURN.getValue("MESSAGE"));
+					}
+					while(tRETURN.nextRow());
 				}
-				while(tRETURN.nextRow());
+				else {
+					System.out.println("Invoice "+invoice.getInvoiceDoc()+" : success");
+				}
+				
+				tRETURN.clear();
+				tITEMDATA.clear();
+				
 			}
-			else {
-				System.out.println("Invoice "+docNum+" : PO "+itemText);
-			}
-			
 			
 		} 
 		catch (JCoException e) {
@@ -515,6 +509,13 @@ public class RFCMain {
 		items.add(new InvoiceItem(2,69.5,1.0,poNumber,20,"ST",goodsReceipt,1));
 		//items.add(new InvoiceItem(3,300.0,3.0,poNumber,30,"PAA",goodsReceipt,3));
 		return items;
+	}
+	
+	private List<Invoice> getInvoicesWithItems(String dbPath){
+		DAOFactory factory=new TextFileDAOFactory(new File(dbPath));
+		InvoiceDAO<Invoice> dao=factory.getInvoiceDAO();
+		List<Invoice> invoices=dao.getInvoices();
+		return invoices;
 	}
 	
 	private void changePOItem() {

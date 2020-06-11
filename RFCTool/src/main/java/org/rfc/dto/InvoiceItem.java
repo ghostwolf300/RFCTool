@@ -2,6 +2,7 @@ package org.rfc.dto;
 
 public class InvoiceItem {
 	
+	private String invoiceDoc;
 	private long invItemNumber;
 	private String poNumber;
 	private long poItemNumber;
@@ -43,6 +44,26 @@ public class InvoiceItem {
 		grBased=false;
 	}
 	
+	public InvoiceItem(String invoiceDoc,long InvItemNumber,double invItemAmount,double invItemQty,String poNumber,long poItemNumber,String poUnit) {
+		this.invoiceDoc=invoiceDoc;
+		this.invItemNumber=InvItemNumber;
+		this.invItemAmount=invItemAmount;
+		this.invItemQty=invItemQty;
+		this.poNumber=poNumber;
+		this.poItemNumber=poItemNumber;
+		this.poUnit=poUnit;
+		grBased=false;
+	}
+	
+
+	public String getInvoiceDoc() {
+		return invoiceDoc;
+	}
+
+	public void setInvoiceDoc(String invoiceDoc) {
+		this.invoiceDoc = invoiceDoc;
+	}
+
 	public long getInvItemNumber() {
 		return invItemNumber;
 	}
@@ -155,7 +176,11 @@ public class InvoiceItem {
 		this.grBased = grBased;
 	}
 	
-	
-	
+	@Override
+	public String toString() {
+		return invoiceDoc + "; " + invItemNumber + "; " + poNumber + "; " + poItemNumber + "; " + debitCreditIndicator
+				+ "; " + taxCode + "; " + invItemAmount + "; " + invItemQty + "; " + poUnit + "; " + poPriceQty + "; "
+				+ poPriceUom + "; " + itemText + "; " + goodsReceipt + "; " + refItem + "; " + grBased + "]";
+	}
 	
 }

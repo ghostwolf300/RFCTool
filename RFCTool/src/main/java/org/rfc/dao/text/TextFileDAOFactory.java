@@ -3,9 +3,11 @@ package org.rfc.dao.text;
 import java.io.File;
 
 import org.rfc.dao.DAOFactory;
+import org.rfc.dao.InvoiceDAO;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.PODAO;
 import org.rfc.dao.ReturnMessageDAO;
+import org.rfc.dto.Invoice;
 import org.rfc.dto.Material;
 import org.rfc.dto.PurchaseOrder;
 import org.rfc.dto.ReturnMessage;
@@ -79,6 +81,11 @@ public class TextFileDAOFactory implements DAOFactory {
 	@Override
 	public PODAO<PurchaseOrder> getPODAO() {
 		return new TextFilePurchaseOrderDAO(dbFile,';',"utf-8");
+	}
+
+	@Override
+	public InvoiceDAO<Invoice> getInvoiceDAO() {
+		return new TextFileInvoiceDAO(dbFile,';',"utf-8");
 	}
 
 }
