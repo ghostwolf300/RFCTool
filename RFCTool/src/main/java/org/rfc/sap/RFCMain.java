@@ -15,6 +15,7 @@ import org.rfc.dao.PODAO;
 import org.rfc.dao.text.TextFileDAOFactory;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
+import org.rfc.dto.InvoiceItem;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.PurchaseOrder;
 import org.rfc.dto.Material;
@@ -43,8 +44,8 @@ public class RFCMain {
 	
 	public static void main(String[] args) {
 		RFCMain main=new RFCMain();
-		main.changePOItem();
-		//main.changeIncomingInvoice();
+		//main.changePOItem();
+		main.changeIncomingInvoice();
 		//main.fetchPOData();
 		//main.ExecuteTest();
 		//main.ExecuteThreadTest();
@@ -416,13 +417,19 @@ public class RFCMain {
 		JCoFunction commitFunction=null;
 		JCoRepository repository=null;
 		
-		String docNum="5100018779";
+		String docNum="5100018750";
 		String fiscalYear="2020";
-		String po="TEST890";
+		String itemText="Invoice Items Test";
+		Date postingDate=new Date(System.currentTimeMillis()); //for this test only!!
+		
+		List<InvoiceItem> items=getTestInvoiceItems();
+		
 		
 		JCoStructure sHEADERDATA_CHANGE=null;
 		JCoStructure sHEADERDATA_CHANGEX=null;
+		JCoStructure sTABLE_CHANGE=null;
 		JCoTable tRETURN=null;
+		JCoTable tITEMDATA=null;
 		
 		try {
 			sap=factory.getSapSystem("TETCLNT280");
@@ -440,13 +447,34 @@ public class RFCMain {
 			
 			sHEADERDATA_CHANGE=function.getImportParameterList().getStructure("HEADERDATA_CHANGE");
 			sHEADERDATA_CHANGEX=function.getImportParameterList().getStructure("HEADERDATA_CHANGEX");
+			sTABLE_CHANGE=function.getImportParameterList().getStructure("TABLE_CHANGE");
+			tITEMDATA=function.getTableParameterList().getTable("ITEMDATA");
 			tRETURN=function.getTableParameterList().getTable("RETURN");
 			
 			function.getImportParameterList().setValue("INVOICEDOCNUMBER", docNum);
 			function.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
 			
-			sHEADERDATA_CHANGE.setValue("ITEM_TEXT", po);
+			sHEADERDATA_CHANGE.setValue("ITEM_TEXT", itemText);
+			sHEADERDATA_CHANGE.setValue("PSTNG_DATE", postingDate);
 			sHEADERDATA_CHANGEX.setValue("ITEM_TEXT", "X");
+			sHEADERDATA_CHANGEX.setValue("PSTNG_DATE", "X");
+			sTABLE_CHANGE.setValue("ITEMDATA", "X");
+			
+			for(InvoiceItem item : items) {
+				tITEMDATA.appendRow();
+				tITEMDATA.setValue("INVOICE_DOC_ITEM", item.getInvItemNumber());
+				tITEMDATA.setValue("ITEM_AMOUNT", item.getInvItemAmount());
+				tITEMDATA.setValue("QUANTITY", item.getInvItemQty());
+				tITEMDATA.setValue("PO_NUMBER", item.getPoNumber());
+				tITEMDATA.setValue("PO_ITEM", item.getPoItemNumber());
+				tITEMDATA.setValue("PO_UNIT", item.getPoUnit());
+				//If Gr based invoice=invoice linked to PO with delivery. Must have goods receipt!
+				if(item.isGrBased()) {
+					tITEMDATA.setValue("REF_DOC", item.getGoodsReceipt());
+					tITEMDATA.setValue("REF_DOC_YEAR", "2020");
+					tITEMDATA.setValue("REF_DOC_IT", item.getRefItem());
+				}
+			}
 			
 			function.execute(destination);
 			commitFunction.execute(destination);
@@ -458,7 +486,7 @@ public class RFCMain {
 				while(tRETURN.nextRow());
 			}
 			else {
-				System.out.println("Invoice "+docNum+" : PO "+po);
+				System.out.println("Invoice "+docNum+" : PO "+itemText);
 			}
 			
 			
@@ -477,6 +505,16 @@ public class RFCMain {
 			}
 		}
 		
+	}
+	
+	private List<InvoiceItem> getTestInvoiceItems(){
+		List<InvoiceItem> items=new ArrayList<InvoiceItem>();
+		String poNumber="4500014293";
+		String goodsReceipt="5000023640";
+		items.add(new InvoiceItem(1,155.0,100.0,poNumber,10,"ST"));
+		items.add(new InvoiceItem(2,69.5,1.0,poNumber,20,"ST",goodsReceipt,1));
+		//items.add(new InvoiceItem(3,300.0,3.0,poNumber,30,"PAA",goodsReceipt,3));
+		return items;
 	}
 	
 	private void changePOItem() {
