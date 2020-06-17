@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.InvoiceDAO;
+import org.rfc.dao.JDInvoiceDAO;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.PODAO;
 import org.rfc.dao.ReturnMessageDAO;
@@ -86,6 +87,11 @@ public class TextFileDAOFactory implements DAOFactory {
 	@Override
 	public InvoiceDAO<Invoice> getInvoiceDAO() {
 		return new TextFileInvoiceDAO(dbFile,';',"utf-8");
+	}
+
+	@Override
+	public JDInvoiceDAO getJDInvoiceDAO() {
+		return new TextFileJDInvoiceDAO(dbFile,';',"utf-8");
 	}
 
 }

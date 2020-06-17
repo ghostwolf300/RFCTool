@@ -43,19 +43,34 @@ public class TextFileInvoiceDAO extends TextFileDAO implements InvoiceDAO<Invoic
 		InvoiceItem item=null;
 		
 		int rowCount=0;
+		long itemNumber=1;
 		try(BufferedReader reader=getReader()){
 			invoices=new ArrayList<Invoice>();
 			while((line=reader.readLine())!=null) {
 				fieldValues=getFieldValues(line);
-				nextInvoice=fieldValues[0];
+				nextInvoice=fieldValues[1];
 				if(currentInvoice==null || !currentInvoice.equals(nextInvoice)) {
 					invoice=new Invoice(nextInvoice);
+					try {
+						invoice.setTotalMerchandise(format.parse(fieldValues[2]).doubleValue());
+						invoice.setSurcharge(format.parse(fieldValues[3]).doubleValue());
+						invoice.setUnplannedDeliveryCost(format.parse(fieldValues[3]).doubleValue());
+						invoice.setVatAmount(format.parse(fieldValues[6]).doubleValue());
+						invoice.setGrossAmount(format.parse(fieldValues[5]).doubleValue());
+					} 
+					catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					invoices.add(invoice);
 					currentInvoice=nextInvoice;
+					itemNumber=1;
 				}
 				item=createInvoiceItem(fieldValues);
+				item.setInvItemNumber(itemNumber);
 				invoice.addItem(item);
 				rowCount++;
+				itemNumber++;
 			}
 		}
 		catch (UnsupportedEncodingException e) {
@@ -76,20 +91,20 @@ public class TextFileInvoiceDAO extends TextFileDAO implements InvoiceDAO<Invoic
 	private InvoiceItem createInvoiceItem(String[] fieldValues) {
 		InvoiceItem item=new InvoiceItem();
 		
-		item.setInvoiceDoc(fieldValues[0]);
-		item.setInvItemNumber(Long.valueOf(fieldValues[1]));
-		item.setPoNumber(fieldValues[6]);
-		item.setPoItemNumber(Long.valueOf(fieldValues[7]));
+		item.setInvoiceDoc(fieldValues[1]);
+		//item.setInvItemNumber(Long.valueOf(fieldValues[7]));
+		item.setPoNumber(fieldValues[13]);
+		item.setPoItemNumber(Long.valueOf(fieldValues[14]));
 		
 		try {
-			item.setInvItemAmount(format.parse(fieldValues[5]).doubleValue());
-			item.setInvItemQty(format.parse(fieldValues[3]).doubleValue());
+			item.setInvItemAmount(format.parse(fieldValues[12]).doubleValue());
+			item.setInvItemQty(format.parse(fieldValues[9]).doubleValue());
 		} 
 		catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String poUnit=fieldValues[10];
+		String poUnit=fieldValues[15];
 		if(poUnit.equals("PC")) {
 			item.setPoUnit("ST");
 		}

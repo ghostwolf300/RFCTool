@@ -1,23 +1,33 @@
 package org.rfc.sap;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Date;
 
 import org.rfc.dao.DAOFactory;
 import org.rfc.dao.InvoiceDAO;
+import org.rfc.dao.JDInvoiceDAO;
 import org.rfc.dao.MaterialDAO;
 import org.rfc.dao.PODAO;
 import org.rfc.dao.text.TextFileDAOFactory;
+import org.rfc.dao.xml.XMLDAOFactory;
 import org.rfc.dto.FieldValue;
 import org.rfc.dto.InputField;
 import org.rfc.dto.Invoice;
 import org.rfc.dto.InvoiceItem;
+import org.rfc.dto.JDInvoice;
+import org.rfc.dto.JDInvoiceAmount;
+import org.rfc.dto.JDInvoiceItem;
 import org.rfc.dto.PlantData;
 import org.rfc.dto.PurchaseOrder;
 import org.rfc.dto.Material;
@@ -46,8 +56,12 @@ public class RFCMain {
 	
 	public static void main(String[] args) {
 		RFCMain main=new RFCMain();
-		//main.changePOItem();
+		//main.testXMLReader();
 		main.changeIncomingInvoice();
+		//main.changeIncomingInvoiceStatus();
+		//main.releaseIncomingInvoice();
+		//main.postIncomingInvoice();
+		//main.changePOItem();
 		//main.fetchPOData();
 		//main.ExecuteTest();
 		//main.ExecuteThreadTest();
@@ -399,12 +413,14 @@ public class RFCMain {
 		JCoRepository repository=null;
 		String fiscalYear="2020";
 		
-		//String itemText="Invoice Items Test";
-		//String itemText="Added w BAPI funcion";
-		//Date postingDate=new Date(System.currentTimeMillis()); //for this test only!!
-		
-		String dbPath="C:/Users/ville.susi/OneDrive - Wihuri/Tiedostot/Digital Development/Projects/Ostolaskusuma/BAPI/PO_ITEMS.csv";
+		String dbPath="C:/Users/ville.susi/OneDrive - Wihuri/Tiedostot/Digital Development/Projects/Ostolaskusuma/BAPI/INVOICE_LINES_TEST_2.csv";
 		List<Invoice> invoices=getInvoicesWithItems(dbPath);
+		
+		for(Invoice inv : invoices) {
+			for(InvoiceItem itm : inv.getItems()) {
+				System.out.println(inv.getInvoiceDoc()+"\t"+itm.getInvItemNumber()+"\t"+itm.getInvItemQty()+"\t"+itm.getInvItemAmount());
+			}
+		}
 		
 		JCoStructure sHEADERDATA_CHANGE=null;
 		JCoStructure sHEADERDATA_CHANGEX=null;
@@ -414,8 +430,6 @@ public class RFCMain {
 		
 		try {
 			
-			//pointing to test
-			//sap=factory.getSapSystem("TETCLNT280");
 			//pointing to production!
 			sap=factory.getSapSystem("TEPCLNT280");
 			System.out.println("Ping succesful: "+sap.ping());
@@ -435,13 +449,25 @@ public class RFCMain {
 			sTABLE_CHANGE=function.getImportParameterList().getStructure("TABLE_CHANGE");
 			tITEMDATA=function.getTableParameterList().getTable("ITEMDATA");
 			tRETURN=function.getTableParameterList().getTable("RETURN");
-				
+			
+			boolean approved=false;
+			
 			for(Invoice invoice : invoices) {
-				//-------------TEST---------------------
-				invoice.setUnplannedDeliveryCost(265.01);
-				//--------------------------------------
+				
 				function.getImportParameterList().setValue("INVOICEDOCNUMBER", invoice.getInvoiceDoc());
 				function.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
+				
+				System.out.println("TotalMerchandise:\t"+invoice.getTotalMerchandise()+"\tItems:\t"+invoice.getItemAmountSum());
+				
+				approved=false;
+				if(invoice.canApprove()) {
+					System.out.println(invoice.getInvoiceDoc()+"\tCan approve");
+					function.getImportParameterList().setValue("INVOICE_DOC_STATUS", "B");
+					approved=true;
+				}
+				else {
+					System.out.println(invoice.getInvoiceDoc()+"\tCheck values!");
+				}
 				
 				sHEADERDATA_CHANGE.setValue("DEL_COSTS", invoice.getUnplannedDeliveryCost());
 				sHEADERDATA_CHANGEX.setValue("DEL_COSTS", "X");
@@ -466,8 +492,8 @@ public class RFCMain {
 					}
 				}
 				
-				function.execute(destination);
-				commitFunction.execute(destination);
+				//function.execute(destination);
+				//commitFunction.execute(destination);
 				
 				if(!tRETURN.isEmpty()) {
 					do {
@@ -477,6 +503,9 @@ public class RFCMain {
 				}
 				else {
 					System.out.println("Invoice "+invoice.getInvoiceDoc()+" : success");
+					if(approved) {
+						invoice.setApproved(true);
+					}
 				}
 				
 				tRETURN.clear();
@@ -516,6 +545,213 @@ public class RFCMain {
 		InvoiceDAO<Invoice> dao=factory.getInvoiceDAO();
 		List<Invoice> invoices=dao.getInvoices();
 		return invoices;
+	}
+	
+	private void changeIncomingInvoiceStatus() {
+		SapSystemFactory factory=new SapSystemFactory();
+		SapSystem sap=null;
+		JCoDestination destination=null;
+		JCoFunctionTemplate template=null;
+		JCoFunction function=null;
+		JCoFunction commitFunction=null;
+		JCoRepository repository=null;
+		
+		String fiscalYear="2020";
+		String invoice="5100033261";
+		
+		JCoTable tRETURN=null;
+		
+		try {
+			
+			sap=factory.getSapSystem("TEPCLNT280");
+			System.out.println("Ping succesful: "+sap.ping());
+
+			destination=sap.getDestination();
+
+			JCoContext.begin(destination);
+
+			repository=destination.getRepository();
+			template=repository.getFunctionTemplate("BAPI_INCOMINGINVOICE_CHANGE");
+			function=template.getFunction();
+			template=repository.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
+			commitFunction=template.getFunction();
+
+			tRETURN=function.getTableParameterList().getTable("RETURN");
+				
+			function.getImportParameterList().setValue("INVOICEDOCNUMBER", invoice);
+			function.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
+			//B=parked and completed
+			function.getImportParameterList().setValue("INVOICE_DOC_STATUS", "B");
+
+			function.execute(destination);
+			commitFunction.execute(destination);
+
+			if(!tRETURN.isEmpty()) {
+				do {
+					System.out.println(tRETURN.getValue("TYPE")+" "+tRETURN.getValue("ID")+" "+tRETURN.getValue("NUMBER")+" "+tRETURN.getValue("MESSAGE"));
+				}
+				while(tRETURN.nextRow());
+			}
+			else {
+				System.out.println("Invoice "+invoice+" status changed");
+			}
+			
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				JCoContext.end(destination);
+			} 
+			catch (JCoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	private void postIncomingInvoice() {
+		SapSystemFactory factory=new SapSystemFactory();
+		SapSystem sap=null;
+		JCoDestination destination=null;
+		JCoFunctionTemplate template=null;
+		JCoFunction releaseFunc=null;
+		JCoFunction postFunc=null;
+		JCoFunction commitFunction=null;
+		JCoRepository repository=null;
+		
+		String invoiceDoc="5100033261";
+		String fiscalYear="2020";
+		
+		JCoTable tRETURN=null;
+		
+		try {
+			
+			sap=factory.getSapSystem("TEPCLNT280");
+			System.out.println("Ping succesful: "+sap.ping());
+
+			destination=sap.getDestination();
+
+			JCoContext.begin(destination);
+
+			repository=destination.getRepository();
+			template=repository.getFunctionTemplate("BAPI_INCOMINGINVOICE_RELEASE");
+			releaseFunc=template.getFunction();
+			template=repository.getFunctionTemplate("BAPI_INCOMINGINVOICE_POST");
+			postFunc=template.getFunction();
+			template=repository.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
+			commitFunction=template.getFunction();
+
+			tRETURN=postFunc.getTableParameterList().getTable("RETURN");
+				
+			//releaseFunc.getImportParameterList().setValue("INVOICEDOCNUMBER", invoiceDoc);
+			//releaseFunc.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
+			
+			postFunc.getImportParameterList().setValue("INVOICEDOCNUMBER", invoiceDoc);
+			postFunc.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
+			
+			//releaseFunc.execute(destination);
+			postFunc.execute(destination);
+			commitFunction.execute(destination);
+			
+			if(!tRETURN.isEmpty()) {
+				do {
+					System.out.println(invoiceDoc+" "+tRETURN.getValue("TYPE")+" "+tRETURN.getValue("ID")+" "+tRETURN.getValue("NUMBER")+" "+tRETURN.getValue("MESSAGE"));
+				}
+				while(tRETURN.nextRow());
+			}
+			else {
+				System.out.println("Invoice\t"+invoiceDoc+"\tno messages");
+			}
+			
+			
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				JCoContext.end(destination);
+			} 
+			catch (JCoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+	}
+	
+	private void releaseIncomingInvoice() {
+		SapSystemFactory factory=new SapSystemFactory();
+		SapSystem sap=null;
+		JCoDestination destination=null;
+		JCoFunctionTemplate template=null;
+		JCoFunction releaseFunc=null;
+		JCoFunction commitFunction=null;
+		JCoRepository repository=null;
+		
+		String invoiceDoc="5100033261";
+		String fiscalYear="2020";
+		
+		JCoTable tRETURN=null;
+		
+		try {
+			
+			sap=factory.getSapSystem("TEPCLNT280");
+			System.out.println("Ping succesful: "+sap.ping());
+
+			destination=sap.getDestination();
+
+			JCoContext.begin(destination);
+
+			repository=destination.getRepository();
+			template=repository.getFunctionTemplate("BAPI_INCOMINGINVOICE_RELEASE");
+			releaseFunc=template.getFunction();
+			template=repository.getFunctionTemplate("BAPI_TRANSACTION_COMMIT");
+			commitFunction=template.getFunction();
+
+			tRETURN=releaseFunc.getTableParameterList().getTable("RETURN");
+				
+			//releaseFunc.getImportParameterList().setValue("INVOICEDOCNUMBER", invoiceDoc);
+			//releaseFunc.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
+			
+			releaseFunc.getImportParameterList().setValue("INVOICEDOCNUMBER", invoiceDoc);
+			releaseFunc.getImportParameterList().setValue("FISCALYEAR", fiscalYear);
+			
+			//releaseFunc.execute(destination);
+			releaseFunc.execute(destination);
+			commitFunction.execute(destination);
+			
+			if(!tRETURN.isEmpty()) {
+				do {
+					System.out.println(invoiceDoc+" "+tRETURN.getValue("TYPE")+" "+tRETURN.getValue("ID")+" "+tRETURN.getValue("NUMBER")+" "+tRETURN.getValue("MESSAGE"));
+				}
+				while(tRETURN.nextRow());
+			}
+			else {
+				System.out.println("Invoice\t"+invoiceDoc+"\tno messages");
+			}
+			
+			
+		} 
+		catch (JCoException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				JCoContext.end(destination);
+			} 
+			catch (JCoException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 	}
 	
 	private void changePOItem() {
@@ -611,6 +847,68 @@ public class RFCMain {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	private List<String> getJDInvoiceFileNames(){
+		String folder="C:/Users/ville.susi/OneDrive - Wihuri/Tiedostot/Digital Development/Projects/Ostolaskusuma/OpusCapita/JD ostolaskut/attachments/MM";
+		List<String> fileNames=null;
+		try(Stream<Path> paths=Files.walk(Paths.get(folder))){
+			fileNames=paths.filter(Files::isRegularFile)
+					.map(x -> x.toString()).collect(Collectors.toList());
+		} 
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//for(String fileName : fileNames) {
+		//	System.out.println(fileName);
+		//}
+		return fileNames;
+	}
+	
+	public void testXMLReader() {
+		
+		XMLDAOFactory factory=new XMLDAOFactory();
+		JDInvoiceDAO dao=null;
+		File dbFile=null;
+		JDInvoice invoice=null;
+		List<JDInvoice> invoices=new ArrayList<JDInvoice>();
+		
+		List<String> fileNames=getJDInvoiceFileNames();
+		System.out.println(fileNames.size());
+		
+		for(String fileName : fileNames) {
+			System.out.println(fileName);
+			dbFile=new File(fileName);
+			factory.setDbFile(dbFile);
+			dao=factory.getJDInvoiceDAO();
+			invoice=dao.getInvoice();
+			invoices.add(invoice);
+		}
+		
+		List<JDInvoiceItem> items=new ArrayList<JDInvoiceItem>();
+		List<JDInvoiceAmount> amounts=new ArrayList<JDInvoiceAmount>();
+		
+		for(JDInvoice inv : invoices) {
+			amounts.addAll(inv.getInvoiceAmounts());
+			items.addAll(inv.getInvoiceItems());
+		}
+		
+		for(JDInvoiceItem item : items) {
+			System.out.println(item.getInvoiceNo()+"\t"+item.getOrderNo()+"\t"+item.getItemNo()+"\t"+item.getPartNo()+"\t"+item.getShippedQty()+"\t"+item.getUnitPrice()+"\t"+item.getExtendedPrice());
+		}
+		
+		String linesOut="C:/Users/ville.susi/OneDrive - Wihuri/Tiedostot/Digital Development/Projects/Ostolaskusuma/OpusCapita/JD ostolaskut/InvoiceLines.csv";
+		String amountOut="C:/Users/ville.susi/OneDrive - Wihuri/Tiedostot/Digital Development/Projects/Ostolaskusuma/OpusCapita/JD ostolaskut/InvoiceAmounts.csv";
+		
+		TextFileDAOFactory f=new TextFileDAOFactory(new File(linesOut));
+		JDInvoiceDAO daoOut=f.getJDInvoiceDAO();
+		daoOut.saveInvoiceItems(items);
+		f.setDbFile(new File(amountOut));
+		daoOut=f.getJDInvoiceDAO();
+		daoOut.saveInvoiceAmounts(amounts);
+		
 	}
 
 }

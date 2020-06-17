@@ -11,12 +11,16 @@ public class Invoice {
 	private Date postingDate;
 	private String reference;
 	private String invoicingParty;
+	private double totalMerchandise;
+	private double surcharge;
 	private double grossAmount;
 	private double unplannedDeliveryCost;
 	private double vatAmount;
 	private String taxCode;
 	private String payTerms;
 	private Date baselineDate;
+	private String vendorInvoice;
+	private boolean approved;
 	private List<InvoiceItem> items=null;
 	
 	
@@ -77,6 +81,22 @@ public class Invoice {
 		return grossAmount;
 	}
 
+	public double getTotalMerchandise() {
+		return totalMerchandise;
+	}
+
+	public void setTotalMerchandise(double totalMerchandise) {
+		this.totalMerchandise = totalMerchandise;
+	}
+
+	public double getSurcharge() {
+		return surcharge;
+	}
+
+	public void setSurcharge(double surcharge) {
+		this.surcharge = surcharge;
+	}
+
 	public void setGrossAmount(double grossAmount) {
 		this.grossAmount = grossAmount;
 	}
@@ -129,11 +149,64 @@ public class Invoice {
 		this.items = items;
 	}
 	
+	public String getVendorInvoice() {
+		return vendorInvoice;
+	}
+
+	public void setVendorInvoice(String vendorInvoice) {
+		this.vendorInvoice = vendorInvoice;
+	}
+
+	public boolean isApproved() {
+		return approved;
+	}
+
+	public void setApproved(boolean approved) {
+		this.approved = approved;
+	}
+
 	public void addItem(InvoiceItem item) {
 		if(items==null) {
 			items=new ArrayList<InvoiceItem>();
 		}
 		items.add(item);
 	}
+	
+	public boolean itemsMatchTotalMerchandise() {
+		boolean match=false;
+		double valueSum=0.0;
+		if(items!=null) {
+			for(InvoiceItem item : items) {
+				valueSum=+item.getInvItemAmount();
+			}
+			if(valueSum==totalMerchandise) {
+				match=true;
+			}
+		}
+		return match;
+	}
+	
+	public double getItemAmountSum() {
+		double valueSum=0.0;
+		if(items!=null) {
+			for(InvoiceItem item : items) {
+				valueSum=valueSum+item.getInvItemAmount();
+			}
+		}
+		return valueSum;
+	}
+	
+	public boolean canApprove() {
+		boolean approve=false;
+		double itemSum=getItemAmountSum();
+		double currentAmount=itemSum+unplannedDeliveryCost+vatAmount;
+		System.out.println(currentAmount+"\t"+grossAmount);
+		if(Math.abs(grossAmount-currentAmount)<0.01) {
+			approve=true;
+		}
+		
+		return approve;
+	}
+	
 	
 }

@@ -11,5 +11,6 @@ public interface DAOFactory {
 	public PODAO<PurchaseOrder> getPODAO();
 	public ReturnMessageDAO<ReturnMessage> getReturnMessageDAO();
 	public InvoiceDAO<Invoice> getInvoiceDAO();
+	public JDInvoiceDAO getJDInvoiceDAO();
 	
 }

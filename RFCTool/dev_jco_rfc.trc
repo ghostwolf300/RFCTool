@@ -2524,3 +2524,47 @@ COUNTER     7
 	error group: 102
 	key: RFC_ERROR_COMMUNICATION
 
+
+**** Error file opened at 20200616 123554 Eastern European Summer Time Rel. 3.0.20 (2019-09-05) [721.1311]
+Error:   >Tue Jun 16 12:35:54,931<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host tep failed
+	Connection parameters: TYPE=B DESTINATION=TEPCLNT280 MSHOST=tep MSSERV=3601 GROUP=TEP SAPROUTER=/H/tep PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       hostname 'tep' unknown
+TIME        Tue Jun 16 12:35:54 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      ninti.c
+LINE        897
+DETAIL      NiPGetHostByName: 'tep' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
+Error:   >Tue Jun 16 12:35:54,988<    RfcException raised by system [<unknown>]:
+	message: Connect to message server on host tep failed
+	Connection parameters: TYPE=B DESTINATION=TEPCLNT280 MSHOST=tep MSSERV=3601 GROUP=TEP SAPROUTER=/H/tep PCS=1
+
+LOCATION    CPIC (TCP/IP) on local host WAUTVANWS476 with Unicode
+ERROR       hostname 'tep' unknown
+TIME        Tue Jun 16 12:35:54 2020
+RELEASE     721
+COMPONENT   NI (network interface)
+VERSION     40
+RC          -2
+MODULE      ninti.c
+LINE        897
+DETAIL      NiPGetHostByName: 'tep' not found
+SYSTEM CALL getaddrinfo
+COUNTER     1
+
+	return code: RFC_FAILURE (1)
+	error group: 102
+	key: RFC_ERROR_COMMUNICATION
+
